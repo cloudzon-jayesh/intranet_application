@@ -1,0 +1,222 @@
+    /*////////////////////////////
+
+          FONTS STYLES
+  
+    ///////////////////////////*/
+    @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,600);
+    @import url(http://fonts.googleapis.com/css?family=Roboto:400,500,300);
+    @import url(http://fonts.googleapis.com/css?family=PT+Mono);
+    
+    /*////////////////////////////
+
+         BODY STYLES
+
+    ///////////////////////////*/
+    body{
+      height:auto;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    /*////////////////////////////
+
+       HEADER & FOOTER STYLES
+
+    ///////////////////////////*/
+    .top-bar{
+      padding-right:50px;
+      padding-left:50px;
+      background-color: #333;
+    }
+    .name h1 a{
+    font-family: 'Open Sans' , sans-serif; 
+    font-size: 22px;
+    }
+
+    .name h1 a span{
+      color:#008cba;
+      font-family: 'PT Mono';
+      font-size: 16px;
+    }
+    .top-bar-section ul li a{
+      font-family: 'Open Sans' , sans-serif; 
+    }
+    .content-container{
+      margin:30px 50px 0px 50px;
+    }
+    footer{
+      background-color: #333;
+      width:100%;
+      height: 100px;
+      color:#FFF;
+      padding:30px 50px 0px 50px;
+    }
+    #top-footer{
+      max-width: 100% !important;
+    }
+    #top-footer img{
+      height:18px;
+      float:right;
+      margin-right: 10px;
+    }
+    #bottom-footer{
+      max-width: 100% !important;
+      text-align: left;
+      font-size: 12px;
+      margin-top:30px;
+    }
+
+    /*////////////////////////////
+
+         HOME PAGE STYLES
+
+    ///////////////////////////*/
+    .slider-container{
+      margin-bottom: 50px;
+    }
+    .huddle-slider img{
+      min-height: 200px;
+    }
+   
+    a .box-B{
+      background-color: #008cba;
+      margin-bottom: 10%;
+      padding:20px;
+      font-family:'Open Sans' , sans-serif;  
+      color:#FFF;
+      text-align: center;
+      text-transform: capitalize;
+      font-size:30px;
+    }
+    a .box-B:hover{
+      background-color: #99CC32;/*#ff4040*/
+    }
+    .box-B img{
+      height:80px !important;
+    }
+    .box-title{
+      margin-bottom:20px;
+    }
+
+    /*//////////////////////
+     Main outer page styles
+     //////////////////////*/
+    .outer-title p{
+      font-size: 30px !important;
+      text-transform: capitalize;
+      font-family: 'Open Sans' , sans-serif;  
+      line-height: 25px;
+      margin:0px;
+    }
+    .outer-title p br{
+      margin-top: 0px !important;
+      padding-top: 0px !important;
+    }
+    .outer-title p span{
+      font-size: 14px !important;
+      color:#008cba;
+      font-weight: 500;
+      padding-left:2px;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    /*/////////////
+        login
+    ////////////*/
+    .login-container{
+      margin-top:35px;
+    }
+    .login-container p{
+      text-align:right;
+      font-size:12px;
+      color:#99CC32;
+    }
+    .login-img{
+      padding-top:35px;
+      padding-bottom:15%;
+      padding-left:35%;
+    }
+     /*/////////////
+        careers
+    ////////////*/
+   .career-container{
+      margin-top:20px;
+      margin-bottom:20px;
+    }
+    .career-container li a div{
+      background-color: #ccc;
+      height: 275px;
+      color:#333;
+      padding:20px;
+    }
+    .career-container li a div:hover{
+      background-color: #008cba;/*#99CC32;*/
+      color:#fff;
+    }
+    @media only screen and (max-width: 600px) { 
+      .career-container li a div{
+        height: 200px;
+      }
+    }
+
+    /*/////////////
+        Feed
+    ////////////*/
+    .feed-container{
+     margin-bottom:60px;
+    }
+    .feed{
+      height:300px;
+      background-color:#ccc;
+      margin-bottom:40px;
+      padding:0px;
+    }
+    .feed-title{
+      background-color:#666;
+      color:#FFF;
+      font-size:20px;
+      padding:10px;
+      font-weight:300;
+    }
+    .feed-slider{
+      margin-bottom: 50px;
+      padding-left:80px;
+    }
+    .slider-title p{
+      font-size:22px;
+      font-weight:300;
+    }
+    .feed-slider img{ 
+      min-height:75px;
+      max-height:125px;
+    }
+    .slide{
+      transition: all .2s ease-in-out;
+    }
+    .slide:hover{
+      transform: scale(.9);
+    }
+    .slide-descript{
+      font-size:10px;
+      color:#666;
+      width:100px;
+      text-align: justify;
+    }
+    @media only screen and (max-width: 600px) { 
+    .feed-slider  {
+      padding-left: 20px;
+    }
+    } /* max-width 640px, mobile-only styles, use when QAing mobile issues */
+    #colleages-container{
+      margin-bottom:70px;
+    }
+    #colleages-container .feed-slider img{
+      width:110px;
+      height:125px;
+    } 
+  
+     /*///////////////////////
+        foundation resets
+    ////////////////////////*/
+    button{
+        font-family: 'Roboto', sans-serif;
+    }
