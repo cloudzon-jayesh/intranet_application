@@ -25,5 +25,50 @@ public class HomeController {
 		logger.info("home");
 		return "login";
 	}
+	@RequestMapping(value = "/signup", method = RequestMethod.GET)
+	public String register() {
+		logger.info("registration");
+		return "registration";
+	}
+	@RequestMapping(value = "huddle", method = RequestMethod.GET)
+	public String dashboard() {
+		logger.info("huddle");
+		return "huddle";
+	}
+	@RequestMapping(value = "company", method = RequestMethod.GET)
+	public String company() {
+		logger.info("company");
+		return "company";
+	}
+	@RequestMapping(value = "careers", method = RequestMethod.GET)
+	public String careers() {
+		logger.info("careers");
+		return "careers";
+	}
+	@RequestMapping(value = "feed", method = RequestMethod.GET)
+	public String feed() {
+		logger.info("feed");
+		return "feed";
+	}
+	@RequestMapping(value = "employee", method = RequestMethod.GET)
+	public String employee() {
+		logger.info("employee");
+		return "employee";
+	}
+	@RequestMapping(value = "edit_registration", method = RequestMethod.GET)
+	public String edit_registration() {
+		logger.info("edit_registration.jsp");
+		return "edit_registration";
+	}
+	@RequestMapping(value = "test", method = RequestMethod.GET)
+	public String test() {
+		logger.info("test");
+		return "test";
+	}
+	@RequestMapping(value = "imageUpload", method = RequestMethod.GET)
+	public String imageUpload() {
+		logger.info("fileUploadSignUp");
+		return "fileUploadSignUp";
+	}
 
 }
