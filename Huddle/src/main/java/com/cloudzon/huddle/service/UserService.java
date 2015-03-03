@@ -1,20 +1,26 @@
 package com.cloudzon.huddle.service;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudzon.huddle.dto.AccessTokenContainer;
 import com.cloudzon.huddle.dto.AccountVerificationToken;
 import com.cloudzon.huddle.dto.ChangePasswordDto;
+import com.cloudzon.huddle.dto.EditEmployeeDTO;
 import com.cloudzon.huddle.dto.EmailVerificationRequest;
+import com.cloudzon.huddle.dto.EmployeeDetail;
 import com.cloudzon.huddle.dto.ForgotPasswordDto;
 import com.cloudzon.huddle.dto.ResetPasswordDTO;
 import com.cloudzon.huddle.dto.SignupUser;
 import com.cloudzon.huddle.dto.UserLoginDto;
+import com.cloudzon.huddle.dto.UserRoleDTO;
 
 import freemarker.template.TemplateException;
 
@@ -62,8 +68,8 @@ public interface UserService {
 	 * @throws IOException
 	 * @throws DefaultRoleNotSetException
 	 */
-	public void signupUser(SignupUser signupUser) throws IOException,
-			TemplateException, MessagingException;
+	public void signupUser(SignupUser signupUser, HttpServletRequest httpServletRequest) throws IOException,
+			TemplateException, MessagingException, ParseException;
 
 	/**
 	 * sendEmailVerificationToken send email verification token to user
@@ -93,5 +99,19 @@ public interface UserService {
 
 	public void changePassword(ChangePasswordDto changePasswordDto,
 			String userNameOrEmail);
+	
+	//TODO Start :- Colin
+	public List<EmployeeDetail> getEmployee();
+	
+	public List<UserRoleDTO> getUserRole();
+	
+	public EditEmployeeDTO editEmployeeList(SignupUser signupUser);
+	
+	public void editEmployee(SignupUser signupUser) throws IOException,
+	TemplateException, MessagingException, ParseException ; 
+	
+	public void uploadImage(String email, MultipartFile multipartFile, HttpServletRequest servletRequest) throws IOException,
+	TemplateException, MessagingException, ParseException ; 
+	//End
 
 }
