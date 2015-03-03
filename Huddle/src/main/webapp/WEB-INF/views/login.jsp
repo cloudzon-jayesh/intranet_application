@@ -26,7 +26,23 @@
 	href='<c:url value="css/style.css"></c:url>' />
 
 <style type="text/css">
+.errorText
+		{
+		 	color:red;
+		}
 </style>
+<script src='<c:url value="js/jquery.js"></c:url>'></script>
+	<script src='<c:url value="js/web-fonts.js"></c:url>'></script>
+	<script src='<c:url value="js/sticky-footer.js"></c:url>'></script>
+	<script src='<c:url value="js/foundation.js"></c:url>'></script>
+	<script src='<c:url value="js/foundation.topbar.js"></c:url> '></script>
+	<%-- <script src='<c:url value="js/ajaxJQuery/login.js"></c:url>'></script> --%>
+	<!-- backbone js -->
+	<script src='<c:url value="/js/underscore-min.js"></c:url>'></script>
+	<script src='<c:url value="/js/backbone-min.js"></c:url>'></script>
+	<script src='<c:url value="js/view/LoginView.js"></c:url>'></script>
+	<script src='<c:url value="js/model/LoginModel.js"></c:url>'></script>
+	
 </head>
 <body>
 	<header>
@@ -57,7 +73,8 @@
 			</section>
 		</nav>
 	</header>
-	<div class="main-container">
+	
+	<div class="main-container" id="main-container">
 		<div class="content-container">
 			<div class="row outer-title">
 				<div class="large-12 medium-12 small-12 columns">
@@ -67,15 +84,27 @@
 				</div>
 				<hr>
 			</div>
+			<script type="text/template" id="main_template">
 			<div class="row login-container">
 				<div class="large-7 medium-12 small-12 columns">
-					<form>
-						<label for="email">Email <input type="text" name="email"></label>
-						<label for="pswd">Password <input type="password"
-							name="pswd"></label>
+				
+					<form name="loginUser" method="post" onsubmit="return false;">
+						<label for="email">Email </label>
+						<div class="control-group lUserName">
+							<input type="text"  name="email" id="lUserName" >
+							<span class="help-inline"></span>
+						</div> 
+						<label for="pswd">Password </label>
+						<div class="lPassword control-group">
+							<input type="password" name="pswd" id="lPassword" >
+							<span class="help-inline"></span>
+						</div>
 						<p>Forgot My Password</p>
-						<button class="right radius">Log In</button>
+						<button class="right radius" id="login_button">Log
+							In</button>
 					</form>
+				
+					<span id="error"></span>
 				</div>
 				<div class="large-5 medium-12 small-12 columns">
 					<div class="login-img">
@@ -84,8 +113,16 @@
 					</div>
 				</div>
 			</div>
+			</script>
+					<script>
+						var loginView = new LoginView({
+							el : $("#main-container"),
+						});
+						loginView.render(); 
+					</script>
 		</div>
 	</div>
+
 	<footer>
 		<div class="row" id="top-footer">
 			<div class="large-12 medium-12 small-12 columns">
@@ -109,13 +146,10 @@
 			</div>
 		</div>
 	</footer>
-	<script src='<c:url value="js/jquery.js"></c:url>'></script>
-	<script src='<c:url value="js/web-fonts.js"></c:url>'></script>
-	<script src='<c:url value="js/sticky-footer.js"></c:url>'></script>
-	<script src='<c:url value="js/foundation.js"></c:url>'></script>
-	<script src='<c:url value="js/foundation.topbar.js"></c:url> '></script>
+	
+	
 	<script>
 		$(document).foundation();
 	</script>
-
+	
 </body>
