@@ -202,8 +202,15 @@
       text-align: justify;
     }
     @media only screen and (max-width: 600px) { 
-    .feed-slider  {
-      padding-left: 20px;
+    
+      .career-container li a div{height: 200px;}
+	  .small-block-grid-2 > li{width:100%;}
+	  [class*="block-grid-"] > li{float:none; display:block; padding: 0px 0 1.875rem;}
+	  .small-block-grid-2 > li:nth-child(2n+1){padding-right:0px;}
+	  .small-block-grid-2 > li:nth-child(2n){padding-left:0px;}
+	  .content-container{margin: 30px 4%;}
+	  .top-bar{padding:0px;}
+	  footer{padding:30px 0 0}
     }
     } /* max-width 640px, mobile-only styles, use when QAing mobile issues */
     #colleages-container{
