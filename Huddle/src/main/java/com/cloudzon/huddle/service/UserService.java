@@ -15,7 +15,7 @@ import com.cloudzon.huddle.dto.AccountVerificationToken;
 import com.cloudzon.huddle.dto.ChangePasswordDto;
 import com.cloudzon.huddle.dto.EditEmployeeDTO;
 import com.cloudzon.huddle.dto.EmailVerificationRequest;
-import com.cloudzon.huddle.dto.EmployeeDetail;
+import com.cloudzon.huddle.dto.EmployeeDetailDTO;
 import com.cloudzon.huddle.dto.ForgotPasswordDto;
 import com.cloudzon.huddle.dto.ResetPasswordDTO;
 import com.cloudzon.huddle.dto.SignupUser;
@@ -101,7 +101,7 @@ public interface UserService {
 			String userNameOrEmail);
 	
 	//TODO Start :- Colin
-	public List<EmployeeDetail> getEmployee();
+	public List<EmployeeDetailDTO> getEmployee();
 	
 	public List<UserRoleDTO> getUserRole();
 	
