@@ -11,6 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -99,5 +101,12 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public Tasks scheduleTask() {
 		return new Tasks();
+	}
+
+	@Bean
+	public MultipartResolver multipartResolver() {
+		CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
+		commonsMultipartResolver.setMaxUploadSize(20971520);
+		return commonsMultipartResolver;
 	}
 }
