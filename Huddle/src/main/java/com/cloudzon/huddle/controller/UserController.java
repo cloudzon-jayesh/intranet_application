@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cloudzon.huddle.common.Constant;
@@ -81,6 +82,7 @@ public class UserController {
 			HttpSession session) {
 		UserDetails objUser = this.userService.login(loginDto);
 		session.setAttribute(Constant.SESSION_USER, objUser);
+		ModelAndView mav = new ModelAndView("login");
 		return new LoginResponse(objUser.getUsername());
 	}
 
@@ -97,7 +99,7 @@ public class UserController {
 				.append(request.getServerPort())
 				.append(request.getContextPath());
 		user.setRedirectURL(objSB.toString());
-		this.userService.signupUser(user);
+		this.userService.signupUser(user,request);
 		return new ResponseMessageDto("Please Check Your Mail For Confirmation");
 	}
 
