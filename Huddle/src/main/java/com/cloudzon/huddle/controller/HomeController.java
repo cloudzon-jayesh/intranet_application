@@ -17,6 +17,7 @@ public class HomeController {
 	private static final Logger logger = LoggerFactory
 			.getLogger(HomeController.class);
 
+	//change by jayesh
 	@Resource(name = Constant.SERVICE_USER)
 	private UserService userService;
 
