@@ -21,6 +21,10 @@ public class User extends BaseEntity {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	interface RestSignUpUser{
+		
+	}
+	
 	@Column(name = "username", nullable = false, length = 50, unique = true)
 	@NotEmpty(message = "{NotEmpty.userMaster.userName}")
 	private String userName;
@@ -40,6 +44,10 @@ public class User extends BaseEntity {
 	@Column(name = "dob")
 	@Past()
 	private Date dob;
+
+	@Column(name = "joiningdate")
+	@Past()
+	private Date joiningDate;
 
 	@Column(name = "address")
 	private String address;
@@ -66,12 +74,15 @@ public class User extends BaseEntity {
 	private String mobileNumber;
 
 	@Column(name = "email", nullable = false, length = 50, unique = true)
-	@NotEmpty(message = "{NotEmpty.userMaster.email}")
+	@NotEmpty(message = "{NotEmpty.userMaster.email}",groups = { RestSignUpUser.class})
 	@Email(message = "{Email}")
 	private String email;
 
 	@Column(name = "password", length = 100, nullable = false)
 	private String password;
+	
+	@Column(name = "profilePic", length = 1000)
+	private String profilePic;
 
 	@Column(name = "is_verified", columnDefinition = "BIT default 0", length = 1)
 	private Boolean isVerified;
@@ -211,5 +222,23 @@ public class User extends BaseEntity {
 	public void setIsVerified(Boolean isVerified) {
 		this.isVerified = isVerified;
 	}
+
+	public Date getJoiningDate() {
+		return joiningDate;
+	}
+
+	public void setJoiningDate(Date joiningDate) {
+		this.joiningDate = joiningDate;
+	}
+
+	public String getProfilePic() {
+		return profilePic;
+	}
+
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
+	}
+	
+	
 
 }
