@@ -3,11 +3,15 @@ package com.cloudzon.huddle.controller;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+
 
 //import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
@@ -19,18 +23,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudzon.huddle.common.Constant;
 import com.cloudzon.huddle.dto.AccessTokenContainer;
 import com.cloudzon.huddle.dto.AccountVerificationToken;
 import com.cloudzon.huddle.dto.ChangePasswordDto;
+import com.cloudzon.huddle.dto.EditEmployeeDTO;
 import com.cloudzon.huddle.dto.EmailVerificationRequest;
+import com.cloudzon.huddle.dto.EmployeeDetailDTO;
 import com.cloudzon.huddle.dto.ForgotPasswordDto;
 import com.cloudzon.huddle.dto.ForgotPasswordDto.RestForgotPassword;
 import com.cloudzon.huddle.dto.ResetPasswordDTO;
@@ -38,6 +47,7 @@ import com.cloudzon.huddle.dto.ResponseMessageDto;
 import com.cloudzon.huddle.dto.SignupUser;
 import com.cloudzon.huddle.dto.SignupUser.RestSignUpUser;
 import com.cloudzon.huddle.dto.UserLoginDto;
+import com.cloudzon.huddle.dto.UserRoleDTO;
 import com.cloudzon.huddle.model.User;
 import com.cloudzon.huddle.security.CustomUserDetail;
 import com.cloudzon.huddle.service.UserService;
@@ -107,10 +117,12 @@ public class RestUserController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody
 	public ResponseMessageDto signupUser(
-			@Validated(RestSignUpUser.class) @RequestBody SignupUser signupUser)
-			throws IOException, TemplateException, MessagingException {
+			@Validated(RestSignUpUser.class) @RequestBody SignupUser signupUser,
+			// @RequestParam("fileinput") MultipartFile file,
+			HttpServletRequest servletRequest) throws IOException,
+			TemplateException, MessagingException, ParseException {
 		logger.info("registerNewUser start");
-		this.userService.signupUser(signupUser);
+		this.userService.signupUser(signupUser, servletRequest);
 		return new ResponseMessageDto("Please Check Your Mail For Confirmation");
 	}
 
@@ -229,6 +241,77 @@ public class RestUserController {
 			return new ResponseMessageDto("Successfully logged out");
 		}
 		return null;
+	}
+	
+	
+	/**
+	 * get List for UserRole for SignUp user
+	 * 
+	 */
+	@RequestMapping(value = "/getUserRole", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public List<UserRoleDTO> getUserRole()
+			throws IOException, TemplateException, MessagingException {
+		logger.info("getUserRole start");
+		return this.userService.getUserRole();
+	}
+
+	/**
+	 * employeeDetails used to get employee details into system
+	 * 
+	 */
+	@RequestMapping(value = "/employeDetails", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public List<EmployeeDetailDTO> employeeDetails() throws IOException,
+			TemplateException, MessagingException {
+		logger.info("employeeDetails start");
+		return this.userService.getEmployee();
+	}
+
+	/**
+	 * get List for editSignupUser to Edit employee details into system
+	 * 
+	 */
+	@RequestMapping(value = "/editEmployeList", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public EditEmployeeDTO editEmployeeList(@RequestBody SignupUser signupUser)
+			throws IOException, TemplateException, MessagingException {
+		logger.info("editEmployeeList start");
+		return this.userService.editEmployeeList(signupUser);
+	}
+
+	/**
+	 * editEmployee to Edit employee details into system
+	 * 
+	 * @throws ParseException
+	 * 
+	 */
+	@RequestMapping(value = "/editEmployee", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ResponseMessageDto editEmployee(@RequestBody SignupUser signupUser)
+			throws IOException, TemplateException, MessagingException,
+			ParseException {
+		logger.info("edit employee start");
+		this.userService.editEmployee(signupUser);
+		return new ResponseMessageDto("Update Successfully");
+	}
+
+	@RequestMapping(value = "/uploadProfile", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.OK)
+	public String uploadProfile(
+			@RequestParam("hemail") String email,
+			@RequestParam("fileinput") MultipartFile multipartFile,
+			HttpServletRequest servletRequest) throws IOException,
+			TemplateException, MessagingException, ParseException {
+		logger.info("upload image start");
+		this.userService.uploadImage(email, multipartFile, servletRequest);
+		System.out.println("Upload successfully");
+		//return new ResponseMessageDto("Upload Successfully");
+		return "redirect:/employee";
 	}
 
 }
