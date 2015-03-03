@@ -60,11 +60,6 @@ public class HomeController {
 		logger.info("edit_registration.jsp");
 		return "edit_registration";
 	}
-	@RequestMapping(value = "test", method = RequestMethod.GET)
-	public String test() {
-		logger.info("test");
-		return "test";
-	}
 	@RequestMapping(value = "imageUpload", method = RequestMethod.GET)
 	public String imageUpload() {
 		logger.info("fileUploadSignUp");
