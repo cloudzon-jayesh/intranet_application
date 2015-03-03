@@ -31,7 +31,8 @@
 		<com.paypal.sdk.adaptiveaccountssdk>2.4.106</com.paypal.sdk.adaptiveaccountssdk>
 		<com.paypal.sdk.rest-api-sdk>0.7.1</com.paypal.sdk.rest-api-sdk>
 		<com.stripe-version>1.6.1</com.stripe-version>
-		<tiles-version>3.0.4</tiles-version>
+		<!-- <tiles-version>3.0.4</tiles-version> -->
+		<commons.fileupload.version>1.3.1</commons.fileupload.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -80,10 +81,22 @@
 			</dependency> -->
 
 		<!-- Jakson -->
+		<!-- <dependency> <groupId>org.codehaus.jackson</groupId> <artifactId>jackson-mapper-asl</artifactId> 
+			<version>${org.codehaus.jackson-mapper-asl-version}</version> </dependency> -->
 		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>${org.codehaus.jackson-mapper-asl-version}</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.2.3</version>
 		</dependency>
 
 		<!-- Spring Security -->
@@ -105,7 +118,7 @@
 			<version>${org.springframework.security}</version>
 		</dependency>
 
-		
+
 
 		<!-- Freemarker -->
 		<dependency>
@@ -205,6 +218,12 @@
 		</dependency>
 		<!-- <dependency> <groupId>org.apache.tiles</groupId> <artifactId>tiles-extras</artifactId> 
 			<version>${tiles-version}</version> </dependency> -->
+		<!-- File Upload -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>${commons.fileupload.version}</version>
+		</dependency>
 
 		<!-- Logging -->
 		<dependency>
