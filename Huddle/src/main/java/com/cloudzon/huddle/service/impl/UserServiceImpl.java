@@ -1,12 +1,15 @@
 package com.cloudzon.huddle.service.impl;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,16 +22,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudzon.huddle.common.Constant;
 import com.cloudzon.huddle.dto.AccessTokenContainer;
 import com.cloudzon.huddle.dto.AccountVerificationToken;
 import com.cloudzon.huddle.dto.ChangePasswordDto;
+import com.cloudzon.huddle.dto.EditEmployeeDTO;
 import com.cloudzon.huddle.dto.EmailVerificationRequest;
+import com.cloudzon.huddle.dto.EmployeeDetail;
 import com.cloudzon.huddle.dto.ForgotPasswordDto;
 import com.cloudzon.huddle.dto.ResetPasswordDTO;
+import com.cloudzon.huddle.dto.RoleDTO;
 import com.cloudzon.huddle.dto.SignupUser;
 import com.cloudzon.huddle.dto.UserLoginDto;
+import com.cloudzon.huddle.dto.UserRoleDTO;
 import com.cloudzon.huddle.dto.ValidationErrorDTO;
 import com.cloudzon.huddle.exception.AlreadyVerifiedException;
 import com.cloudzon.huddle.exception.AlreadyVerifiedException.AlreadyVerifiedExceptionType;
@@ -52,6 +60,7 @@ import com.cloudzon.huddle.security.InMemoryTokenStore;
 import com.cloudzon.huddle.service.SendMailService;
 import com.cloudzon.huddle.service.UserService;
 import com.cloudzon.huddle.util.DateUtil;
+import com.cloudzon.huddle.util.ImageUtils;
 
 import freemarker.template.TemplateException;
 
@@ -271,31 +280,52 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
-	public void signupUser(SignupUser signupUser) throws IOException,
-			TemplateException, MessagingException {
+	public void signupUser(SignupUser signupUser,
+			HttpServletRequest httpServletRequest) throws IOException,
+			TemplateException, MessagingException, ParseException {
 
+		SimpleDateFormat dateFormat = null;
 		List<Role> objRoles = this.roleRepository.getDefaultRoles();
 
 		if (objRoles != null && objRoles.size() > 0) {
 
+			dateFormat = new SimpleDateFormat(Constant.DATE_FORMAT);
 			// save user master in database
 			User objUser = new User();
 			objUser.setIsVerified(false);
 			objUser.setUserName(signupUser.getUserName());
+			objUser.setFirstName(signupUser.getFirstName());
+			objUser.setLastName(signupUser.getLastName());
 			objUser.setEmail(signupUser.getEmail());
+			objUser.setMobileNumber(signupUser.getMobileNumber());
 			objUser.setPassword(this.bCryptPasswordEncode.encode(signupUser
 					.getPassword()));
+			objUser.setDob(dateFormat.parse(signupUser.getDob()));
+			objUser.setJoiningDate(dateFormat.parse(signupUser.getJoiningDate()));
+			objUser.setProfilePic(signupUser.getProfilePic());
 			this.userRepository.saveAndFlush(objUser);
 
 			// save user role in database
-			for (Role role : objRoles) {
-				UserRole objUserRole = new UserRole();
-				objUserRole.setUser(objUser);
-				objUserRole.setRole(role);
-				objUserRole.setActive(true);
-				objUserRole.setCreatedBy(objUser);
-				this.userRoleRepository.save(objUserRole);
+			for (Long roleId : signupUser.getRolesId()) {
+				Role objRole = this.roleRepository.getRoleByRoleId(roleId);
+				if (objRole != null) {
+					UserRole objUserRole = new UserRole();
+					objUserRole.setUser(objUser);
+					objUserRole.setRole(objRole);
+					objUserRole.setActive(true);
+					objUserRole.setCreatedBy(objUser);
+					this.userRoleRepository.save(objUserRole);
+				} else {
+					throw new NotFoundException(NotFound.DefaultRoleNotSet);
+				}
 			}
+			/*
+			 * for (Role role : objRoles) { UserRole objUserRole = new
+			 * UserRole(); objUserRole.setUser(objUser);
+			 * objUserRole.setRole(role); objUserRole.setActive(true);
+			 * objUserRole.setCreatedBy(objUser);
+			 * this.userRoleRepository.save(objUserRole); }
+			 */
 
 			// create token and save in database
 			VerificationToken objVerificationToken = new VerificationToken(
@@ -386,4 +416,138 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public List<EmployeeDetail> getEmployee() {
+		logger.info("getEmployee");
+		return this.userRepository.getEmployee();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public List<UserRoleDTO> getUserRole() {
+		logger.info("getUserRole");
+		return this.roleRepository.getAllUserRole();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public EditEmployeeDTO editEmployeeList(SignupUser signupUser) {
+		logger.info("getEmployee");
+		User objUser = userRepository.getUserByEmail(signupUser.getEmail());
+		List<RoleDTO> roles = null;
+		EditEmployeeDTO objEditEmployeeList = null;
+		if (objUser != null) {
+			roles = this.roleRepository.getRoleByUserId(objUser.getId());
+			if (roles != null && roles.size() > 0) {
+				objEditEmployeeList = new EditEmployeeDTO();
+				objEditEmployeeList.setFirstName(objUser.getFirstName());
+				objEditEmployeeList.setLastName(objUser.getLastName());
+				objEditEmployeeList.setMobileNumber(objUser.getMobileNumber());
+				objEditEmployeeList.setEmail(objUser.getEmail());
+				objEditEmployeeList.setPassword(objUser.getPassword());
+				objEditEmployeeList.setRetypePassword(objUser.getPassword());
+				objEditEmployeeList.setDob(objUser.getDob());
+				objEditEmployeeList.setJoiningDate(objUser.getJoiningDate());
+				objEditEmployeeList.setRoles(roles);
+			}
+		}
+		// this.userRepository.getEmployeeByEmail(signupUser.getEmail());
+		return objEditEmployeeList;
+
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public void editEmployee(SignupUser signupUser) throws IOException,
+			TemplateException, MessagingException, ParseException {
+		SimpleDateFormat dateFormat = null;
+		// save user master in database
+		User objUser = null;
+		List<UserRole> userRoles = null;
+		UserRole objUserRole = null;
+		try {
+			objUser = this.userRepository.getUserByEmail(signupUser.getEmail());
+			if (objUser != null) {
+				dateFormat = new SimpleDateFormat(Constant.DATE_FORMAT);
+				// objUser.setIsVerified(false);
+
+				objUser.setUserName(signupUser.getUserName());
+				objUser.setFirstName(signupUser.getFirstName());
+				objUser.setLastName(signupUser.getLastName());
+				// objUser.setEmail(signupUser.getEmail());
+				objUser.setMobileNumber(signupUser.getMobileNumber());
+				objUser.setPassword(signupUser.getPassword());
+				objUser.setDob(dateFormat.parse(signupUser.getDob()));
+				objUser.setJoiningDate(dateFormat.parse(signupUser
+						.getJoiningDate()));
+				objUser.setProfilePic(signupUser.getProfilePic());
+				this.userRepository.saveAndFlush(objUser);
+				
+				userRoles = this.roleRepository.getUserRolesByUserId(objUser);
+				if (userRoles != null && userRoles.size() > 0) {
+					for (UserRole tempUserRole : userRoles) {
+						tempUserRole.setActive(false);
+						this.userRoleRepository.saveAndFlush(tempUserRole);
+					}
+				}
+
+				for (Long tempRoleId : signupUser.getRolesId()) {
+					objUserRole = this.roleRepository.getRoleIdUserId(
+							objUser.getId(), tempRoleId);
+
+					if (objUserRole != null) {
+						// Update Role
+						objUserRole.setActive(true);
+						this.userRoleRepository.saveAndFlush(objUserRole);
+					} else {
+						// Insert Role
+							Role objRole = this.roleRepository.getRoleByRoleId(tempRoleId);
+							if (objRole != null) {
+								objUserRole = new UserRole();
+								objUserRole.setUser(objUser);
+								objUserRole.setRole(objRole);
+								objUserRole.setActive(true);
+								objUserRole.setCreatedBy(objUser);
+								this.userRoleRepository.save(objUserRole);
+							} else {
+								throw new NotFoundException(NotFound.DefaultRoleNotSet);
+							}
+						
+					}
+				}
+
+			}
+		} finally {
+
+		}
+
+	}
+
+	public void uploadImage(String email, MultipartFile multipartFile,
+			HttpServletRequest servletRequest) throws IOException,
+			TemplateException, MessagingException, ParseException {
+		User objUser = null;
+		StringBuffer profilePictureId = null;
+		try {
+			objUser = this.userRepository.getUserByEmail(email);
+
+			if (objUser != null) {
+				System.out.println("call");
+				if (ImageUtils.downloadSocialProfilePicture(objUser,
+						multipartFile, servletRequest)) {
+					profilePictureId = new StringBuffer();
+					profilePictureId.delete(0, profilePictureId.length())
+							.append(objUser.getId()).append(".png");
+					objUser.setProfilePic(profilePictureId.toString());
+					this.userRepository.save(objUser);
+				}
+			} else {
+				// throw new NotFoundException(NotFound.UserNotFound);
+				System.out.println("not found image");
+			}
+		} finally {
+
+		}
+	}
 }
