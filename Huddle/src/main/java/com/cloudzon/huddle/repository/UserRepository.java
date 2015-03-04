@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 
 import com.cloudzon.huddle.dto.EmployeeDetailDTO;
 import com.cloudzon.huddle.dto.SignupUser;
-import com.cloudzon.huddle.dto.UserRoleDTO;
 import com.cloudzon.huddle.model.User;
 
 public interface UserRepository extends BaseRepository<User> {
@@ -41,7 +40,7 @@ public interface UserRepository extends BaseRepository<User> {
 	@Query(value = "SELECT user.userName FROM User AS user WHERE user.email=:email")
 	public String getUserNameByEmail(@Param("email") String email);
 	
-	@Query(value = "SELECT NEW com.cloudzon.huddle.dto.EmployeeDetail(user.id,user.firstName,user.lastName,user.email,user.dob,user.joiningDate) FROM User AS user")
+	@Query(value = "SELECT NEW com.cloudzon.huddle.dto.EmployeeDetailDTO(user.id,user.firstName,user.lastName,user.email,user.dob,user.joiningDate) FROM User AS user")
 	public List<EmployeeDetailDTO> getEmployee();
 
 	@Query(value = "SELECT user FROM User AS user WHERE user.email=:email")
