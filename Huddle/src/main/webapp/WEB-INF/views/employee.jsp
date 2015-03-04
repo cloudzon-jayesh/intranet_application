@@ -115,7 +115,6 @@ th {border: 2px;}
 	<script src="js/sticky-footer.js"></script>
 	<script src="js/foundation.js"></script>
 	<script src="js/foundation.topbar.js"></script>
-	<script src="js/paging.js"></script>
 	<script src="js/jquery.dataTables.min.js"></script>
 	<script src="js/dataTables.responsive.js"></script>
 	<!-- backbone js -->
