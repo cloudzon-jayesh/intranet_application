@@ -17,8 +17,11 @@ import com.cloudzon.huddle.dto.EditEmployeeDTO;
 import com.cloudzon.huddle.dto.EmailVerificationRequest;
 import com.cloudzon.huddle.dto.EmployeeDetailDTO;
 import com.cloudzon.huddle.dto.ForgotPasswordDto;
+import com.cloudzon.huddle.dto.GroupDTO;
 import com.cloudzon.huddle.dto.ResetPasswordDTO;
+import com.cloudzon.huddle.dto.RolePermissionDTO;
 import com.cloudzon.huddle.dto.SignupUser;
+import com.cloudzon.huddle.dto.GroupPermissionDTO;
 import com.cloudzon.huddle.dto.UserLoginDto;
 import com.cloudzon.huddle.dto.UserRoleDTO;
 
@@ -105,6 +108,8 @@ public interface UserService {
 	
 	public List<UserRoleDTO> getUserRole();
 	
+	public List<GroupPermissionDTO> getGroupPermission();
+	
 	public EditEmployeeDTO editEmployeeList(SignupUser signupUser);
 	
 	public void editEmployee(SignupUser signupUser) throws IOException,
@@ -112,6 +117,12 @@ public interface UserService {
 	
 	public void uploadImage(String email, MultipartFile multipartFile, HttpServletRequest servletRequest) throws IOException,
 	TemplateException, MessagingException, ParseException ; 
+	
+	public void addGroup(GroupDTO groupDTO)throws IOException,
+	TemplateException, MessagingException;
+	
+	public void addGroupPermission(RolePermissionDTO rolePermissionDTO)throws IOException,
+	TemplateException, MessagingException;
 	//End
 
 }
