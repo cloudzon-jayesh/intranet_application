@@ -13,6 +13,11 @@ import javax.validation.Valid;
 
 
 
+
+
+
+
+
 //import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,13 +46,18 @@ import com.cloudzon.huddle.dto.EditEmployeeDTO;
 import com.cloudzon.huddle.dto.EmailVerificationRequest;
 import com.cloudzon.huddle.dto.EmployeeDetailDTO;
 import com.cloudzon.huddle.dto.ForgotPasswordDto;
+import com.cloudzon.huddle.dto.GroupPermissionDTO;
 import com.cloudzon.huddle.dto.ForgotPasswordDto.RestForgotPassword;
+import com.cloudzon.huddle.dto.GroupDTO;
 import com.cloudzon.huddle.dto.ResetPasswordDTO;
 import com.cloudzon.huddle.dto.ResponseMessageDto;
+import com.cloudzon.huddle.dto.RolePermissionDTO;
 import com.cloudzon.huddle.dto.SignupUser;
 import com.cloudzon.huddle.dto.SignupUser.RestSignUpUser;
 import com.cloudzon.huddle.dto.UserLoginDto;
 import com.cloudzon.huddle.dto.UserRoleDTO;
+import com.cloudzon.huddle.model.Role;
+import com.cloudzon.huddle.model.RolePermission;
 import com.cloudzon.huddle.model.User;
 import com.cloudzon.huddle.security.CustomUserDetail;
 import com.cloudzon.huddle.service.UserService;
@@ -300,6 +310,10 @@ public class RestUserController {
 		return new ResponseMessageDto("Update Successfully");
 	}
 
+	/**
+	 * uploadProfile to Upload Profile Picture of employee details into system
+	 * 
+	 */
 	@RequestMapping(value = "/uploadProfile", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
 	public String uploadProfile(
@@ -312,6 +326,49 @@ public class RestUserController {
 		System.out.println("Upload successfully");
 		//return new ResponseMessageDto("Upload Successfully");
 		return "redirect:/employee";
+	}
+	
+	/**
+	 * Add Group of the Employee
+	 * 
+	 */
+	@RequestMapping(value = "/addGroup", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ResponseMessageDto addGroup(
+			@Validated(RestSignUpUser.class) @RequestBody GroupDTO groupDTO) throws IOException,
+			TemplateException, MessagingException {
+		logger.info("New Group Added");
+		this.userService.addGroup(groupDTO);
+		return new ResponseMessageDto("Group is Added");
+	}
+	
+	/**
+	 * get List for UserGroup for user
+	 * 
+	 */
+	@RequestMapping(value = "/getGroupPermission", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public List<GroupPermissionDTO> getGroupPermission()
+			throws IOException, TemplateException, MessagingException {
+		logger.info("getUserGroup start");
+		return this.userService.getGroupPermission();
+	}
+	
+	/**
+	 * Add Group Permission of the Employee
+	 * 
+	 */
+	@RequestMapping(value = "/addGroupPermission", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ResponseMessageDto addGroupPermission(
+			@Validated(RestSignUpUser.class) @RequestBody RolePermissionDTO rolePermissionDTO) throws IOException,
+			TemplateException, MessagingException {
+		logger.info("Set Group Permission");
+		this.userService.addGroupPermission(rolePermissionDTO);
+		return new ResponseMessageDto("Group Permission is Added");
 	}
 
 }
