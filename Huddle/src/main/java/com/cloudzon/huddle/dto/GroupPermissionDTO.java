@@ -22,7 +22,5 @@ public class GroupPermissionDTO
 	public void setPermission(String permission) {
 		this.permission = permission;
 	}
-	
-	
 
 }
