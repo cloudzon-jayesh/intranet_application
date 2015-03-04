@@ -79,7 +79,6 @@ var EmployeeView = Backbone.View
 											+ "</td>");
 									
 									var button = $("<input type='button' value='Edit' class='edit_button'  attr-name='"+ data[i].email + "'>");
-									td6.append(button);
 									td0.append(button);
 									tr.append(td0);
 									tr.append(td1);
