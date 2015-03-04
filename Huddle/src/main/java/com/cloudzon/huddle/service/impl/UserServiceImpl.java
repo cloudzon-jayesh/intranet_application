@@ -32,9 +32,12 @@ import com.cloudzon.huddle.dto.EditEmployeeDTO;
 import com.cloudzon.huddle.dto.EmailVerificationRequest;
 import com.cloudzon.huddle.dto.EmployeeDetailDTO;
 import com.cloudzon.huddle.dto.ForgotPasswordDto;
+import com.cloudzon.huddle.dto.GroupDTO;
 import com.cloudzon.huddle.dto.ResetPasswordDTO;
 import com.cloudzon.huddle.dto.RoleDTO;
+import com.cloudzon.huddle.dto.RolePermissionDTO;
 import com.cloudzon.huddle.dto.SignupUser;
+import com.cloudzon.huddle.dto.GroupPermissionDTO;
 import com.cloudzon.huddle.dto.UserLoginDto;
 import com.cloudzon.huddle.dto.UserRoleDTO;
 import com.cloudzon.huddle.dto.ValidationErrorDTO;
@@ -46,11 +49,15 @@ import com.cloudzon.huddle.exception.FieldErrorException;
 import com.cloudzon.huddle.exception.NotFoundException;
 import com.cloudzon.huddle.exception.NotFoundException.NotFound;
 import com.cloudzon.huddle.exception.TokenHasExpiredException;
+import com.cloudzon.huddle.model.Permission;
 import com.cloudzon.huddle.model.Role;
+import com.cloudzon.huddle.model.RolePermission;
 import com.cloudzon.huddle.model.User;
 import com.cloudzon.huddle.model.UserRole;
 import com.cloudzon.huddle.model.VerificationToken;
 import com.cloudzon.huddle.model.VerificationToken.VerificationTokenType;
+import com.cloudzon.huddle.repository.PermissionRepository;
+import com.cloudzon.huddle.repository.RolePermissionRepository;
 import com.cloudzon.huddle.repository.RoleRepository;
 import com.cloudzon.huddle.repository.UserRepository;
 import com.cloudzon.huddle.repository.UserRoleRepository;
@@ -82,6 +89,12 @@ public class UserServiceImpl implements UserService {
 	@Resource
 	private UserRoleRepository userRoleRepository;
 
+	@Resource
+	private PermissionRepository permissionRepository;
+	
+	@Resource
+	private RolePermissionRepository rolePermissionRepository;
+	
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncode;
 
@@ -429,6 +442,13 @@ public class UserServiceImpl implements UserService {
 		logger.info("getUserRole");
 		return this.roleRepository.getAllUserRole();
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public List<GroupPermissionDTO> getGroupPermission() {
+		logger.info("getUserRole");
+		return this.permissionRepository.getAllPermissionName();
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
@@ -549,5 +569,31 @@ public class UserServiceImpl implements UserService {
 		} finally {
 
 		}
+	}
+	
+	public void addGroup(GroupDTO groupDTO)throws IOException,
+	TemplateException, MessagingException
+	{
+		Role objRole = new Role();
+		objRole.setActive(true);
+		objRole.setIsDefault(true);
+		objRole.setRoleName(groupDTO.getRoleName());
+		this.roleRepository.saveAndFlush(objRole);
+	}
+	public void addGroupPermission(RolePermissionDTO rolePermissionDTO)throws IOException,
+	TemplateException, MessagingException
+	{
+		for(Long temppermissionId : rolePermissionDTO.getPermissionId())
+		{
+			Permission objPermission = permissionRepository.getPermissionById(temppermissionId);
+			Role objRole = roleRepository.getRoleByRoleId(rolePermissionDTO.getId());
+			RolePermission objRolePermission = new RolePermission();
+			objRolePermission.setActive(true);
+			objRolePermission.setPermission(objPermission);
+			objRolePermission.setRole(objRole);
+			this.rolePermissionRepository.saveAndFlush(objRolePermission);
+		}
+		
+		
 	}
 }
