@@ -61,24 +61,25 @@
     </section>
   </nav>
 </header>
-<div class="main-container">
+<div class="main-container" id="main-container">
   <div class="content-container">
     <div class="row outer-title">
       <div class="large-12 medium-12 small-12 columns text-main">
         <p>Employee Permision</p>
       </div>
     </div>
-    <div class="row login-container">
+    </div>
+    </div>
+     <!--<div class="row login-container">
     <div class="large-7  medium-12 small-12 columns input-block">
     <span id="error"></span>
-    <form encrtype="multipart/form-data" onSubmit="return false;">
       <div class="input-left-main">
         <div class="input-main">
           <label for="name">Group Name</label>
           <input type="text" id="name" name="name" class="input-main-input" >
           <input value="INSERT" class="right radius btn-main" type="submit">
         </div>
-        <table style="width:100%" border="0" cellpadding="0" cellspacing="0">
+                <table style="width:100%" border="0" cellpadding="0" cellspacing="0">
           <tr>
             <td  style="border:1px solid #ccc; text-align:center">1</td>
             <td style="border:1px solid #ccc; text-align:center">Admin</td>
@@ -112,15 +113,13 @@
               &nbsp;D</td>
             <td style="border:1px solid #ccc; text-align:center"><input value="Add" class="add-btn" type="submit"></td>
           </tr>
-        </table>
+        </table> 
       </div>
       </div>
       </div>
-    </form>
   </div>
-</div>
-</div>
-</div>
+</div>-->
+
 <footer>
   <div class="row" id="top-footer">
     <div class="large-12 medium-12 small-12 columns">
@@ -135,15 +134,41 @@
     </div>
   </div>
 </footer>
+
+<script type="text/template" id="group_template">
+<div class="row login-container">
+    <div class="large-7  medium-12 small-12 columns input-block">
+      <div class="input-left-main" >
+        <div class="input-main" style="border:1px solid #ccc; margin:0 0 20px 0; padding : 10px; ">
+          <label for="name">Group Name</label>
+          <input type="text" id="groupName" name="name" class="input-main-input" >
+          <input value="INSERT" class="right radius btn-main" type="submit" id="add_button">
+        </div>
+			<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="group_data">
+			</table>
+		</div>
+      </div>
+     </div>
+  </div>
+</div>
+</script>
 <script src="js/jquery.js"></script>
-<script src="js/web-fonts.js"></script>
-<script src="js/sticky-footer.js"></script>
-<script src="js/foundation.js"></script>
-<script src="js/foundation.topbar.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
-<script src="http://backbonejs.org/backbone.js"></script>
-<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-<script src="js/ajaxJQuery/signUp.js"></script>
+	<script src="js/jquery-ui.js"></script>
+	<script src="js/web-fonts.js"></script>
+	<script src="js/sticky-footer.js"></script>
+	<script src="js/foundation.js"></script>
+	<script src="js/foundation.topbar.js"></script>
+	<script src="js/jquery.dataTables.min.js"></script>
+	<script src="js/dataTables.responsive.js"></script>
+	<!-- backbone js -->
+	<script src="js/underscore-min.js"></script>
+	<script src="js/backbone-min.js"></script>
+	<script src="js/view/PermissionView.js"></script>
+<script>
+var permissionView = new PermissionView();
+permissionView.render();
+</script>
+
 <script>
     $(document).foundation();
     </script>
