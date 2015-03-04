@@ -23,15 +23,16 @@ public class Permission extends BaseEntity {
 	@Column(name = "permission", nullable = false, length = 50)
 	private String permission;
 
-	@Column(name = "url", nullable = false, length = 50)
+	@Column(name = "url", length = 50)
 	private String url;
 
-	@Column(name = "method", nullable = false, length = 10)
+	@Column(name = "method", length = 10)
 	private String method;
 
 	@Column(name = "active", nullable = false)
 	private Boolean active;
 
+	
 	public String getPermission() {
 		return permission;
 	}
@@ -63,5 +64,4 @@ public class Permission extends BaseEntity {
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
-
 }
