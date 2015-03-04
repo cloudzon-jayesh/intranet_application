@@ -66,5 +66,10 @@ public class HomeController {
 		logger.info("fileUploadSignUp");
 		return "fileUploadSignUp";
 	}
+	@RequestMapping(value = "setPermission", method = RequestMethod.GET)
+	public String setPermission() {
+		logger.info("Set Permission");
+		return "permision";
+	}
 
 }
