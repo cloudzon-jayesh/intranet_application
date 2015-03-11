@@ -12,11 +12,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudzon.huddle.dto.AccessTokenContainer;
 import com.cloudzon.huddle.dto.AccountVerificationToken;
+import com.cloudzon.huddle.dto.ActivityRolePermissionDTO;
 import com.cloudzon.huddle.dto.ChangePasswordDto;
 import com.cloudzon.huddle.dto.EditEmployeeDTO;
 import com.cloudzon.huddle.dto.EmailVerificationRequest;
 import com.cloudzon.huddle.dto.EmployeeDetailDTO;
+import com.cloudzon.huddle.dto.ActivityDTO;
 import com.cloudzon.huddle.dto.ForgotPasswordDto;
+import com.cloudzon.huddle.dto.GetActivityRolePermissionDTO;
+import com.cloudzon.huddle.dto.GetRolePermissionDTO;
 import com.cloudzon.huddle.dto.GroupDTO;
 import com.cloudzon.huddle.dto.ResetPasswordDTO;
 import com.cloudzon.huddle.dto.RolePermissionDTO;
@@ -110,6 +114,8 @@ public interface UserService {
 	
 	public List<GroupPermissionDTO> getGroupPermission();
 	
+	public List<GetRolePermissionDTO> getRolePermission();
+	
 	public EditEmployeeDTO editEmployeeList(SignupUser signupUser);
 	
 	public void editEmployee(SignupUser signupUser) throws IOException,
@@ -123,6 +129,12 @@ public interface UserService {
 	
 	public void addGroupPermission(RolePermissionDTO rolePermissionDTO)throws IOException,
 	TemplateException, MessagingException;
+	
+	public void addActivityPermission(ActivityRolePermissionDTO activityRolePermissionDTO)throws IOException,
+	TemplateException, MessagingException;
+	
+	public List<ActivityDTO> getActivity();
+	
+	public List<GetActivityRolePermissionDTO> getPermissionRoleActivity();
 	//End
-
 }

@@ -27,11 +27,15 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cloudzon.huddle.common.Constant;
 import com.cloudzon.huddle.dto.AccessTokenContainer;
 import com.cloudzon.huddle.dto.AccountVerificationToken;
+import com.cloudzon.huddle.dto.ActivityRolePermissionDTO;
 import com.cloudzon.huddle.dto.ChangePasswordDto;
 import com.cloudzon.huddle.dto.EditEmployeeDTO;
 import com.cloudzon.huddle.dto.EmailVerificationRequest;
 import com.cloudzon.huddle.dto.EmployeeDetailDTO;
+import com.cloudzon.huddle.dto.ActivityDTO;
 import com.cloudzon.huddle.dto.ForgotPasswordDto;
+import com.cloudzon.huddle.dto.GetActivityRolePermissionDTO;
+import com.cloudzon.huddle.dto.GetRolePermissionDTO;
 import com.cloudzon.huddle.dto.GroupDTO;
 import com.cloudzon.huddle.dto.ResetPasswordDTO;
 import com.cloudzon.huddle.dto.RoleDTO;
@@ -49,6 +53,8 @@ import com.cloudzon.huddle.exception.FieldErrorException;
 import com.cloudzon.huddle.exception.NotFoundException;
 import com.cloudzon.huddle.exception.NotFoundException.NotFound;
 import com.cloudzon.huddle.exception.TokenHasExpiredException;
+import com.cloudzon.huddle.model.Activity;
+import com.cloudzon.huddle.model.ActivityRolePermission;
 import com.cloudzon.huddle.model.Permission;
 import com.cloudzon.huddle.model.Role;
 import com.cloudzon.huddle.model.RolePermission;
@@ -56,6 +62,8 @@ import com.cloudzon.huddle.model.User;
 import com.cloudzon.huddle.model.UserRole;
 import com.cloudzon.huddle.model.VerificationToken;
 import com.cloudzon.huddle.model.VerificationToken.VerificationTokenType;
+import com.cloudzon.huddle.repository.ActivityRepository;
+import com.cloudzon.huddle.repository.ActivityRolePermissionRepository;
 import com.cloudzon.huddle.repository.PermissionRepository;
 import com.cloudzon.huddle.repository.RolePermissionRepository;
 import com.cloudzon.huddle.repository.RoleRepository;
@@ -94,6 +102,12 @@ public class UserServiceImpl implements UserService {
 	
 	@Resource
 	private RolePermissionRepository rolePermissionRepository;
+	
+	@Resource
+	private ActivityRepository activityRepository;
+	
+	@Resource
+	private ActivityRolePermissionRepository activityRolePermissionRepository; 
 	
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncode;
@@ -449,7 +463,14 @@ public class UserServiceImpl implements UserService {
 		logger.info("getUserRole");
 		return this.permissionRepository.getAllPermissionName();
 	}
-
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public List<GetRolePermissionDTO> getRolePermission(){
+		logger.info("getRolePermission");
+		return this.rolePermissionRepository.getRolePermission();
+	}
+		
 	@Override
 	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
 	public EditEmployeeDTO editEmployeeList(SignupUser signupUser) {
@@ -593,7 +614,64 @@ public class UserServiceImpl implements UserService {
 			objRolePermission.setRole(objRole);
 			this.rolePermissionRepository.saveAndFlush(objRolePermission);
 		}
+	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public List<ActivityDTO> getActivity() {
+		logger.info("getUserRole");
+		return this.activityRepository.getAllActivity();
+	}
+	public void addActivityPermission(ActivityRolePermissionDTO activityRolePermissionDTO)throws IOException,
+	TemplateException, MessagingException
+	{
 		
 		
+			ActivityRolePermission objActivityRolePermission = null;
+			
+			List<ActivityRolePermission> objActivityRolePermissionsList =this.activityRolePermissionRepository.getPermissionRoleActivityList(activityRolePermissionDTO.getGroupId(), activityRolePermissionDTO.getActivityId());
+			
+			if(objActivityRolePermissionsList !=null && objActivityRolePermissionsList.size() > 0)
+			{
+				for(ActivityRolePermission tempObjActivityRolePermission : objActivityRolePermissionsList)
+				{
+					tempObjActivityRolePermission.setActive(false);
+					this.activityRolePermissionRepository.saveAndFlush(tempObjActivityRolePermission);
+				}
+			}
+			
+			for(Long tempPermissionId : activityRolePermissionDTO.getPermissionIds())
+			{
+				Role objRole = this.roleRepository.getRoleByRoleId(activityRolePermissionDTO.getGroupId());
+				Activity objActivity = this.activityRepository.getActivityByActivityId(activityRolePermissionDTO.getActivityId());
+				Permission objPermission = this.permissionRepository.getPermissionById(tempPermissionId);
+				objActivityRolePermission = this.activityRolePermissionRepository.getPermissionRoleActivity(objRole.getId(), objActivity.getId(), tempPermissionId);
+				if(objActivityRolePermission!=null)
+				{
+					//Update Existing Record
+					objActivityRolePermission.setActive(true);
+					this.activityRolePermissionRepository.saveAndFlush(objActivityRolePermission);
+				}
+				else
+				{
+					// Insert New Record
+					if (objActivity != null && objActivity != null
+						&& objPermission != null) {
+						objActivityRolePermission = new ActivityRolePermission();
+						objActivityRolePermission.setRole(objRole);
+						objActivityRolePermission.setActivity(objActivity);
+						objActivityRolePermission.setPermission(objPermission);
+						objActivityRolePermission.setActive(true);
+						this.activityRolePermissionRepository
+							.saveAndFlush(objActivityRolePermission);
+					}
+				}
+			}
+		
+	}
+	
+	public List<GetActivityRolePermissionDTO> getPermissionRoleActivity()
+	{
+		List<GetActivityRolePermissionDTO> objPermission = this.activityRolePermissionRepository.getAllActivityRolePermission();
+		return objPermission;
 	}
 }
