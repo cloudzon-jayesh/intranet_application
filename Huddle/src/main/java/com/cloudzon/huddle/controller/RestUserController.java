@@ -18,6 +18,10 @@ import javax.validation.Valid;
 
 
 
+
+
+
+
 //import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,11 +45,15 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cloudzon.huddle.common.Constant;
 import com.cloudzon.huddle.dto.AccessTokenContainer;
 import com.cloudzon.huddle.dto.AccountVerificationToken;
+import com.cloudzon.huddle.dto.ActivityRolePermissionDTO;
 import com.cloudzon.huddle.dto.ChangePasswordDto;
 import com.cloudzon.huddle.dto.EditEmployeeDTO;
 import com.cloudzon.huddle.dto.EmailVerificationRequest;
 import com.cloudzon.huddle.dto.EmployeeDetailDTO;
+import com.cloudzon.huddle.dto.ActivityDTO;
 import com.cloudzon.huddle.dto.ForgotPasswordDto;
+import com.cloudzon.huddle.dto.GetActivityRolePermissionDTO;
+import com.cloudzon.huddle.dto.GetRolePermissionDTO;
 import com.cloudzon.huddle.dto.GroupPermissionDTO;
 import com.cloudzon.huddle.dto.ForgotPasswordDto.RestForgotPassword;
 import com.cloudzon.huddle.dto.GroupDTO;
@@ -370,5 +378,57 @@ public class RestUserController {
 		this.userService.addGroupPermission(rolePermissionDTO);
 		return new ResponseMessageDto("Group Permission is Added");
 	}
-
+	/**
+	 * get Permission List for Role of user
+	 *
+	 */
+	@RequestMapping(value = "/getRolePermission", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public List<GetRolePermissionDTO> getRolePermission()
+			throws IOException, TemplateException, MessagingException {
+		logger.info("getUserGroup start");
+		return this.userService.getRolePermission();
+	}
+	/**
+	 * get Events List for Role of user
+	 *
+	 */
+	
+	@RequestMapping(value = "/getActivity", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public List<ActivityDTO> getActivity()
+			throws IOException, TemplateException, MessagingException {
+		logger.info("getUserRole start");
+		return this.userService.getActivity();
+	}
+	/**
+	 * set Activity Permission of the Employee
+	 * 
+	 */
+	@RequestMapping(value = "/addActivityPermission", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ResponseMessageDto addActivityPermission(
+			@RequestBody ActivityRolePermissionDTO activityRolePermissionDTO) throws IOException,
+			TemplateException, MessagingException {
+		logger.info("Set Group Permission");
+		this.userService.addActivityPermission(activityRolePermissionDTO);
+		return new ResponseMessageDto("Activity Permission is set");
+	}
+	
+	/**
+	 * get Permission of role and activity
+	 *
+	 */
+	
+	@RequestMapping(value = "/getPermissionRoleActivity", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public List<GetActivityRolePermissionDTO> getPermissionRoleActivity()
+			throws IOException, TemplateException, MessagingException {
+		logger.info("getPermissionRoleActivity start");
+		return this.userService.getPermissionRoleActivity();
+	}
 }
