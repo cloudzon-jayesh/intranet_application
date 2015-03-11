@@ -21,7 +21,7 @@
 		.input-main label{margin-bottom:10px;}
 		.input-block{width:100%; float:left;}
 		
-		.btn-main{padding:9px 56px;  background-color:#000; color:#fff; border:none;  border-radius:5px; cursor:pointer; margin-bottom:20px;}
+		.btn-main{padding:9px 56px; background-color:#000; color:#fff; border:none;  border-radius:5px; cursor:pointer; margin-bottom:20px;}
 		
 		.add-btn{width:auto; padding:5px 25px; background-color:#000; color:#fff; border-radius:5px; border:none}
 		@media (max-width:640px) {
@@ -156,7 +156,8 @@
 <div class="row login-container">
     <div class="large-7  medium-12 small-12 columns input-block">
       <div class="input-left-main" >
-        <div class="input-main" id="group_data" style="border:1px solid #ccc; margin:0 0 20px 0; padding : 10px; ">
+		<span id='msgBox' style='color:#008CBA;margin:0 0 20px 10px; padding :0 0 10px 0;'></span>        
+		<div class="input-main" id="group_data" style="border:1px solid #ccc; margin:0 0 20px 0; padding : 10px; ">
           Select Group : 
 		</div>
 			<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="event_data">
