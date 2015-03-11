@@ -111,9 +111,7 @@ var PermissionView = Backbone.View
 						var trl = $("<tr></tr>");
 						var tdd = $("<td colspan='3' style='border: 1px solid #ccc; text-align: center;'></td>");
 						var button = $("<input value='Set Permission' class='add-btn' id='addButton' type='Button'>");
-						var sp = $("<span id='msgBox' style='color:#008CBA;'></span>");
 						tdd.append(button);
-						tdd.append(sp);
 						trl.append(tdd);
 						$("#event_data").append(trl);
 						
@@ -179,7 +177,7 @@ var PermissionView = Backbone.View
 									success: function(response) 
 									{
 										//$('#try').css('background-color:#E0ECF1; color:#fff;')
-										$('#msgBox').html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &quot; Permission is set &quot;");
+										$('#msgBox').html("&nbsp; &quot; Permission is set &quot;");
 										console.log("1 record inserted");
 									},
 									error : function(data)
