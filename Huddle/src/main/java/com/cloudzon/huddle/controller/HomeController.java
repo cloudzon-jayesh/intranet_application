@@ -66,6 +66,11 @@ public class HomeController {
 		logger.info("fileUploadSignUp");
 		return "fileUploadSignUp";
 	}
+	@RequestMapping(value = "setGroup", method = RequestMethod.GET)
+	public String setGroup() {
+		logger.info("Set groupPage");
+		return "groupPage";
+	}
 	@RequestMapping(value = "setPermission", method = RequestMethod.GET)
 	public String setPermission() {
 		logger.info("Set Permission");
