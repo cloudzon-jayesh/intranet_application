@@ -1,9 +1,12 @@
 package com.cloudzon.huddle.dto;
 
+
+
 public class UserRoleDTO {
 	
 	private Long id;
 	private String roleName;
+	
 	
 	public UserRoleDTO(Long id, String roleName) {
 		super();
@@ -26,5 +29,6 @@ public class UserRoleDTO {
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}
+	
 
 }
