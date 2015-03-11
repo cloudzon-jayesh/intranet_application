@@ -31,4 +31,7 @@ public interface RoleRepository extends BaseRepository<Role> {
 
 	@Query("SELECT userRole FROM UserRole AS userRole WHERE userRole.user =:user")
 	public List<UserRole> getUserRolesByUserId(@Param("user") User user);
+	
+	@Query(value = "SELECT permission.id FROM RolePermission AS rolePermission INNER JOIN  rolePermission.role AS role INNER JOIN rolePermission.permission AS permission  WHERE role.id=:roleId")
+	public List<Long> getAllUserRolePermission(@Param("roleId") Long roleId);
 }

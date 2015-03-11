@@ -14,7 +14,7 @@ public interface PermissionRepository extends BaseRepository<Permission> {
 	@Query(value = "SELECT permission FROM Permission AS permission")
 	public List<Permission> getAllPermission();
 	
-	@Query(value = "SELECT NEW com.cloudzon.huddle.dto.GroupPermissionDTO(permission.id,permission.permission) FROM Permission AS permission INNER JOIN RolePermission AS rolePermission where permission.id =:rolePermission.id")
+	@Query(value = "SELECT NEW com.cloudzon.huddle.dto.GroupPermissionDTO(permission.id,permission.permission) FROM Permission AS permission ")
 	public List<GroupPermissionDTO> getAllPermissionName();
 
 	@Query("SELECT permission FROM Permission AS permission WHERE permission.id=:permissionId")
