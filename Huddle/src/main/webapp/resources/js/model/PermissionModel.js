@@ -5,5 +5,4 @@ var PermissionModel = Backbone.Model.extend({
 		"activityId" : "",
 		"permissionIds" :""
 	}
-	
 });
