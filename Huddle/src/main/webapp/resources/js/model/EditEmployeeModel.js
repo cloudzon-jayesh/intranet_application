@@ -1,5 +1,5 @@
 var EditEmployeeModel = Backbone.Model.extend({
-	url : 'rest/user/editEmployee.json',
+	url : 'user/editEmployee.json',
 	defaults : {
 		
 		'userName' : '',

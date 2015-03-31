@@ -1,5 +1,5 @@
 var PermissionModel = Backbone.Model.extend({
-	url : 'rest/user/addActivityPermission.json',
+	url : 'user/addActivityPermission.json',
 	dafaults : {
 		"groupId" : "",
 		"activityId" : "",

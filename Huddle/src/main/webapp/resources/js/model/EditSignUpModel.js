@@ -1,5 +1,5 @@
 var EditSignUpModel = Backbone.Model.extend({
-	url : 'rest/user/editEmployeList.json',
+	url : 'user/editEmployeList.json',
 	defaults : {
 		
 		'userName' : '',

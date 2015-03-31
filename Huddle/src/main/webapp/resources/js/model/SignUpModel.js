@@ -1,5 +1,5 @@
 var SignUpModel = Backbone.Model.extend({
-	url : 'rest/user/signup.json',
+	url : 'user/signup.json',
 	defaults : {
 		
 		'userName' : '',
