@@ -9,7 +9,10 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
+
 
 
 
@@ -55,6 +58,7 @@ import com.cloudzon.huddle.dto.ForgotPasswordDto;
 import com.cloudzon.huddle.dto.GetActivityRolePermissionDTO;
 import com.cloudzon.huddle.dto.GetRolePermissionDTO;
 import com.cloudzon.huddle.dto.GroupPermissionDTO;
+import com.cloudzon.huddle.dto.SetUserPermissionDTO;
 import com.cloudzon.huddle.dto.ForgotPasswordDto.RestForgotPassword;
 import com.cloudzon.huddle.dto.GroupDTO;
 import com.cloudzon.huddle.dto.ResetPasswordDTO;
@@ -135,12 +139,10 @@ public class RestUserController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody
 	public ResponseMessageDto signupUser(
-			@Validated(RestSignUpUser.class) @RequestBody SignupUser signupUser,
-			// @RequestParam("fileinput") MultipartFile file,
-			HttpServletRequest servletRequest) throws IOException,
+			@Validated(RestSignUpUser.class) @RequestBody SignupUser signupUser) throws IOException,
 			TemplateException, MessagingException, ParseException {
 		logger.info("registerNewUser start");
-		this.userService.signupUser(signupUser, servletRequest);
+		this.userService.signupUser(signupUser);
 		return new ResponseMessageDto("Please Check Your Mail For Confirmation");
 	}
 
@@ -259,176 +261,5 @@ public class RestUserController {
 			return new ResponseMessageDto("Successfully logged out");
 		}
 		return null;
-	}
-	
-	
-	/**
-	 * get List for UserRole for SignUp user
-	 * 
-	 */
-	@RequestMapping(value = "/getUserRole", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-	@ResponseStatus(value = HttpStatus.OK)
-	@ResponseBody
-	public List<UserRoleDTO> getUserRole()
-			throws IOException, TemplateException, MessagingException {
-		logger.info("getUserRole start");
-		return this.userService.getUserRole();
-	}
-
-	/**
-	 * employeeDetails used to get employee details into system
-	 * 
-	 */
-	@RequestMapping(value = "/employeDetails", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-	@ResponseStatus(value = HttpStatus.OK)
-	@ResponseBody
-	public List<EmployeeDetailDTO> employeeDetails() throws IOException,
-			TemplateException, MessagingException {
-		logger.info("employeeDetails start");
-		return this.userService.getEmployee();
-	}
-
-	/**
-	 * get List for editSignupUser to Edit employee details into system
-	 * 
-	 */
-	@RequestMapping(value = "/editEmployeList", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
-	@ResponseStatus(value = HttpStatus.OK)
-	@ResponseBody
-	public EditEmployeeDTO editEmployeeList(@RequestBody SignupUser signupUser)
-			throws IOException, TemplateException, MessagingException {
-		logger.info("editEmployeeList start");
-		return this.userService.editEmployeeList(signupUser);
-	}
-
-	/**
-	 * editEmployee to Edit employee details into system
-	 * 
-	 * @throws ParseException
-	 * 
-	 */
-	@RequestMapping(value = "/editEmployee", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
-	@ResponseStatus(value = HttpStatus.OK)
-	@ResponseBody
-	public ResponseMessageDto editEmployee(@RequestBody SignupUser signupUser)
-			throws IOException, TemplateException, MessagingException,
-			ParseException {
-		logger.info("edit employee start");
-		this.userService.editEmployee(signupUser);
-		return new ResponseMessageDto("Update Successfully");
-	}
-
-	/**
-	 * uploadProfile to Upload Profile Picture of employee details into system
-	 * 
-	 */
-	@RequestMapping(value = "/uploadProfile", method = RequestMethod.POST)
-	@ResponseStatus(value = HttpStatus.OK)
-	public String uploadProfile(
-			@RequestParam("hemail") String email,
-			@RequestParam("fileinput") MultipartFile multipartFile,
-			HttpServletRequest servletRequest) throws IOException,
-			TemplateException, MessagingException, ParseException {
-		logger.info("upload image start");
-		this.userService.uploadImage(email, multipartFile, servletRequest);
-		System.out.println("Upload successfully");
-		//return new ResponseMessageDto("Upload Successfully");
-		return "redirect:/employee";
-	}
-	
-	/**
-	 * Add Group of the Employee
-	 * 
-	 */
-	@RequestMapping(value = "/addGroup", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
-	@ResponseStatus(value = HttpStatus.OK)
-	@ResponseBody
-	public ResponseMessageDto addGroup(
-			@Validated(RestSignUpUser.class) @RequestBody GroupDTO groupDTO) throws IOException,
-			TemplateException, MessagingException {
-		logger.info("New Group Added");
-		this.userService.addGroup(groupDTO);
-		return new ResponseMessageDto("Group is Added");
-	}
-	
-	/**
-	 * get List for UserGroup for user
-	 * 
-	 */
-	@RequestMapping(value = "/getGroupPermission", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-	@ResponseStatus(value = HttpStatus.OK)
-	@ResponseBody
-	public List<GroupPermissionDTO> getGroupPermission()
-			throws IOException, TemplateException, MessagingException {
-		logger.info("getUserGroup start");
-		return this.userService.getGroupPermission();
-	}
-	
-	/**
-	 * Add Group Permission of the Employee
-	 * 
-	 */
-	@RequestMapping(value = "/addGroupPermission", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
-	@ResponseStatus(value = HttpStatus.OK)
-	@ResponseBody
-	public ResponseMessageDto addGroupPermission(
-			@Validated(RestSignUpUser.class) @RequestBody RolePermissionDTO rolePermissionDTO) throws IOException,
-			TemplateException, MessagingException {
-		logger.info("Set Group Permission");
-		this.userService.addGroupPermission(rolePermissionDTO);
-		return new ResponseMessageDto("Group Permission is Added");
-	}
-	/**
-	 * get Permission List for Role of user
-	 *
-	 */
-	@RequestMapping(value = "/getRolePermission", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-	@ResponseStatus(value = HttpStatus.OK)
-	@ResponseBody
-	public List<GetRolePermissionDTO> getRolePermission()
-			throws IOException, TemplateException, MessagingException {
-		logger.info("getUserGroup start");
-		return this.userService.getRolePermission();
-	}
-	/**
-	 * get Events List for Role of user
-	 *
-	 */
-	
-	@RequestMapping(value = "/getActivity", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-	@ResponseStatus(value = HttpStatus.OK)
-	@ResponseBody
-	public List<ActivityDTO> getActivity()
-			throws IOException, TemplateException, MessagingException {
-		logger.info("getUserRole start");
-		return this.userService.getActivity();
-	}
-	/**
-	 * set Activity Permission of the Employee
-	 * 
-	 */
-	@RequestMapping(value = "/addActivityPermission", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
-	@ResponseStatus(value = HttpStatus.OK)
-	@ResponseBody
-	public ResponseMessageDto addActivityPermission(
-			@RequestBody ActivityRolePermissionDTO activityRolePermissionDTO) throws IOException,
-			TemplateException, MessagingException {
-		logger.info("Set Group Permission");
-		this.userService.addActivityPermission(activityRolePermissionDTO);
-		return new ResponseMessageDto("Activity Permission is set");
-	}
-	
-	/**
-	 * get Permission of role and activity
-	 *
-	 */
-	
-	@RequestMapping(value = "/getPermissionRoleActivity", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-	@ResponseStatus(value = HttpStatus.OK)
-	@ResponseBody
-	public List<GetActivityRolePermissionDTO> getPermissionRoleActivity()
-			throws IOException, TemplateException, MessagingException {
-		logger.info("getPermissionRoleActivity start");
-		return this.userService.getPermissionRoleActivity();
 	}
 }
