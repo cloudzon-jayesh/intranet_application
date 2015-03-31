@@ -84,9 +84,7 @@ public class User extends BaseEntity {
 	@Column(name = "profilePic", length = 1000)
 	private String profilePic;
 
-	@Column(name = "is_verified", columnDefinition = "BIT default 0", length = 1)
-	private Boolean isVerified;
-
+	
 	public String getUserName() {
 		return userName;
 	}
@@ -213,14 +211,6 @@ public class User extends BaseEntity {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public Boolean getIsVerified() {
-		return isVerified;
-	}
-
-	public void setIsVerified(Boolean isVerified) {
-		this.isVerified = isVerified;
 	}
 
 	public Date getJoiningDate() {
