@@ -1,37 +1,49 @@
-var GroupView = Backbone.View.extend({
+
+var activityView = Backbone.View.extend({
 
 	el : $("#main-container"),
-	initialize : function() {},
-	render : function() {
-		var template = _.template($("#group_template").html(), {});
-		this.$el.html(template);
-		this.getGroupData();
+	initialize : function() {
+		var r_perm = "";
+		var r_val;
+		var w_perm = "";
+		var w_val;
+		var d_perm = "";
+		var d_val;
+		// var idGroup = new Array();
 	},
-	getGroupData : function()
+	render : function() {
+		var template = _.template($("#activity_template").html(), {});
+		this.$el.html(template);
+		this.getActivityData();
+	},
+	getActivityData : function()
 	{
 		$.ajax({
-			url : 'user/getUserRole.json',
+			url : 'user/getActivity.json',
 			type : 'GET',
 			success : function(data)
 			{
 				var len = data.length;
 				var thead = $("<thead></thead>");
 				var trh = $("<tr></tr>");
-				var th0 = $("<th>Edit</th>");
+				var th0 = $("<th>Action</th>");
 				var th1 = $("<th>No</th>");
-				var th2 = $("<th>Group Name</th>");
+				var th2 = $("<th>Activity Name</th>");
+				var th3 = $("<th>Activity Link</th>");
 				trh.append(th0);
 				trh.append(th1);
 				trh.append(th2);
+				trh.append(th3);
 				thead.append(trh);
-				$("#group_data").append(thead);
+				$("#activity_data").append(thead);
 				var tBody = $("<tbody></tbody>");
 				for (var i = (len-1); i >= 0; i--) 
 				{
 					var tr = $("<tr></tr>");
-					var td0 = $("<td></td>");
+					var td0 = $("<td></td>")
 					var td1 = $("<td>" + (i+1)	+ "</td>");
-					var td2 = $("<td>"+data[i].roleName+"</td>");
+					var td2 = $("<td>"+data[i].activityName+"</td>");
+					var td3 = $("<td>"+data[i].activityLink+"</td>");
 					var button1 =$("<a href=# class='edit_button' title='edit' attr-name='"+ data[i].id + "'><img src= 'images/edit.png' style='width:25px; height:25px;'></a>");
 					var button2 =$("<a href=# class='delete_button' title='delete' attr-name='"+ data[i].id + "'>&nbsp;<img src= 'images/delete.png' style='width:25px; height:25px;'></a>");
 					td0.append(button1);
@@ -39,24 +51,25 @@ var GroupView = Backbone.View.extend({
 					tr.append(td0);
 					tr.append(td1);
 					tr.append(td2);
+					tr.append(td3);
 					tBody.append(tr);
+					
 				}
-				$("#group_data").append(tBody);
-				
+				$("#activity_data").append(tBody);
 				$('.edit_button').click(function() {
 					var name = $(this).attr("attr-name");
 					console.log(name);
 					$("#hidId").val(name);
-					var editGroupView1 = new editGroupView({
-						el : $("#editGroupModal"),
+					var editActivityView1 = new editActivityView({
+						el : $("#editActivityModal"),
 					});
-					editGroupView1.render();
-					$('#editGroupModal').foundation('reveal', 'open');
+					editActivityView1.render();
+					$('#editActivityModal').foundation('reveal', 'open');
 				});
 				$('.delete_button').click(function() {
 					var name = $(this).attr("attr-name");
 					$.ajax({
-						url : 'user/deleteGroup.json',
+						url : 'user/deleteActivity.json',
 						type : 'POST',
 						data : JSON.stringify({	"id" : name}),
 						headers : 
@@ -67,15 +80,14 @@ var GroupView = Backbone.View.extend({
 						success :function(data)
 						{
 							console.log("Success");
-							var groupView = new GroupView();
-							groupView.render();
+							activityView.render();
 						},
 						error : function(data) {
 							console.log("Error");
 						}
 					});
 				});
-				var table = $('#group_data').dataTable({
+				var table = $('#activity_data').dataTable({
 					responsive: true,
 					 "searching": false,
 					  	"order": [[ 0, "desc" ]],
@@ -90,37 +102,38 @@ var GroupView = Backbone.View.extend({
 	}
 });
 
-var addGroup =  Backbone.View.extend({
+var addActivity =  Backbone.View.extend({
 	el :$(""),
 	initialize : function() {
 	},
 	events : {
-		"click #addGroupButton" : "addGroup",
+		"click #addActivityButton" : "addActivity",
 	},
 	render : function() {},
-	addGroup : function()
+	addActivity : function()
 	{	
 		this.hideErrors();
-		this.groupModel = new groupModel({
-			"roleName" : $("#roleName").val()
+		this.activityModel = new activityModel({
+			"activityName" : $("#activityName").val(),
+			"activityLink" : $("#activityLink").val()
 		});
 		
-		if (!this.groupModel.isValid()) {
-			this.showErrors(this.groupModel.validationError);
+		if (!this.activityModel.isValid()) {
+			this.showErrors(this.activityModel.validationError);
 		} else {
-			this.groupModel.fetch({
+			this.activityModel.fetch({
 				type : "POST",
-				url : "user/addGroup.json",
+				url : "user/addActivity.json",
 				headers : {
 					'Accept' : 'application/json',
 					'Content-Type' : 'application/json; charset=UTF-8'
 				},
-				data : JSON.stringify(this.groupModel),
+				data : JSON.stringify(this.activityModel),
 				success: function (response) {
 					console.log("Success");
-					window.location = "setGroup";
+					window.location = "setActivity";
 				},
-				error : function(e) {
+				error : function(loginModel,e) {
 					var response = $.parseJSON(e.responseText);
 					var obj = JSON.stringify(response.errorMessage);
 					$("#error").html("<font color='red'>" + obj+ "</font>");
@@ -142,24 +155,24 @@ var addGroup =  Backbone.View.extend({
 	}
 });
 
-var editGroupView = Backbone.View.extend({
+var editActivityView = Backbone.View.extend({
 
-	el : $("#editGroupModal"),
+	el : $("#editActivityModal"),
 	initialize : function() {
 	},
 	render : function() {
 		var template = _.template($("#edit_template").html(), {});
 		this.$el.html(template);
-		this.getGroupFromId();
+		this.getActivityFromId();
 	},
 	events : {
-		"click #editGroupButton" : "editGroup"
+		"click #editActivityButton" : "editAvtivity"
 	},
-	getGroupFromId : function()
+	getActivityFromId : function()
 	{
 		var id = $("#hidId").val();
 		$.ajax({
-			url : 'user/editGroupList.json',
+			url : 'user/editActivityList.json',
 			type : "POST",
 			headers : {
 				'Accept' : 'application/json',
@@ -174,7 +187,8 @@ var editGroupView = Backbone.View.extend({
 			},
 			success: function (data) {
 				var len = data.length;
-				$("#editRoleName").val(data.roleName)
+					$("#editActivityName").val(data.activityName),
+					$("#editActivityLink").val(data.activityLink)
 			},
 		error : function(response)
 		{
@@ -182,30 +196,31 @@ var editGroupView = Backbone.View.extend({
 		}
 		});
 	},
-	editGroup : function() {
+	editAvtivity : function() {
 		this.hideErrors();
-		this.groupModel = new groupModel({
+		this.activityModel = new activityModel({
 			"id":$("#hidId").val(),
-			"roleName" : $("#editRoleName").val()
+			"activityName" : $("#editActivityName").val(),
+			"activityLink" : $("#editActivityLink").val()
 		});
 		
-		if (!this.groupModel.isValid()) {
-			this.showErrors(this.groupModel.validationError);
+		if (!this.activityModel.isValid()) {
+			this.showErrors(this.activityModel.validationError);
 		} else {
-			this.groupModel.fetch({
+			this.activityModel.fetch({
 				type : "POST",
-				url : "user/addGroup.json",
+				url : "user/addActivity.json",
 				headers : {
 					'Accept' : 'application/json',
 					'Content-Type' : 'application/json; charset=UTF-8'
 				},
-				data : JSON.stringify(this.groupModel),
+				data : JSON.stringify(this.activityModel),
 				success: function (response) {
 					console.log("Update Success");
-					$('#editGroupModal').foundation('reveal', 'close');
-					window.location = "setGroup";
+					$('#editActivityModal').foundation('reveal', 'close');
+					window.location = "setActivity";
 				},
-				error : function(e) {
+				error : function(loginModel,e) {
 					var response = $.parseJSON(e.responseText);
 					var obj = JSON.stringify(response.errorMessage);
 					$("#error").html("<font color='red'>" + obj+ "</font>");

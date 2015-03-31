@@ -16,7 +16,7 @@ var FileUploadSignUpView =  Backbone.View.extend({
 		data.append('fileInput',jQuery('#fileinput')[0].files);
 		data.append('hemail',jQuery('#hemail')[0]);
 		$.ajax({
-			url : 'rest/user/uploadProfile.json',
+			url : 'user/uploadProfile.json',
 			type : "POST",
 			data : data,
 			dataType : "multipart/form-data",

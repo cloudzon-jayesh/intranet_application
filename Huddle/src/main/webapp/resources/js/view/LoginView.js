@@ -27,20 +27,20 @@ var LoginView = Backbone.View.extend({
 		} else {
 			this.loginModel.fetch({
 				type : "POST",
-				url : "rest/user/login.json",
+				url : "user/login.json",
 				headers : {
 					'Accept' : 'application/json',
 					'Content-Type' : 'application/json; charset=UTF-8'
 				},
 				data : JSON.stringify(this.loginModel),
 				success: function (response) {
-				     console.log("Found the User: " + response.get("access_token"));
+				     //console.log("Found the User: " + response.get("access_token"));
 				     window.location = "huddle";
 				},
 				error : function(loginModel,e) {
 					var response = $.parseJSON(e.responseText);
 					var obj = JSON.stringify(response.errorMessage);
-					$("#error").html("<font color='red'>&quot;" + obj+ "&quot;</font>");
+					$("#error").html("<font color='red'>" + obj+ "</font>");
 				}
 			});
 		}

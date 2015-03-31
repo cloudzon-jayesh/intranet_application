@@ -1,0 +1,318 @@
+
+var eventView = Backbone.View.extend({
+
+	el : $("#main-container"),
+	initialize : function() {
+	},
+	render : function() {
+		var template = _.template($("#event_template").html(), {});
+		this.$el.html(template);
+		this.getEventData();
+	},
+	getEventData : function()
+	{
+		$.ajax({
+			url : 'user/getAllEvents.json',
+			type : 'GET',
+			success : function(data)
+			{
+				var len = data.length;
+				var thead = $("<thead></thead>");
+				var trh = $("<tr></tr>");
+				var th0 = $("<th>Action</th>");
+				var th1 = $("<th>No</th>");
+				var th2 = $("<th>Event Name</th>");
+				var th3 = $("<th>Date</th>");
+				var th4 = $("<th>Time</th>");
+				trh.append(th0);
+				trh.append(th1);
+				trh.append(th2);
+				trh.append(th3);
+				trh.append(th4);
+				thead.append(trh);
+				$("#event_data").append(thead);
+				var tBody = $("<tbody></tbody>");
+				for (var i = (len-1); i >= 0; i--) 
+				{
+					var m_names = new Array("Jan", "Feb", "Mar", 
+							"Apr", "May", "Jun", "Jul", "Aug", "Sep", 
+							"Octr", "Nov", "Dec");
+					var eDate = new Date(data[i].date);
+					var curr_date = eDate.getDate();
+					var curr_month = eDate.getMonth();
+					var curr_year = eDate.getFullYear();
+					var eventDate = curr_date + "-" + m_names[curr_month]+ "-" + curr_year;
+					
+					var eTime = new Date(data[i].time);
+					var minutes = eTime.getMinutes();
+					var hours = eTime.getHours();
+					var eventTime = hours+":"+minutes;					
+					
+					var tr = $("<tr></tr>");
+					var td0 = $("<td></td>")
+					var td1 = $("<td>" + (i+1)	+ "</td>");
+					var td2 = $("<td>"+ data[i].eventName +"</td>");
+					var td3 = $("<td>"+ eventDate +"</td>");
+					var td4 = $("<td>"+ eventTime +"</td>");
+					var button1 =$("<a href=# class='edit_button' title='edit' attr-name='"+ data[i].id + "'><img src= 'images/edit.png' style='width:25px; height:25px;'></a>");
+					var button2 =$("<a href=# class='delete_button' title='delete' attr-name='"+ data[i].id + "'>&nbsp;<img src= 'images/delete.png' style='width:25px; height:25px;'></a>");
+					td0.append(button1);
+					td0.append(button2);
+					tr.append(td0);
+					tr.append(td1);
+					tr.append(td2);
+					tr.append(td3);
+					tr.append(td4);
+					tBody.append(tr);
+					$("#event_data").append(tBody);
+				}
+				
+				$('.edit_button').click(function() {
+					var name = $(this).attr("attr-name");
+					console.log(name);
+					$("#hidId").val(name);
+					var editEventView1 = new editEventView({
+						el : $("#editEventModal"),
+					});
+					editEventView1.render();
+					$('#editEventModal').foundation('reveal', 'open');
+				});
+				$('.delete_button').click(function() {
+					var name = $(this).attr("attr-name");
+					$.ajax({
+						url : 'user/deleteEvents.json',
+						type : 'POST',
+						data : JSON.stringify({	"id" : name}),
+						headers : 
+							{
+								'Accept' : 'application/json',
+								'Content-Type' : 'application/json; charset=UTF-8'
+							},
+						success :function(data)
+						{
+							console.log("Success");
+							eventView.render();
+						},
+						error : function(data) {
+							console.log("Error");
+						}
+					});
+				});
+				var table = $('#event_data').dataTable({
+					responsive: true,
+					 "searching": false,
+					  	"order": [[ 0, "desc" ]],
+					    "iDisplayLength": 5,
+					    "columnDefs": [ { orderable: false, targets: [0] }],
+					    "bAutoWidth": false,
+					    "bLengthChange": false
+				});
+			}
+		});
+			
+	}
+});
+
+var addEvent =  Backbone.View.extend({
+	el :$(""),
+	initialize : function() {
+	},
+	events : {
+		"click #addEventButton" : "addEvent",
+		"click #addImageButton" : "addImage",
+	},
+	render : function() {
+		$("#date").datepicker(
+				{
+					dateFormat: 'dd/mm/yy',
+					minDate : 0,
+					changeMonth: true,
+		            changeYear: true,
+		            yearRange: "+0:+10",
+					onSelect : function(dateText, datePicker) 
+					{
+						console.log('onSelect', dateText);
+						$(this).selectedDate = dateText;
+					}
+				});
+		//$('#time').timeEntry({show24Hours: true});
+		
+		$('#time').blur(function() {
+			var timeFormat = /^([0-9]{2})\:([0-9]{2})$/;
+	        if (timeFormat.test(this.value)){
+	        	$(this).siblings(".help-inline").html("");
+	        }
+	        else {
+	        	$(this).siblings(".help-inline").html("Time Format should be like 24:60");
+	        	$(this).siblings(".help-inline").addClass("errorText");
+	        }
+	    });
+	},
+	addImage : function(){
+		
+		var addItems = $(
+				'<div class="control-group fileinput">'
+				+'<label for="eventImage">Select Image</label>'
+					+'<input type="file" class="imgGroup" name="fileinput" accept="image/*"'
+					+'class="browser-select"><a href="#" class="remove_field errorText"><img src= "images/remove.png" style="width:20px; height:20px;"></a></div>'
+				+'</div>	');
+				$("#imageGroup").append(addItems);
+				$("#imageGroup").on("click",".remove_field", function(e){ 
+			        e.preventDefault(); 
+			        $(this).parent('div').remove(); 
+			    });
+	},
+	addEvent : function(e){
+		this.hideErrors();
+		this.eventModel = new eventModel({
+			"eventName" :  $("#eventName").val(),
+			"description" : $("#description").val(),
+			"date": $("#date").val(),
+			"time": $("#time").val(),
+		});
+		if (!this.eventModel.isValid()) {
+			this.showErrors(this.eventModel.validationError);
+			e.preventDefault();
+		} else {
+			$("eventForm").submit();
+			console.log("Submiited");
+		}
+	},
+	showErrors : function(errors) {
+		_.each(errors, function(error) {
+			var controlGroup = this.$('.' + error.name);
+			//controlGroup.addClass('error');
+			controlGroup.find('.help-inline').text(error.message);
+			controlGroup.find('.help-inline').addClass('errorText');
+		}, this);
+	},
+	hideErrors : function() {
+		this.$('.control-group').removeClass('error');
+		this.$('.help-inline').text('');
+	}
+});
+
+var editEventView = Backbone.View.extend({
+
+	el : $("#editEventModal"),
+	initialize : function() {
+	},
+	render : function() {
+		var template = _.template($("#edit_template").html(), {});
+		this.$el.html(template);
+		this.getEventFromId();
+		$("#editDate").datepicker(
+				{
+					dateFormat: 'dd/mm/yy',
+					minDate : 0,
+					changeMonth: true,
+		            changeYear: true,
+		            yearRange: "+0:+10",
+					onSelect : function(dateText, datePicker) 
+					{
+						console.log('onSelect', dateText);
+						$(this).selectedDate = dateText;
+					}
+				});
+		$('#editTime').blur(function() {
+			var timeFormat = /^([0-9]{2})\:([0-9]{2})$/;
+	        if (timeFormat.test(this.value)){
+	        	$(this).siblings(".help-inline").html("");
+	        }
+	        else {
+	        	$(this).siblings(".help-inline").html("Time Format should be like 24:60");
+	        	$(this).siblings(".help-inline").addClass("errorText");
+	        }
+	    });
+	},
+	events : {
+		"click #editEventButton" : "editEvent"
+	},
+	getEventFromId : function()
+	{
+		var id = $("#hidId").val();
+		$.ajax({
+			url : 'user/editEventList.json',
+			type : "POST",
+			headers : {
+				'Accept' : 'application/json',
+				'Content-Type' : 'application/json; charset=UTF-8'
+			},
+			data : JSON.stringify(
+				{
+					"id" : id
+				}),
+			parse : function(response) {
+				console.log(response.Object);
+			},
+			success: function (data) {
+				var eDate = new Date(data.date);
+				var curr_date = eDate.getDate();
+				var curr_month = eDate.getMonth();
+				var curr_year = eDate.getFullYear();
+				var eventDate = curr_date + "/" + curr_month + "/" + curr_year;
+				
+				var eTime = new Date(data.time);
+				var minutes = eTime.getMinutes();
+				var hours = eTime.getHours();
+				var eventTime = hours+":"+minutes;
+				
+				$("#editEventName").val(data.eventName),
+				$("#editDescription").val(data.description),
+				$("#editDate").val(eventDate),
+				$("#editTime").val(eventTime)
+			},
+		error : function(response)
+		{
+			console.log("error come");
+		}
+		});
+	},
+	editEvent : function() {
+		this.hideErrors();
+		this.editEventModel = new editEventModel({
+			"id":$("#hidId").val(),
+			"eventName" :  $("#editEventName").val(),
+			"description" : $("#editDescription").val(),
+			"date": $("#editDate").val(),
+			"time": $("#editTime").val(),
+		});
+		
+		if (!this.editEventModel.isValid()) {
+			this.showErrors(this.editEventModel.validationError);
+		} else {
+			this.editEventModel.fetch({
+				type : "POST",
+				url : "user/editEvent.json",
+				headers : {
+					'Accept' : 'application/json',
+					'Content-Type' : 'application/json; charset=UTF-8'
+				},
+				data : JSON.stringify(this.editEventModel),
+				success: function (response) {
+					console.log("Update Success");
+					$('#editEventModal').foundation('reveal', 'close');
+					window.location = "setEvent";
+				},
+				error : function(e) {
+					var response = $.parseJSON(e.responseText);
+					var obj = JSON.stringify(response.errorMessage);
+					$("#error").html("<font color='red'>" + obj+ "</font>");
+				}
+			});
+		}
+	},
+	showErrors : function(errors) {
+		_.each(errors, function(error) {
+			var controlGroup = this.$('.' + error.name);
+			console.log(error.name);
+			//controlGroup.addClass('error');
+			controlGroup.find('.help-inline').text(error.message);
+			controlGroup.find('.help-inline').addClass('errorText');
+		}, this);
+	},
+	hideErrors : function() {
+		this.$('.control-group').removeClass('error');
+		this.$('.help-inline').text('');
+	}
+});

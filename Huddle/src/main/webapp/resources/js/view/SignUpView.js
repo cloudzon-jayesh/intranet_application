@@ -12,6 +12,48 @@ var SignUpView = Backbone.View.extend({
 		this.$el.html(this.template());*/
 		var template = _.template($("#main_template").html(), {});
 		this.$el.html(template);
+		$("#b_date").datepicker(
+				{
+					dateFormat: 'dd/mm/yy',
+					maxDate : 0,
+					changeMonth: true,
+		            changeYear: true,
+		            yearRange: "-100:-18",
+					onSelect : function(dateText, datePicker) 
+					{
+						console.log('onSelect', dateText);
+						$(this).selectedDate = dateText;
+					}
+				});
+		$("#j_date").datepicker(
+				{
+					dateFormat: 'dd/mm/yy',
+					maxDate : 0,
+					changeMonth: true,
+		            changeYear: true,
+		            yearRange: "-50:+-10",
+					onSelect : function(dateText, datePicker) 
+					{
+						console.log('onSelect', dateText);
+						$(this).selectedDate = dateText;
+					}
+				});
+		$("#mobileNumber").keydown(function(event) 
+				{
+					// Allow only backspace and delete
+					if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 ||(event.keyCode > 95 && event.keyCode < 106)) 
+					{
+						// let it happen, don't do anything
+					}
+					else 
+					{
+						// Ensure that it is a number and stop the keypress
+						if (event.keyCode < 48 || event.keyCode > 57 ) 
+						{
+							event.preventDefault();	
+						}	
+					}
+				});
 		this.getUserRole();
 	},
 	events : {
@@ -20,7 +62,7 @@ var SignUpView = Backbone.View.extend({
 	getUserRole : function()
 	{
 		$.ajax({
-			url : 'rest/user/getUserRole.json',
+			url : 'user/getUserRole.json',
 			type : 'GET',
 			success : function(data)
 			{
@@ -30,7 +72,7 @@ var SignUpView = Backbone.View.extend({
 				{
 					chk ='<div class="input-main">'
 						+'<input name="group" type="checkbox" value="'+data[i].id+'" class="group">'
-						+'<span>'+data[i].roleName+'</span>'
+						+'<span>&nbsp;'+data[i].roleName+'</span>'
 					+'</div>'
 					$("#groupName").append(chk);
 				}
@@ -67,10 +109,14 @@ var SignUpView = Backbone.View.extend({
 				success: function(response) 
 				{
 					//var obj = JSON.stringify(response.message);
-					var email = $("#email").val();
 					//$("#error").css("display : block");
 					//$("#error").html("<font color='#0055FF'>&quot;Register Suucessfully &quot;<font>");
-					window.location = "imageUpload?id="+email;
+					//window.location = "imageUpload?id="+email;
+					//var val = '<a href="#" data-reveal-id="secondModal" class="secondary button">SignUp</a>';
+					var email = $('#email').val();
+					$("#hemail").val(email);
+					console.log(email);
+					$('#secondModal').foundation('reveal', 'open');
 				},
 				error : function(signUpModel,response)
 				{

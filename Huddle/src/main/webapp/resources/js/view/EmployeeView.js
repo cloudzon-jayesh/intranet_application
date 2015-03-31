@@ -2,7 +2,6 @@ var EmployeeView = Backbone.View
 		.extend({
 			el : $("#main-container"),
 			initialize : function() {
-				
 			},
 			render : function() {
 				var template = _.template($("#employee_template").html(), {});
@@ -10,16 +9,9 @@ var EmployeeView = Backbone.View
 				this.getUserData();
 				
 			},
-			events:
-				{
-					"click #new_emp_btn" : "newEmpPage"
-				},
-				newEmpPage: function() {
-					window.location = "signup";
-				},
 			getUserData : function() {
 				$.ajax({
-							url : 'rest/user/employeDetails.json',
+							url : 'user/employeDetails.json',
 							type : 'GET',
 							parse : function(response) {
 								console.log(response.Object);
@@ -30,7 +22,7 @@ var EmployeeView = Backbone.View
 								var txt;
 								var thead = $("<thead></thead>");
 								var trh = $("<tr></tr>");
-								var th0 = $("<th>Edit</th>");
+								var th0 = $("<th class='editButton'>Edit</th>");
 								var th1 = $("<th>ID</th>");
 								var th2 = $("<th>First Name</th>");
 								var th3 = $("<th>Last Name</th>");
@@ -48,7 +40,7 @@ var EmployeeView = Backbone.View
 								thead.append(trh);
 								$("#employee_data").append(thead);
 								var tBody = $("<tbody></tbody>");
-								for (var i = 0; i < len ; i++) {
+								for (var i = (len-1); i >0 ; i--) {
 									var m_names = new Array("Jan", "Feb", "Mar", 
 											"Apr", "May", "Jun", "Jul", "Aug", "Sep", 
 											"Octr", "Nov", "Dec");
@@ -65,8 +57,8 @@ var EmployeeView = Backbone.View
 									var myJoiningDate = curr_date1 + "-" + m_names[curr_month1]+ "-" + curr_year1;
 									
 									var tr = $("<tr></tr>");
-									var td0 = $("<td></td>");
-									var td1 = $("<td>" + data[i].id
+									var td0 = $("<td class='editButton' align=center></td>");
+									var td1 = $("<td>" + (i+1)//data[i].id
 											+ "</td>");
 									var td2 = $("<td>" + data[i].firstName
 											+ "</td>");
@@ -77,8 +69,8 @@ var EmployeeView = Backbone.View
 									var td5 = $("<td>" + myDob + "</td>");
 									var td6 = $("<td>" + myJoiningDate
 											+ "</td>");
-									
-									var button = $("<input type='button' value='Edit' class='edit_button'  attr-name='"+ data[i].email + "'>");
+									var button =$("<a href=# class='edit_button' title='edit' attr-name='"+ data[i].email + "'><img src= 'images/edit.png' style='width:25px; height:25px;'></a>");
+									//var button = $("<input type='button' style='background-image: url('images/editar.png');width:25px; height:20px;' class='edit_button'  attr-name='"+ data[i].email + "'>");
 									td0.append(button);
 									tr.append(td0);
 									tr.append(td1);
@@ -94,9 +86,18 @@ var EmployeeView = Backbone.View
 								$('.edit_button').click(function() {
 									var name = $(this).attr("attr-name");
 									console.log(name);
-									window.location="edit_registration?id="+name;
+									//window.location="edit_registration?id="+name;
+									$("#hemail").val(name);
+									var editEmployeeView = new EditEmployeeView({
+										el : $("#thirdModal"),
+									});
+									
+									$('#thirdModal').foundation('reveal', 'open');
+								
+									
+									editEmployeeView.render();
 								});
-								$('#employee_data').dataTable({
+								var table = $('#employee_data').dataTable({
 									responsive: true,
 									 "searching": true,
 									    //"ordering": false,

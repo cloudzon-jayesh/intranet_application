@@ -30,7 +30,7 @@ var PermissionView = Backbone.View
 			getGroupData : function()
 			{
 				$.ajax({
-					url : 'rest/user/getUserRole.json',
+					url : 'user/getUserRole.json',
 					type : 'GET',
 					success : function(data)
 					{
@@ -49,7 +49,7 @@ var PermissionView = Backbone.View
 			getAvtivityData : function()
 			{
 				$.ajax({
-					url : 'rest/user/getGroupPermission.json',
+					url : 'user/getGroupPermission.json',
 					type : 'GET',
 					success : function(data)
 					{
@@ -76,7 +76,7 @@ var PermissionView = Backbone.View
 				});
 				
 				$.ajax({
-					url : 'rest/user/getActivity.json',
+					url : 'user/getActivity.json',
 					type : 'GET',
 					success : function(data)
 					{
@@ -117,7 +117,7 @@ var PermissionView = Backbone.View
 						
 						$('#roles').change(function(){
 							$.ajax({
-								url : 'rest/user/getPermissionRoleActivity.json',
+								url : 'user/getPermissionRoleActivity.json',
 								type: 'GET',
 								success : function(data)
 								{
