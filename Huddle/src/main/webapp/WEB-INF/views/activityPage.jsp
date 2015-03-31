@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>CloudZon.huddle | Group</title>
+<title>CloudZon.huddle | Activity</title>
 <link rel="icon" type="image/x-icon" href="img/huddle.ico"/>
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Roboto:400,500,300' rel='stylesheet' type='text/css'>
@@ -16,6 +16,7 @@
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
 <link type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" />
 <style type="text/css">
+
 		.errorText{color:red;}
     	.error{border:1px solid red;}
 		.input-left-main{width:100%; float:left;}
@@ -68,13 +69,13 @@
 <div class="main-container" id="main-container">
   
     </div>
-	<div id="addGroupModal" class="reveal-modal" data-reveal
+	<div id="addActivityModal" class="reveal-modal" data-reveal
 		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
 			<div class="content-container">
 				<div class="row outer-title">
 					<div class="large-12 medium-12 small-12 columns">
 						<p>
-							Add Group <br>
+							Add Activity <br>
 							<span></span>
 						</p>
 					</div>
@@ -85,15 +86,19 @@
 						<div class="input-left-main">
 							<div class="input-main"
 								style="border: 1px solid #ccc; margin: 0 0 20px 0; padding: 10px;">
-								<input type="hidden" id="hidId">
-								<div class="input-main">
-									<label for="name">Group Name</label>
-									<div class="control-group roleName">
-										<input type="text" id="roleName" maxlength="40" name="roleName">
-										<span class="help-inline"></span>
-									</div>
-								</div>			
-								<button class='right radius btn-main' id="addGroupButton">Add Group</button>
+								<input type="hidden" Id="hidId">
+								
+						<label for="activityName">Activity Name </label>
+						<div class="control-group activityName">
+							<input type="text"  name="activityName" id="activityName" >
+							<span class="help-inline"></span>
+						</div> 
+						<label for="activityLink">Activity Link </label>
+						<div class="activityLink control-group">
+							<input type="text" name="activityLink" id="activityLink" >
+							<span class="help-inline"></span>
+						</div>
+						<button class='right radius btn-main' id="addActivityButton">Add Activity</button>
 							</div>
 						</div>
 					</div>
@@ -101,7 +106,7 @@
 			</div>
 		</div>
 		
-		<div id="editGroupModal" class="reveal-modal" data-reveal
+		<div id="editActivityModal" class="reveal-modal" data-reveal
 		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
 		</div>
 		<script type="text/template" id="edit_template">
@@ -109,7 +114,7 @@
 				<div class="row outer-title">
 					<div class="large-12 medium-12 small-12 columns">
 						<p>
-							Add Group <br>
+							Update Activity <br>
 							<span></span>
 						</p>
 					</div>
@@ -120,14 +125,19 @@
 						<div class="input-left-main">
 							<div class="input-main"
 								style="border: 1px solid #ccc; margin: 0 0 20px 0; padding: 10px;">
-							<div class="input-main">
-								<label for="name">Group Name</label>
-								<div class="control-group roleName">
-									<input type="text" id="editRoleName" maxlength="40" name="roleName">
-									<span class="help-inline"></span>
-								</div>
-							</div>								 
-								<button class='right radius btn-main' id="editGroupButton">Update Group</button>
+								<input type="hidden" Id="hidId">
+								
+						<label for="activityName">Activity Name </label>
+						<div class="control-group activityName">
+							<input type="text"  name="activityName" id="editActivityName" >
+							<span class="help-inline"></span>
+						</div> 
+						<label for="activityLink">Activity Link </label>
+						<div class="activityLink control-group">
+							<input type="text" name="activityLink" id="editActivityLink" >
+							<span class="help-inline"></span>
+						</div>
+						<button class='right radius btn-main' id="editActivityButton">Update Activity</button>
 							</div>
 						</div>
 					</div>
@@ -149,7 +159,7 @@
   </div>
 </footer>
 
-<script type="text/template" id="group_template">
+<script type="text/template" id="activity_template">
 <div class="content-container">
     <div class="row outer-title">
       <div class="large-12 medium-12 small-12 columns text-main">
@@ -159,8 +169,8 @@
     </div>
 <div class="row login-container">
     <div class="large-7  medium-12 small-12 columns input-block">
-      <button data-reveal-id="addGroupModal" class="radius btn-main">Add Group</button>
-			<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="group_data">
+      <button data-reveal-id="addActivityModal" class="radius btn-main">Add Activity</button>
+			<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="activity_data">
 			</table>
 		</div>
       </div>
@@ -183,17 +193,17 @@
 	<!-- backbone js -->
 	<script src="js/underscore-min.js"></script>
 	<script src="js/backbone-min.js"></script>
-	<script src="js/model/groupModel.js"></script>
-	<script src="js/view/GroupView.js"></script>
+	<script src="js/model/activityModel.js"></script>
+	<script src="js/view/activityView.js"></script>
 	<script>
-		var groupView = new GroupView();
-		groupView.render();
-		var addGroup = new addGroup({
-			el : $("#addGroupModal")
+		var activityView = new activityView();
+		activityView.render();
+		var addActivity = new addActivity({
+			el : $("#addActivityModal")
 		});
-		addGroup.render();
+		addActivity.render();
 	</script>
-	<script>	
+	<script>
     $(document).foundation();
-    </script>    
+    </script>
 </body>

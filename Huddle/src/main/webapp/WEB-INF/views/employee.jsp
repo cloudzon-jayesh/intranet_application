@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -16,9 +18,41 @@
 	rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="css/foundation.min.css" />
 <link rel="stylesheet" type="text/css" href="css/style.css" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <link type="text/css" rel="stylesheet" href="css/jquery.dataTables.css" />
 <link type="text/css" rel="stylesheet" href="css/dataTables.responsive.css" />
-<style type="text/css">
+<link type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" />
+    <style type="text/css">
+    	 .errorText{color:red;}
+		.input-left-main{width:48%; float:left;}
+		.input-main{width:100%;}
+		
+		.input-main input{ border-radius:3px; padding:4px 10px; height:auto;}
+		.input-main label{margin-bottom:10px;}
+		.input-block{width:100%; float:left;}
+		.browser-select{border:1px solid #999; padding:7px;}
+		.btn-main{padding:15px 80px; margin-top:15px;  }
+		.text-main{width:100%; float:left; text-align:center;}
+		.text-main p{width:100%; display:inline-block; border-bottom:1px solid #ccc; padding-bottom:50px;}
+		.select-box{width:100%; border-radius:3px;}
+		 
+		 .input-right-main{width:48%; float:right; border:1px solid #ccc; padding:20px; margin-top:30px;}
+		 .input-right-main .title{font-size:36px; font-weight:bold; font-family:Arial, Helvetica, sans-serif; margin-bottom:20px; display:block; }
+		 .input-right-main span{font-size:15px; font-family:Arial, Helvetica, sans-serif;  }
+		.input-right-main .checkbox{ margin-right:15px; width:10px;}
+		@media (max-width:640px) {
+		.input-main{width:100%; float:none; display:block;}
+		.input-main.last{width:100%; display:block; float:none;}
+		.input-main input{width:100%; border-radius:3px;}
+		.content-container{margin:0;}
+		.text-main p{padding: 20px 0 26px 0;}
+		.top-bar{padding:0px;}
+		.btn-main{padding:10px 0; width:100%; float:left; margin-top:5px;}
+		footer{padding:30px 0 0}
+		.career-container li a div{width:100% !important;}
+		.input-left-main{width:100%; float:right;}
+		.input-right-main{width:100%; float:left; border:1px solid #ccc; padding:20px 0 0 2%; margin-top:10px; margin-bottom:10px;}
+		}
 th {border: 2px;}
 .paging-nav {text-align: right;	padding-top: 2px;}
 .paging-nav a {	margin: auto 1px;
@@ -30,6 +64,7 @@ th {border: 2px;}
 	border-radius: 3px;
 }
 .paging-nav .selected-page {background: #187ed5;font-weight: bold;}
+.hidden {display: none;}
 </style>
 
 
@@ -55,14 +90,19 @@ th {border: 2px;}
 					<li><a href="huddle">Home</a></li>
 					<li><a href="company">Company</a></li>
 					<li><a href="careers">Careers</a></li>
-					<li><a href="#">Log In</a></li>
+					<c:if test="${ sessionUser !=null}">
+            			<li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
+            			<ul class="dropdown">
+            				<li><a id="logOutBtn" href="user/logout.json">Logout</a></li>
+            			</ul>
+            			</li>
+            		</c:if>
 				</ul>
-
 				<!-- Left Nav Section -->
 
 			</section>
 		</nav>
-	</header>
+</header>
 	<div class="main-container" id="main-container"></div>
 	<footer>
 	<div class="row" id="top-footer">
@@ -84,6 +124,7 @@ th {border: 2px;}
 		</div>
 	</div>
 	</footer>
+	
 	<script type="text/template" id="employee_template">
 			<div class="content-container">
 			<div class="row outer-title">
@@ -91,7 +132,7 @@ th {border: 2px;}
 					<p>
 						Employee Details<br> <span>cloudZon culture</span>
 					</p>
-					<button id="new_emp_btn">Add New Employee</button>
+				<button href="#" id="new_emp_btn" data-reveal-id="firstModal" class="radius button">Add New Employee</button>					
 				</div>
 				<hr>
 			</div>
@@ -107,25 +148,292 @@ th {border: 2px;}
 			</div>
 		</div>			
 						
-					</script>
+	</script>
+	
+	 
+		<div id="firstModal" class="reveal-modal" data-reveal
+		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+		</div>
+	<script type="text/template" id="main_template">
+		<div class="main-container" id="main-container">
+			<div class="content-container">
+				<div class="row outer-title">
+					<div class="large-12 medium-12 small-12 columns text-main">
+						<p>Employee Sign Up</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	<div class="row login-container">
+		<div class="large-7  medium-12 small-12 columns input-block">
+			<span id="error"></span>
+			<form onSubmit="return false;">
+				<div class="input-left-main">
+					<div class="input-main">
+						<label for="name">First Name</label>
+						<div class="control-group firstName">
+							<input type="text" id="firstName" maxlength="40" name="firstName">
+							<span class="help-inline"></span>
+						</div>
+					</div>
 
+					<div class="input-main">
+						<label for="name">Last Name</label>
+						<div class="control-group lastName">
+							<input type="text" id="lastName" maxlength="40" name="lastName">
+							<span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="input-main">
+						<label for="name">Mobile Number : </label>
+						<div class="control-group mobileNumber">
+							<input type="text" id="mobileNumber" maxlength="12"
+								name="mobileNumber"> <span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="input-main">
+						<label for="email">Email</label>
+						<div class="control-group email">
+							<input type="text" id="email" maxlength="40" name="email">
+							<span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="input-main">
+						<label for="pswd">Password</label>
+						<div class="control-group password">
+							<input type="password" maxlength="40" id="password"
+								name="password"> <span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="input-main">
+						<label for="repswd">Retype Password</label>
+						<div class="control-group retypePassword">
+							<input type="password" maxlength="40" id="retypePassword"
+								name="retypePassword"> <span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="input-main">
+						<label for="bday">Birthday</label>
+						<div class="control-group dob" id="bdateSection">
+							<input type="text" class="datepicker" id="b_date"
+								readonly="readonly" autocomplete="off" name="birthday">
+							<span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="input-main ">
+						<label for="joiningDate">Joining Date</label>
+						<div class="control-group joiningDate" id="JdateSection">
+							<input type="text" class="datepicker" id="j_date"
+								readonly="readonly" autocomplete="off" name="joiningDate">
+							<span class="help-inline"></span>
+						</div>
+					</div>
+				</div>
+				<div class="input-right-main">
+					<span class="title">Group</span>
+					<div class="control-group groupName" id="groupName">
+						<span class="help-inline"></span>
+					</div>
+				</div>
+				
+				<button class='right radius btn-main open-second' id="signUp_button">Sign Up</button>
+
+			</form>
+		</div>
+		</div>
+	
+	</script>
+	<div id="secondModal" class="reveal-modal" data-reveal
+		aria-labelledby="secondModalTitle" aria-hidden="true" role="dialog">
+		<div class="main-container" id="main-container">
+		<div class="content-container">
+			<div class="row outer-title">
+				<div class="large-12 medium-12 small-12 columns text-main">
+					<p>Employee Sign Up Profile Picture</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- <script type="text/template" id="main_template"> -->
+	
+	<div class="row login-container"  align="center">
+		<div class="large-7  medium-12 small-12 columns input-block" align="center">
+			<div id="imgdiv" style="width: 280px; height: 300px; border:solid 1px; vertical-align:middle; display: inline-block;">
+			<img id="image-container" src='<c:url value="images/profilePicture/profile-pic-img.png"></c:url>' />
+			</div>
+				<form enctype="multipart/form-data" 
+				 method="post" action="user/uploadProfile.json" >	
+					<input type="hidden" name="hemail" id="hemail" />			 
+					<label for="profilePic">Select Profile Photo</label> <input
+						type="file" id="fileinput" name="fileinput" accept="image/*"
+						class="browser-select"> <br>
+						 <button  class=" radius" type="button" id="load-image" >Preview</button>
+					<button class=" radius" id="upload_button">Upload</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div id="thirdModal" class="reveal-modal" data-reveal
+		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+		</div>
+	<script type="text/template" id="edit_template">
+<div class="main-container" id="main-container">
+			<div class="content-container">
+				<div class="row outer-title">
+					<div class="large-12 medium-12 small-12 columns text-main">
+						<p>Employee Update Details</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	<div class="row login-container">
+		<div class="large-7  medium-12 small-12 columns input-block">
+			<span id="error"></span>
+			<form onSubmit="return false;">
+				<div class="input-left-main">
+					<div class="input-main">
+						<label for="name">First Name</label>
+						<div class="control-group editFirstName">
+							<input type="text" id="editFirstName" maxlength="40" name="editFirstName">
+							<span class="help-inline"></span>
+						</div>
+					</div>
+
+					<div class="input-main">
+						<label for="name">Last Name</label>
+						<div class="control-group editLastName">
+							<input type="text" id="editLastName" maxlength="40" name="editLastName">
+							<span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="input-main">
+						<label for="name">Mobile Number : </label>
+						<div class="control-group editMobileNumber">
+							<input type="text" id="editMobileNumber" maxlength="12"
+								name="editMobileNumber"> <span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="input-main">
+						<label for="email">Email</label>
+						<div class="control-group editEmail">
+							<input type="text" id="editEmail" maxlength="40" name="editEmail" readonly="readonly">
+							<span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="input-main">
+						<label for="pswd">Password</label>
+						<div class="control-group editPassword">
+							<input type="password" maxlength="40" id="editPassword"
+								name="editPassword" readonly="readonly"> <span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="input-main">
+						<label for="repswd">Retype Password</label>
+						<div class="control-group editRetypePassword">
+							<input type="password" maxlength="40" id="editRetypePassword"
+								name="editRetypePassword" readonly="readonly"> <span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="input-main">
+						<label for="bday">Birthday</label>
+						<div class="control-group dob" id="bdateSection">
+							<input type="text" class="datepicker" id="editB_date"
+								readonly="readonly" autocomplete="off" name="birthday">
+							<span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="input-main ">
+						<label for="joiningDate">Joining Date</label>
+						<div class="control-group joiningDate" id="JdateSection">
+							<input type="text" class="datepicker" id="editJ_date"
+								readonly="readonly" autocomplete="off" name="joiningDate">
+							<span class="help-inline"></span>
+						</div>
+					</div>
+				</div>
+				<div class="input-right-main" >
+					<span class="title">Group</span>
+					<div class="control-group groupName" id="editGroupName">
+						<span class="help-inline"></span>
+					</div>
+				</div>
+				<button class="right radius btn-main" id="update_button">
+					Update</button>
+		
+		</form>
+	</div>
+	</script>
 	<script src="js/jquery.js"></script>
 	<script src="js/jquery-ui.js"></script>
 	<script src="js/web-fonts.js"></script>
 	<script src="js/sticky-footer.js"></script>
 	<script src="js/foundation.js"></script>
+	<script src="js/foundation.reveal.js"></script>
 	<script src="js/foundation.topbar.js"></script>
 	<script src="js/jquery.dataTables.min.js"></script>
 	<script src="js/dataTables.responsive.js"></script>
+	<script src="js/paging.js"></script>
 	<!-- backbone js -->
 	<script src="js/underscore-min.js"></script>
 	<script src="js/backbone-min.js"></script>
 	<script src="js/view/EmployeeView.js"></script>
+	<script src="js/view/SignUpView.js"></script>
+	<script src="js/model/SignUpModel.js"></script>
+	
+	<script src="js/model/EditSignUpModel.js"></script>
+	<script src="js/view/EditEmployeeView.js"></script>
+	<script src="js/model/EditEmployeeModel.js"></script>
 	<script>
 		var employeeView = new EmployeeView();
 		employeeView.render();
-
+	</script>
+	<script>
+		var signUpView = new SignUpView({
+			el : $("#firstModal"),
+		});
+		signUpView.render();
+		
+		var fileInput = document.getElementById('fileinput');
+	    var image = document.getElementById('image-container');
+	    document.getElementById('load-image').addEventListener('click', function()
+	    {
+	        var fileUrl = window.URL.createObjectURL(fileInput.files[0]);
+    	    image.src = fileUrl;
+	    });
 		$(document).foundation();
 	</script>
+	<c:set value="${requestScope['javax.servlet.forward.servlet_path']}" var="req"></c:set>
+	<c:if test="${userPermission != null  && sessionUser != null}">
+				<c:if test="${userPermission.getUserName() eq sessionUser.getUsername()}">
+					<c:forEach items="${userPermission.roleActivityPermissionDTOs}" var="permission">
+						<c:if test="${fn:containsIgnoreCase(req,permission.activityLink)}">
+							<c:forEach items="${permission.permissions}" var="per" varStatus="status">
+								<c:if test="${per eq ('R')}" >
+								<script>
+									$(document).ready(function() {
+										console.log('r');
+										$("#new_emp_btn").css("display", "none");
+										$("#employee_data .editButton").css("display", "none");
+										$(".editButton").hide();
+									});
+									</script>
+								</c:if>
+								<c:if test="${per eq ('W')}" >
+									<script>
+									$(document).ready(function() {
+										console.log('w');
+										$("#new_emp_btn").css("display", "block");
+										$("#employee_data .editButton").css("display", "block");
+									});
+									</script>
+								</c:if>	
+							</c:forEach>
+							
+							
+						</c:if>
+					</c:forEach>
+				</c:if>
+				</c:if>
 </body>
 </html>

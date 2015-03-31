@@ -36,6 +36,7 @@
 	<script src='<c:url value="js/sticky-footer.js"></c:url>'></script>
 	<script src='<c:url value="js/foundation.js"></c:url>'></script>
 	<script src='<c:url value="js/foundation.topbar.js"></c:url> '></script>
+	<script src="js/foundation.reveal.js"></script>
 	<%-- <script src='<c:url value="js/ajaxJQuery/login.js"></c:url>'></script> --%>
 	<!-- backbone js -->
 	<script src='<c:url value="/js/underscore-min.js"></c:url>'></script>
@@ -99,7 +100,8 @@
 							<input type="password" name="pswd" id="lPassword" >
 							<span class="help-inline"></span>
 						</div>
-						<p>Forgot My Password</p>
+						<p data-reveal-id="forgetPasswordModal">Forgot My Password</p>
+						
 						<button class="right radius" id="login_button">Log
 							In</button>
 					</form>
@@ -122,7 +124,33 @@
 					</script>
 		</div>
 	</div>
-
+	<div id="forgetPasswordModal" class="reveal-modal" data-reveal
+		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+		<div class="main-container" id="main-container">
+			<div class="content-container">
+				<div class="row outer-title">
+					<div class="large-12 medium-12 small-12 columns">
+						<p>
+							Forget Password <br><span></span>
+						</p>
+					</div>
+					<hr>
+				</div>
+				<div class="row login-container">
+					<div class="large-7 medium-12 small-12 columns">
+						<form name="forgetForm" method="post">
+							<label for="email">Email </label>
+							<div class="control-group lUserName">
+								<input type="text" name="email" id="lUserName"> <span
+									class="help-inline"></span>
+							</div>
+							<button class="right radius" id="login_button">Get Password</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<footer>
 		<div class="row" id="top-footer">
 			<div class="large-12 medium-12 small-12 columns">

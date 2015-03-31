@@ -1,4 +1,6 @@
 <!doctype html>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <html class="no-js" lang="en">
   <head>
     <meta charset="utf-8" />
@@ -11,9 +13,11 @@
     <link rel="stylesheet" href="css/foundation.min.css" />
     <link rel="stylesheet" type="text/css" href="css/slick.css"/>
     <link rel="stylesheet" type="text/css" href="css/style.css"/>
-  </head>
+<style type="text/css" media="screen">
+</style>
+</head>
   <body>
-    <header>
+      <header>
       <nav class="top-bar" data-topbar role="navigation">
         <ul class="title-area">
           <li class="name">
@@ -25,16 +29,28 @@
 
         <section class="top-bar-section">
           <!-- Right Nav Section -->
+          <c:set value="${requestScope['javax.servlet.forward.servlet_path']}" var="req"></c:set>
           <ul class="right">
             <li><a href="huddle">Home</a></li>
             <li><a href="company">Company</a></li>
             <li><a href="careers">Careers</a></li>
-            <li><a href="signup">Sign Up</a></li>
-            <li><a href="#">Log In</a></li>
-          </ul>
-
+            
+             <c:if test="${ sessionUser !=null}">
+            <li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
+            	<ul class="dropdown">
+				<li><a href="setGroup">Add Group</a></li>
+				<li><a href="setActivity">Add Activity</a></li>
+				<li><a href="setPermission">Add Permission</a></li>
+				<li><a href="setEvent">Add Event</a></li>
+				<li><a href="setMeeting">Add Meeting</a></li>
+				<li><a href="setProject">Add Project</a></li>
+				<li><a href="setDocument">Add Document</a></li>
+				<li><a id="logOutBtn" href="user/logout.json">Logout</a></li>            
+            	</ul>
+            </li>
+            </c:if> 	
+           </ul>
           <!-- Left Nav Section -->
-          
         </section>
       </nav>
     </header>
@@ -94,6 +110,10 @@
     <script type="text/javascript" src="js/foundation.js"></script>
     <script type="text/javascript" src="js/foundation.topbar.js"></script>
     <script type="text/javascript" src="js/slick.min.js"></script>
+    	<!-- backbone js -->
+	<script src="js/underscore-min.js"></script>
+	<script src="js/backbone-min.js"></script>
+    <script src="js/view/HuddleView.js"></script>
     <script>
     $(document).foundation();
     
