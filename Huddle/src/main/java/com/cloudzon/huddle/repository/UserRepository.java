@@ -45,4 +45,7 @@ public interface UserRepository extends BaseRepository<User> {
 
 	@Query(value = "SELECT user FROM User AS user WHERE user.email=:email")
 	public List<SignupUser> getEmployeeByEmail(@Param("email") String email);
+	
+	
+
 }

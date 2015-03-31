@@ -21,6 +21,9 @@ public interface RoleRepository extends BaseRepository<Role> {
 
 	@Query("SELECT role FROM Role AS role WHERE role.id=:roleId AND role.active=true")
 	public Role getRoleByRoleId(@Param("roleId") Long roleId);
+	
+	@Query("SELECT NEW com.cloudzon.huddle.dto.RoleDTO(role.id, role.roleName) FROM Role AS role WHERE role.id=:roleId AND role.active=true")
+	public RoleDTO getRoleById(@Param("roleId") Long roleId);
 
 	@Query("select NEW com.cloudzon.huddle.dto.RoleDTO(role.id,role.roleName)  from UserRole AS userRole JOIN userRole.user user JOIN userRole.role as role where user.id =:id AND userRole.active=true")
 	public List<RoleDTO> getRoleByUserId(@Param("id") Long id);
@@ -34,4 +37,7 @@ public interface RoleRepository extends BaseRepository<Role> {
 	
 	@Query(value = "SELECT permission.id FROM RolePermission AS rolePermission INNER JOIN  rolePermission.role AS role INNER JOIN rolePermission.permission AS permission  WHERE role.id=:roleId")
 	public List<Long> getAllUserRolePermission(@Param("roleId") Long roleId);
+	
+	@Query("select role.id  from UserRole AS userRole JOIN userRole.user user JOIN userRole.role as role where user.id =:id AND userRole.active=true")
+	public List<Long> getRoleIdByUserId(@Param("id") Long id);
 }
