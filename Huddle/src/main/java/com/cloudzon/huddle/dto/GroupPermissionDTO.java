@@ -4,12 +4,12 @@ public class GroupPermissionDTO
 {
 	private Long id;
 	private String permission;
+
 	public GroupPermissionDTO(Long id, String permission) {
 		super();
 		this.id = id;
 		this.permission = permission;
 	}
-
 	public Long getId() {
 		return id;
 	}
