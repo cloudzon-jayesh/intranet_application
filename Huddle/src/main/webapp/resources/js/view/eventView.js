@@ -170,12 +170,42 @@ var addEvent =  Backbone.View.extend({
 			"date": $("#date").val(),
 			"time": $("#time").val(),
 		});
+		var data = new FormData();
+        data.append('id', $("#hidId").val());
+        data.append('eventName', $("#eventName").val());
+        data.append('description', $("#description").val());
+        data.append('date', $("#date").val());
+        data.append('time', $("#time").val());
+        $.each($("input[name^=fileinput]"), function(i, obj) {
+	        $.each(obj.files,function(j,file){
+	            data.append('fileinput',file);
+	            console.log(file);
+	        })
+        });
 		if (!this.eventModel.isValid()) {
 			this.showErrors(this.eventModel.validationError);
 			e.preventDefault();
 		} else {
-			$("eventForm").submit();
-			console.log("Submiited");
+			$.ajax({
+				data:data,
+			    cache: false,
+			    contentType: false,
+			    processData: false,
+			    type: 'POST',
+			    mimeType: "multipart/form-data",
+				url : "user/addEvent.json",
+				
+				success: function (response) {
+					console.log("Insert Success");
+					$('#addEventModal').foundation('reveal', 'close');
+					window.location = "setEvent";
+				},
+				error : function(e) {
+					var response = $.parseJSON(e.responseText);
+					var obj = JSON.stringify(response.errorMessage);
+					$("#error").html("<font color='red'>" + obj+ "</font>");
+				}
+			});
 		}
 	},
 	showErrors : function(errors) {
@@ -226,8 +256,23 @@ var editEventView = Backbone.View.extend({
 	    });
 	},
 	events : {
-		"click #editEventButton" : "editEvent"
+		"click #editEventButton" : "editEvent",
+		"click #editAddImageButton" : "addImage",
 	},
+	addImage : function(){
+			
+			var addItems = $(
+					'<div class="control-group images">'
+					+'<label for="projectImage">Select Image</label>'
+						+'<input type="file" class="imgGroup" name="images" accept="image/*"'
+						+'class="browser-select"><a href="#" class="remove_field errorText"><img src= "images/remove.png" style="width:20px; height:20px;"></a></div>'
+					+'</div>	');
+					$("#editImageGroup").append(addItems);
+					$("#editImageGroup").on("click",".remove_field", function(e){ 
+				        e.preventDefault(); 
+				        $(this).parent('div').remove(); 
+				    });
+		},
 	getEventFromId : function()
 	{
 		var id = $("#hidId").val();
@@ -261,6 +306,24 @@ var editEventView = Backbone.View.extend({
 				$("#editDescription").val(data.description),
 				$("#editDate").val(eventDate),
 				$("#editTime").val(eventTime)
+				
+				var images = data.eventImagesDTOs;
+				if(images !=null)
+				{
+					for(var i=0;i<images.length;i++)
+					{
+						chk ='<div class="input-main imgDiv">'
+							+'<input name="editImagesChecked" checked="checked" type="checkbox" value="'+images[i].id+'" class="imgGroup" disabled="disabled">'
+							+'<span>&nbsp;<img src="images/events/'+images[i].images+'" alt='+images[i].images+'  style="height:25%; width:25%;margin:5px;"></span>'
+						+'<a href="#" class="remove_image"><img src= "images/remove.png" style="width:20px; height:20px;"></a></div>';
+						$("#editImageGroup").append(chk);
+					}
+					$(".imgDiv").on("click",".remove_image", function(e){ 
+				        e.preventDefault(); 
+				        $(this).parent('div').remove(); 
+				    });
+				}
+				
 			},
 		error : function(response)
 		{
@@ -277,18 +340,35 @@ var editEventView = Backbone.View.extend({
 			"date": $("#editDate").val(),
 			"time": $("#editTime").val(),
 		});
-		
+		var imgVal = [];
+        $('.imgGroup:checkbox:checked').each(function(i){
+        	imgVal[i] = $(this).val();
+        });
+        var data = new FormData();
+        data.append('id', $("#hidId").val());
+        data.append('eventName', $("#editEventName").val());
+        data.append('description', $("#editDescription").val());
+        data.append('date', $("#editDate").val());
+        data.append('time', $("#editTime").val());
+        data.append('editImagesChecked', imgVal);
+		$.each($("input[name^=images]"), function(i, obj) {
+		        $.each(obj.files,function(j,file){
+		            data.append('images',file);
+		            console.log(file);
+		        })
+		});
 		if (!this.editEventModel.isValid()) {
 			this.showErrors(this.editEventModel.validationError);
 		} else {
-			this.editEventModel.fetch({
-				type : "POST",
+			$.ajax({
+				data:data,
+			    cache: false,
+			    contentType: false,
+			    processData: false,
+			    type: 'POST',
+			    mimeType: "multipart/form-data",
 				url : "user/editEvent.json",
-				headers : {
-					'Accept' : 'application/json',
-					'Content-Type' : 'application/json; charset=UTF-8'
-				},
-				data : JSON.stringify(this.editEventModel),
+				
 				success: function (response) {
 					console.log("Update Success");
 					$('#editEventModal').foundation('reveal', 'close');

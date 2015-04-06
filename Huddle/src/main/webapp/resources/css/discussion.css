@@ -1,0 +1,41 @@
+/* CSS Document */
+
+/* body{ margin:0; padding:0; text-align:center;} */
+ol, ul, h1, h2, h3, h4, h5, h6{ margin:0; padding:0;}
+p{ margin:0 0 10px 0; padding:0;}
+img{ border:none; margin:0; padding:0;}
+
+/*** Non-Symentic Classes ***/
+.clearfix:before, .clearfix:after:after{ content:""; display:table;}
+.clearfix:after{ clear:both;}
+.clearfix{ zoom:1;}
+.clear{ clear:both; height:0;}
+
+/*** Container ***/
+.container{ width:1000px; margin:auto; display:inline-block;}
+
+/*** First Comment ***/
+section #commentDiv{ margin:50px 0; text-align:center; display:inline-block; background:#fffdee; border:5px solid #abaaa0; padding:20px;}
+section .first-comment{}
+section .first-comment .container{ display:inline-block; width:auto;}
+section .first-comment img{ float:left; width:60px; height:60px;}
+section .first-comment .profile-one{ float:left; width:585px; margin-left:15px;}
+section .first-comment .profile-one .profile-name-one{ font-size:14px; color:#415789; text-align:left; padding-bottom:6px;}
+section .first-comment .profile-one .profile-comment-one{ text-align:left; font-size:13px; color:#a5a6a8;}
+
+/*** Second Comment ***/
+section .second-comment{ display:inline-block; margin-top:20px;margin-left: 30px;}
+section .second-comment .container{ background:#FFF; padding:10px 10px; float:left; width:400px;}
+section .second-comment img{float:left; width:50px; height:50px; }
+section .second-comment .profile-two{float:left; margin-left:25px;}
+section .second-comment .profile-two .profile-name-two{ font-size:14px; color:#415789; text-align:left; padding-bottom:6px;}
+section .second-comment .profile-two .profile-comment-two{text-align:left; font-size:13px; color:#a5a6a8; width:300px;}
+
+/*** Third Comment ***/
+section .third-comment{ display:inline-block; margin-top:20px;margin-left: 30px;}
+section .third-comment .container{ background:#FFF; padding:10px 10px; float:left; width:400px;}
+section .third-comment img{float:left; width:50px; height:50px; }
+section .third-comment .profile-third{float:left; margin-left:25px;}
+section .third-comment .profile-third .profile-comment-third{width:300px;}
+section .third-comment .profile-third .add_field{float: right;}
+
