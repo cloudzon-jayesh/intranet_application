@@ -24,7 +24,7 @@ public class Events extends BaseEntity
 	@Column(name="event_name", length = 50)
 	private String eventName;
 	
-	@Column(name="description", length = 250)
+	@Column(name="description", length= 1000)
 	private String description;
 	
 	@Column(name="date")

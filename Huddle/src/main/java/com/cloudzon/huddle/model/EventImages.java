@@ -24,7 +24,10 @@ public class EventImages extends BaseEntity
 	
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Events.class)
 	@JoinColumn(name = "event_id", nullable = false)
-	private Events eventId;
+	private Events events;
+	
+	@Column(name="active")
+	private boolean active;
 
 	public String getImages() {
 		return images;
@@ -34,12 +37,19 @@ public class EventImages extends BaseEntity
 		this.images = images;
 	}
 
-	public Events getEventId() {
-		return eventId;
+	public Events getEvents() {
+		return events;
 	}
 
-	public void setEventId(Events eventId) {
-		this.eventId = eventId;
+	public void setEvents(Events events) {
+		this.events = events;
 	}
 
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 }
