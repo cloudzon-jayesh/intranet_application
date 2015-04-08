@@ -245,4 +245,21 @@ public class HomeController {
 			return "login";
 		}
 	}
+	@RequestMapping(value = "setDiscussion", method = RequestMethod.GET)
+	public String setDiscussion() {
+		logger.info("Set Discussion");
+		User objUser = getUserDetail();
+		if(objUser != null)
+		{
+			return "discussionPage";
+		}
+		else
+		{
+			return "login";
+		}
+	}
+	@RequestMapping(value = "test", method = RequestMethod.GET)
+	public String test() {
+		return "discussion";
+	}
 }

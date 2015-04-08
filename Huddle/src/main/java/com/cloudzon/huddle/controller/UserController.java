@@ -44,6 +44,10 @@ import com.cloudzon.huddle.common.Constant;
 import com.cloudzon.huddle.dto.ActivityDTO;
 import com.cloudzon.huddle.dto.ActivityRolePermissionDTO;
 import com.cloudzon.huddle.dto.ChangePasswordDto;
+import com.cloudzon.huddle.dto.CommentDTO;
+import com.cloudzon.huddle.dto.DiscussionCommentDTO;
+import com.cloudzon.huddle.dto.DiscussionDTO;
+import com.cloudzon.huddle.dto.DiscussionListDTO;
 import com.cloudzon.huddle.dto.DocumentDTO;
 import com.cloudzon.huddle.dto.DocumentListDTO;
 import com.cloudzon.huddle.dto.EditEmployeeDTO;
@@ -76,6 +80,7 @@ import com.cloudzon.huddle.dto.UserLoginDto;
 import com.cloudzon.huddle.exception.AuthorizationException;
 import com.cloudzon.huddle.exception.BaseWebApplicationException;
 import com.cloudzon.huddle.model.Activity;
+import com.cloudzon.huddle.model.Discussion;
 import com.cloudzon.huddle.model.Documents;
 import com.cloudzon.huddle.model.Events;
 import com.cloudzon.huddle.model.Meetings;
@@ -560,10 +565,27 @@ public class UserController {
 	@RequestMapping(value = "/editEvent", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody
-	public ResponseMessageDto editEvent(@RequestBody EventsDTO eventsDTO) throws IOException,
+	public ResponseMessageDto editEvent(
+			@RequestParam("id") Long eventId,
+			@RequestParam("eventName") String eventName,
+			@RequestParam("description") String description,
+			@RequestParam("date") String date,
+			@RequestParam("time") String time,
+			@RequestParam(value="images", required=false) MultipartFile[] images,
+			@RequestParam("editImagesChecked") Long[] imageIds,
+			HttpServletRequest servletRequest
+			) throws IOException,
 			TemplateException, MessagingException, ParseException {
 		logger.info("Edit Event");
-		this.userService.editEvent(eventsDTO);
+		EventsDTO eventsDTO = new EventsDTO();
+		eventsDTO.setId(eventId);
+		eventsDTO.setEventName(eventName);
+		eventsDTO.setDescription(description);
+		eventsDTO.setDate(date);
+		eventsDTO.setTime(time);
+		eventsDTO.setImageIds(Arrays.asList(imageIds));
+		eventsDTO.setImages(Arrays.asList(images));
+		this.userService.editEvent(eventsDTO,servletRequest);
 		return new ResponseMessageDto("Update Successfully");
 	}
 	
@@ -885,4 +907,73 @@ public class UserController {
 		return "redirect:/setDocument";
 	}
 
+	/**
+	 * get List of Discussion
+	 * 
+	 */
+	@RequestMapping(value = "/getAllDiscussion", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public List<DiscussionListDTO> getAllDiscussion(@RequestBody SignupUser signupUser)
+			throws IOException, TemplateException, MessagingException {
+		logger.info("getAll Discussion start");
+		return this.userService.getAllDiscussion(signupUser);
+	}
+
+	/**
+	 * Add Discussion
+	 * 
+	 */
+	@RequestMapping(value = "/addDiscussion", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ResponseMessageDto addDiscussion(
+			 @RequestBody DiscussionDTO discussionDTO) throws IOException,
+			TemplateException, MessagingException, ParseException {
+		logger.info("New Discussion Added");
+		this.userService.addDiscussion(discussionDTO);
+		return new ResponseMessageDto("Discussion is Added");
+	}
+	
+	/**
+	 * Delete  Discussion from id
+	 * 
+	 */
+	@RequestMapping(value = "/deleteDiscussion", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ResponseMessageDto deleteDiscussion(@RequestBody Discussion discussion)
+			throws IOException, TemplateException, MessagingException {
+		logger.info("deleteDiscussion start");
+		this.userService.deleteDiscussion(discussion);
+		return new ResponseMessageDto("Delete Successfully");
+	}
+	
+	/**
+	 * get List for Edit Project details
+	 * 
+	 */
+	@RequestMapping(value = "/getDiscuusion", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public DiscussionCommentDTO getDiscuusion(@RequestBody Discussion discussion)
+			throws IOException, TemplateException, MessagingException {
+		logger.info("getDiscuusion start");
+		return this.userService.getDiscussion(discussion);
+	}
+	
+	/**
+	 * Add Discussion
+	 * 
+	 */
+	@RequestMapping(value = "/addComment", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ResponseMessageDto addComment(
+			 @RequestBody CommentDTO commentDTO) throws IOException,
+			TemplateException, MessagingException, ParseException {
+		logger.info("New Comment Added");
+		this.userService.addComment(commentDTO);
+		return new ResponseMessageDto("Comment is Added");
+	}
 }
