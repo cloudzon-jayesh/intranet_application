@@ -86,7 +86,7 @@ footer {padding: 30px 0 0}
 			<img id="image-container" src='<c:url value="images/profilePicture/profile-pic-img.png"></c:url>' />
 			</div>
 				<form enctype="multipart/form-data" 
-				 method="post" action="rest/user/uploadProfile.json" >	
+				 method="post" action="user/uploadProfile.json" >	
 				 
 					<input type="hidden" name="hemail" id="hemail" /> 
 					<label for="profilePic">Select Profile Photo</label> <input

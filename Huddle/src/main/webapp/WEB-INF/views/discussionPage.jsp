@@ -5,7 +5,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>CloudZon.huddle | Documents</title>
+<title>CloudZon.huddle | Discussions</title>
    <link rel="icon" type="image/x-icon" href="img/huddle.ico"/>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,500,300' rel='stylesheet' type='text/css'>
@@ -17,6 +17,7 @@
 	<link type="text/css" rel="stylesheet" href="css/dataTables.responsive.css" />
    	<link type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" />
    	<link type="text/css" rel="stylesheet" href="css/jquery.datetimepicker.css">
+   	<link type="text/css" rel="stylesheet" href="css/discussion.css">
     <style type="text/css">
     	 .errorText{color:red;}
 		.input-left-main{width:48%; float:left;}
@@ -47,9 +48,6 @@
 		.career-container li a div{width:100% !important;}
 		.input-left-main{width:100%; float:right;}
 		.input-right-main{width:100%; float:left; border:1px solid #ccc; padding:20px 0 0 2%; margin-top:10px; margin-bottom:10px;}
-				
-		}
-		
     </style>
 </head>
 <body>
@@ -81,7 +79,7 @@
 <div class="main-container" id="main-container">
     </div>
     <input type="hidden" Id="flag">
-	<div id="addDocumentModal" class="reveal-modal" data-reveal
+	<div id="addDiscussionModal" class="reveal-modal" data-reveal
 		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 			<div class="content-container">
@@ -89,7 +87,7 @@
 					<div class="large-12 medium-12 small-12 columns">
 						<p>
 						
-							Add Document <br>
+							Add Discussion <br>
 							<span></span>
 						</p>
 					</div>
@@ -98,92 +96,69 @@
 				<div class="row login-container">
 					<div class="large-7  medium-12 small-12 columns input-block">
 						<span id="error"></span>
-						<form id="documentForm" method="post" onSubmit="return false;">
 							<div class="input-left-main">
 							<input type="hidden" Id="hidId">
-								<label for="documentName">Document Name </label>
-								<div class="control-group documentName">
-									<input type="text" size="40" name="documentName" id="documentName" >
+							<input type="hidden" id="hidUser" value='<c:out value="${sessionUser.getUsername() }"></c:out>'>
+								<label for="discussionTopic">Discussion Topic </label>
+								<div class="control-group discussionTopic">
+									<textarea rows="2" cols="10" name="discussionTopic" id="discussionTopic" ></textarea>
 									<span class="help-inline"></span>
 								</div> 
-								<label for="description">Description</label>
-								<div class="description control-group">
-									<textarea rows="3" cols="10" name="description" id="description"></textarea>
-									<span class="help-inline"></span>
+							
+								<div style="border:1px solid #ccc; padding:20px; margin-top:30px;">
+									<span class="title">Group</span>
+									<div class="control-group groupName" id="groupName">
+										<span class="help-inline"></span>
+									</div>
 								</div>
-								<label for="documentPath">Select Document</label>
-								<div class="documentPath control-group">
-									<input type="file" name="documentPath" class="browser-select" id="documentPath">
-									<span class="help-inline"></span>
-								</div>
+								<Button class='radius right btn-main' id="addDiscussionButton">Add Discussion</Button>
 							</div>
-							<div class="input-right-main">
-								<span class="title">Group</span>
-								<div class="control-group groupName" id="groupName">
-									<span class="help-inline"></span>
-								</div>
-							</div>
-							<Button class='radius right btn-main' id="addDocumentButton">Add Document</Button>
-						</form>
 					</div>
 				</div>
 			</div>
 		</div>
 				
-	<div id="editDocumentModal" class="reveal-modal" data-reveal
-		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+		<div id="commentModal" class="reveal-modal" data-reveal
+		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog" >
 		</div>
-		<script type="text/template" id="edit_template">
+		<script type="text/template" id="comment_template">
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<div class="content-container">
 				<div class="row outer-title">
 					<div class="large-12 medium-12 small-12 columns">
 						<p>
 						
-							Update Document <br>
+							Comment on Discussion <br>
 							<span></span>
 						</p>
 					</div>
 					<hr>
 				</div>
-				<div class="row login-container">
+							
+		<section id="commentDiv">
+		</section>
+		</div>	
+		</script> 
+		
+		<!-- <div class="row login-container">
 					<div class="large-7  medium-12 small-12 columns input-block">
 						<span id="error"></span>
-						<form id="documentForm" method="post" onSubmit="return false;">
+						<form id="discussionForm" onSubmit="return false;">
 							<div class="input-left-main">
 							<input type="hidden" Id="hidId">
-								<label for="documentName">Document Name </label>
-								<div class="control-group documentName">
-									<input type="text" size="40"  name="documentName" id="editDocumentName" >
-									<span class="help-inline"></span>
+								<label for="discussionTopic">Discussion Topic </label>
+								<label id="userName"></label>
+								<div class="control-group discussionTopic">
+									<textarea rows="2" cols="10" name="discussionTopic" id="editDiscussionTopic" disabled="disabled"></textarea>
+									<a id="addCommentButton"><img src= 'images/Add.png' style='width:25px; height:25px;'></a>
+									<div id="commentDiv"></div>
 								</div> 
-								<label for="description">Description</label>
-								<div class="description control-group">
-									<textarea rows="3" cols="10" name="description" id="editDescription"></textarea>
-									<span class="help-inline"></span>
-								</div>
-								<label for="documentPath">Select Document</label>
-								<div class="documentPath control-group">
-									<input type="text" id="documentLink" readonly="readonly"/>
-									<input type="file" name="documentPath" id="editDocumentPath" accept=".txt,.doc,.docx,.rtf,.pdf" class="browser-select" style="display:none;">
-										<div id="docDiv">
-											<a class="radius right" id="changeDocument">Change Document</a>
-										</div>
-										<span class="help-inline"></span>
-								</div>
 							</div>
-							<div class="input-right-main">
-								<span class="title">Group</span>
-								<div class="control-group groupName" id="editGroupName">
-									<span class="help-inline"></span>
-								</div>
-							</div>
-							<button class='right radius btn-main' id="editDocumentButton">Update Document</button>
 						</form>
 					</div>
 				</div>
-			</div>
-		</script>
+			</div> -->
+		
 	<footer>
   <div class="row" id="top-footer">
     <div class="large-12 medium-12 small-12 columns">
@@ -199,19 +174,18 @@
   </div>
 </footer>
 
-<script type="text/template" id="document_template">
+<script type="text/template" id="discussion_template">
 <div class="content-container">
     <div class="row outer-title">
       <div class="large-12 medium-12 small-12 columns text-main">
-        <p>Documents</p>
-<input type="hidden" id="hidUser" value='<c:out value="${sessionUser.getUsername() }"></c:out>'>
+        <p>Discussions</p>
       </div>
     </div>
     </div>
 <div class="row login-container">
     <div class="large-7  medium-12 small-12 columns input-block">
-      <button data-reveal-id="addDocumentModal" id="addNewDocument" class="radius btn-main">Add Documents</button>
-			<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="document_data">
+      <button data-reveal-id="addDiscussionModal" id="addDiscussionButton" class="radius btn-main">Add Discussions</button>
+			<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="discussion_data">
 			</table>
 		</div>
       </div>
@@ -236,18 +210,20 @@
 	<!-- backbone js -->
 	<script src="js/underscore-min.js"></script>
 	<script src="js/backbone-min.js"></script>
-	<script src="js/model/documentModel.js"></script>
-	<script src="js/view/documentView.js"></script>
+	<script src="js/model/discussionModel.js"></script>
+	<script src="js/view/discussionView.js"></script>
 	<script>
-		var documentView = new documentView();
-		documentView.render();
-		var addDocument = new addDocument({
-			el : $("#addDocumentModal")
+		var discussionView = new discussionView();
+		discussionView.render();
+		var addDiscussion = new addDiscussion({
+			el : $("#addDiscussionModal")
 		});
-		addDocument.render();
+		addDiscussion.render();
 	</script>
 	<script>
-    $(document).foundation();
+	$(document).ready(function(){
+    	$(document).foundation();
+	});
     </script>
      <c:set value="${requestScope['javax.servlet.forward.servlet_path']}" var="req"></c:set>
 	<c:if test="${userPermission != null  && sessionUser != null}">
@@ -259,7 +235,7 @@
 								<script>
 									$(document).ready(function() {
 										console.log('null');
-										$("#addNewDocument").css("display", "none");
+										$("#addDiscussionButton").css("display", "none");
 									});
 									</script>
 								</c:if>
@@ -267,7 +243,7 @@
 								<script>
 									$(document).ready(function() {
 										console.log('r');
-										$("#addNewDocument").css("display", "none");
+										$("#addDiscussionButton").css("display", "none");
 										$("#flag").val("R");
 									});
 									</script>
@@ -276,7 +252,7 @@
 									<script>
 									$(document).ready(function() {
 										console.log('w');
-										$("#addNewDocument").css("display", "block");
+										$("#addDiscussionButton").css("display", "block");
 										$("#flag").val($("#flag").val() + ",W");
 									});
 									</script>

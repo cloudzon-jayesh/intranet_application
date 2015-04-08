@@ -75,7 +75,7 @@ th {border: 2px;}
 			<ul class="title-area">
 				<li class="name">
 					<h1>
-						<a href="#">CloudZon<span>.huddle</span><img
+						<a href="huddle">CloudZon<span>.huddle</span><img
 							src="_img/talk.png" alt="chat" height="16" width="16" hspace="3"
 							style="padding-bottom: 10px"></a>
 					</h1>
@@ -104,6 +104,7 @@ th {border: 2px;}
 		</nav>
 </header>
 	<div class="main-container" id="main-container"></div>
+	  <input type="hidden" Id="flag">
 	<footer>
 	<div class="row" id="top-footer">
 		<div class="large-12 medium-12 small-12 columns">
@@ -155,6 +156,7 @@ th {border: 2px;}
 		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
 		</div>
 	<script type="text/template" id="main_template">
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<div class="main-container" id="main-container">
 			<div class="content-container">
 				<div class="row outer-title">
@@ -246,6 +248,7 @@ th {border: 2px;}
 	</script>
 	<div id="secondModal" class="reveal-modal" data-reveal
 		aria-labelledby="secondModalTitle" aria-hidden="true" role="dialog">
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<div class="main-container" id="main-container">
 		<div class="content-container">
 			<div class="row outer-title">
@@ -278,7 +281,8 @@ th {border: 2px;}
 		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
 		</div>
 	<script type="text/template" id="edit_template">
-<div class="main-container" id="main-container">
+	<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+	<div class="main-container" id="main-container">
 			<div class="content-container">
 				<div class="row outer-title">
 					<div class="large-12 medium-12 small-12 columns text-main">
@@ -409,6 +413,16 @@ th {border: 2px;}
 					<c:forEach items="${userPermission.roleActivityPermissionDTOs}" var="permission">
 						<c:if test="${fn:containsIgnoreCase(req,permission.activityLink)}">
 							<c:forEach items="${permission.permissions}" var="per" varStatus="status">
+								<c:if test="${per eq ('')}" >
+								<script>
+									$(document).ready(function() {
+										console.log('null');
+										$("#new_emp_btn").css("display", "none");
+										$("#employee_data .editButton").css("display", "none");
+										$(".editButton").hide();
+									});
+									</script>
+								</c:if>
 								<c:if test="${per eq ('R')}" >
 								<script>
 									$(document).ready(function() {
@@ -416,6 +430,7 @@ th {border: 2px;}
 										$("#new_emp_btn").css("display", "none");
 										$("#employee_data .editButton").css("display", "none");
 										$(".editButton").hide();
+										$("#flag").val("R");
 									});
 									</script>
 								</c:if>
@@ -425,12 +440,19 @@ th {border: 2px;}
 										console.log('w');
 										$("#new_emp_btn").css("display", "block");
 										$("#employee_data .editButton").css("display", "block");
+										$("#flag").val($("#flag").val() + ",W");
 									});
 									</script>
 								</c:if>	
+								<c:if test="${per eq ('D')}" >
+								<script>
+									$(document).ready(function() {
+										console.log('D');
+										$("#flag").val($("#flag").val() + ",D");
+									});
+								</script>
+							</c:if>		
 							</c:forEach>
-							
-							
 						</c:if>
 					</c:forEach>
 				</c:if>

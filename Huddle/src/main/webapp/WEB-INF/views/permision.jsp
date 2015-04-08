@@ -1,6 +1,8 @@
 <!doctype html>
 <html class="no-js" lang="en">
 <head>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>CloudZon.huddle | Permission</title>
@@ -23,7 +25,7 @@
 		
 		.btn-main{padding:9px 56px; background-color:#000; color:#fff; border:none;  border-radius:5px; cursor:pointer; margin-bottom:20px;}
 		
-		.add-btn{width:auto; padding:5px 25px; background-color:#000; color:#fff; border-radius:5px; border:none}
+		.add-btn{width:auto; padding:5px 25px; margin-bottom:25px; background-color:#000; color:#fff; border-radius:5px; border:none}
 		@media (max-width:640px) {
 		
 		.content-container{margin:0;}
@@ -44,7 +46,7 @@
   <nav class="top-bar" data-topbar role="navigation">
     <ul class="title-area">
       <li class="name">
-        <h1><a href="#">CloudZon<span>.huddle</span><img src="_img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
+        <h1><a href="huddle">CloudZon<span>.huddle</span><img src="_img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
       </li>
       <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
       <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
@@ -55,7 +57,11 @@
         <li><a href="huddle">Home</a></li>
         <li><a href="company">Company</a></li>
         <li><a href="careers">Careers</a></li>
-        <li><a href="#">Log In</a></li>
+        <li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
+        <ul class="dropdown">
+        	<li><a id="logOutBtn" href="user/logout.json">Logout</a></li>            
+        </ul>
+        </li>
       </ul>
       <!-- Left Nav Section -->
     </section>
@@ -162,6 +168,7 @@
 		</div>
 			<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="event_data">
 			</table>
+			<input value='Set Permission' class='add-btn right' id='addButton' type='Button'>
 		</div>
       </div>
      </div>
@@ -188,7 +195,42 @@ var permissionView = new PermissionView();
 permissionView.render();
 </script>
 
-<script>
-    $(document).foundation();
+	<script>
+  	  $(document).foundation();
     </script>
+    <c:set value="${requestScope['javax.servlet.forward.servlet_path']}" var="req"></c:set>
+	<c:if test="${userPermission != null  && sessionUser != null}">
+				<c:if test="${userPermission.getUserName() eq sessionUser.getUsername()}">
+					<c:forEach items="${userPermission.roleActivityPermissionDTOs}" var="permission">
+						<c:if test="${fn:containsIgnoreCase(req,permission.activityLink)}">
+							<c:forEach items="${permission.permissions}" var="per" varStatus="status">
+								<c:if test="${per eq ('')}" >
+								<script>
+									$(document).ready(function() {
+										console.log('null');
+										$("#addButton").css("display", "none");
+									});
+									</script>
+								</c:if>
+								<c:if test="${per eq ('R')}" >
+								<script>
+									$(document).ready(function() {
+										console.log('r');
+										$("#addButton").css("display", "none");
+									});
+									</script>
+								</c:if>
+								<c:if test="${per eq ('W')}" >
+									<script>
+									$(document).ready(function() {
+										console.log('w');
+										$("#addButton").css("display", "block");
+									});
+									</script>
+								</c:if>	
+							</c:forEach>
+						</c:if>
+					</c:forEach>
+				</c:if>
+				</c:if>
 </body>

@@ -17,11 +17,12 @@
 </style>
 </head>
   <body>
+  <input type="hidden" Id="hidUser" value='<c:out value="${sessionUser.getUsername() }"></c:out>'>
       <header>
-      <nav class="top-bar" data-topbar role="navigation">
+       <nav class="top-bar" data-topbar role="navigation"> 
         <ul class="title-area">
           <li class="name">
-            <h1><a href="#">CloudZon<span>.huddle</span><img src="img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
+            <h1><a href="huddle">CloudZon<span>.huddle</span><img src="img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
           </li>
            <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
           <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
@@ -38,13 +39,29 @@
              <c:if test="${ sessionUser !=null}">
             <li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
             	<ul class="dropdown">
-				<li><a href="setGroup">Add Group</a></li>
-				<li><a href="setActivity">Add Activity</a></li>
-				<li><a href="setPermission">Add Permission</a></li>
-				<li><a href="setEvent">Add Event</a></li>
-				<li><a href="setMeeting">Add Meeting</a></li>
-				<li><a href="setProject">Add Project</a></li>
-				<li><a href="setDocument">Add Document</a></li>
+				<c:set value="${requestScope['javax.servlet.forward.servlet_path']}" var="req"></c:set>
+				<c:if test="${userPermission != null  && sessionUser != null}">
+				<c:if test="${userPermission.getUserName() eq sessionUser.getUsername()}">
+					<c:forEach items="${userPermission.roleActivityPermissionDTOs}" var="permission">
+						<c:if test="${fn:containsIgnoreCase(req,permission.activityLink)}">
+							<c:forEach items="${permission.permissions}" var="per" varStatus="status">
+								<c:if test="${per eq ('R')}" >
+								</c:if>
+								<c:if test="${per eq ('W')}" >
+									<li><a href="setGroup">Add Group</a></li>
+									<li><a href="setActivity">Add Activity</a></li>
+									<li><a href="setPermission">Add Permission</a></li>
+									<!-- <li><a href="setEvent">Add Event</a></li>
+									<li><a href="setMeeting">Add Meeting</a></li>
+									<li><a href="setProject">Add Project</a></li>
+									<li><a href="setDocument">Add Document</a></li>
+									<li><a href="setDiscussion">Add Discussion</a></li> -->
+								</c:if>	
+							</c:forEach>
+						</c:if>
+					</c:forEach>
+				</c:if>
+				</c:if>
 				<li><a id="logOutBtn" href="user/logout.json">Logout</a></li>            
             	</ul>
             </li>
@@ -85,6 +102,36 @@
             <a href="careers"><div class="box-B">
              <div class="box-title">careers</div>
              <div><img src="img/careers.png" alt="hiring"></div>
+            </div></a>
+          </div>
+          <div id="eventDiv" class="large-4 medium-12 small-12 columns">
+            <a href="setEvent"><div class="box-B">
+             <div class="box-title">Events</div>
+             <div><img src="img/event.png" alt="event"></div>
+            </div></a>
+          </div>
+          <div id="meetingDiv" class="large-4 medium-12 small-12 columns">
+            <a href="setMeeting"><div class="box-B">
+             <div class="box-title">Meetings</div>
+             <div><img src="img/meeting.png" alt="meeting"></div>
+            </div></a>
+          </div>
+          <div id="projectDiv" class="large-4 medium-12 small-12 columns">
+            <a href="setProject"><div class="box-B">
+             <div class="box-title">Projects</div>
+             <div><img src="img/project.png" alt="Projects"></div>
+            </div></a>
+          </div>
+          <div id="documentDiv" class="large-4 medium-12 small-12 columns">
+            <a href="setDocument"><div class="box-B">
+             <div class="box-title">Documents</div>
+             <div><img src="img/documents.png" alt="documents"></div>
+            </div></a>
+          </div>
+          <div id="discussionDiv" class="large-4 medium-12 small-12 columns">
+            <a href="setDiscussion"><div class="box-B">
+             <div class="box-title">Discussion</div>
+             <div><img src="img/comment.png" alt="doscussion"></div>
             </div></a>
           </div>
         </div>
@@ -133,5 +180,11 @@
     /*end slider */
 
     </script>
+    <script>
+		var huddleView = new HuddleView({
+			el : $("#main-container"),
+		});
+		huddleView.render(); 
+	</script>
 
   </body>

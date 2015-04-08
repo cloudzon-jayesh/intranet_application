@@ -2,6 +2,7 @@
 <html class="no-js" lang="en">
 <head>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>CloudZon.huddle | Projects</title>
@@ -57,7 +58,7 @@
   <nav class="top-bar" data-topbar role="navigation">
     <ul class="title-area">
       <li class="name">
-        <h1><a href="#">CloudZon<span>.huddle</span><img src="_img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
+        <h1><a href="huddle">CloudZon<span>.huddle</span><img src="_img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
       </li>
       <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
       <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
@@ -68,7 +69,11 @@
         <li><a href="huddle">Home</a></li>
         <li><a href="company">Company</a></li>
         <li><a href="careers">Careers</a></li>
-        <li><a href="#">Log In</a></li>
+        <li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
+        <ul class="dropdown">
+        	<li><a id="logOutBtn" href="user/logout.json">Logout</a></li>            
+        </ul>
+        </li>
       </ul>
       <!-- Left Nav Section -->
     </section>
@@ -77,8 +82,10 @@
 <div class="main-container" id="main-container">
   
     </div>
+     <input type="hidden" Id="flag">
 	<div id="addProjectModal" class="reveal-modal" data-reveal
 		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 			<div class="content-container">
 				<div class="row outer-title">
 					<div class="large-12 medium-12 small-12 columns">
@@ -182,6 +189,7 @@
 		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
 		</div>
 		<script type="text/template" id="edit_template">
+			<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 			<div class="content-container">
 				<div class="row outer-title">
 					<div class="large-12 medium-12 small-12 columns">
@@ -291,7 +299,7 @@
 <input type="hidden" id="hidUser" value='<c:out value="${sessionUser.getUsername() }"></c:out>'>
 <div class="row login-container">
     <div class="large-7  medium-12 small-12 columns input-block">
-      <button data-reveal-id="addProjectModal" class="radius btn-main">Add Projects</button>
+      <button data-reveal-id="addProjectModal" id="addNewProject" class="radius btn-main">Add Projects</button>
 			<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="project_data">
 			</table>
 		</div>
@@ -329,4 +337,49 @@
 	<script>
     $(document).foundation();
     </script>
+    <c:set value="${requestScope['javax.servlet.forward.servlet_path']}" var="req"></c:set>
+	<c:if test="${userPermission != null  && sessionUser != null}">
+				<c:if test="${userPermission.getUserName() eq sessionUser.getUsername()}">
+					<c:forEach items="${userPermission.roleActivityPermissionDTOs}" var="permission">
+						<c:if test="${fn:containsIgnoreCase(req,permission.activityLink)}">
+							<c:forEach items="${permission.permissions}" var="per" varStatus="status">
+								<c:if test="${per eq ('')}" >
+								<script>
+									$(document).ready(function() {
+										console.log('null');
+										$("#addNewProject").css("display", "none");
+									});
+									</script>
+								</c:if>
+								<c:if test="${per eq ('R')}" >
+								<script>
+									$(document).ready(function() {
+										console.log('r');
+										$("#addNewProject").css("display", "none");
+										$("#flag").val("R");
+									});
+									</script>
+								</c:if>
+								<c:if test="${per eq ('W')}" >
+									<script>
+									$(document).ready(function() {
+										console.log('w');
+										$("#addNewProject").css("display", "block");
+										$("#flag").val($("#flag").val() + ",W");
+									});
+									</script>
+								</c:if>	
+								<c:if test="${per eq ('D')}" >
+									<script>
+									$(document).ready(function() {
+										console.log('d');
+										$("#flag").val($("#flag").val() + ",D");
+									});
+									</script>
+								</c:if>	
+							</c:forEach>
+						</c:if>
+					</c:forEach>
+				</c:if>
+				</c:if>
 </body>

@@ -60,8 +60,8 @@
 				<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
 			</ul>
 
-			<section class="top-bar-section">
-				<!-- Right Nav Section -->
+			<!-- <section class="top-bar-section">
+				Right Nav Section
 				<ul class="right">
 					<li><a href="#">Home</a></li>
 					<li><a href="#">Company</a></li>
@@ -69,9 +69,9 @@
 					<li><a href="#">Log In</a></li>
 				</ul>
 
-				<!-- Left Nav Section -->
+				Left Nav Section
 
-			</section>
+			</section> -->
 		</nav>
 	</header>
 	

@@ -1,6 +1,7 @@
 <!doctype html>
 <html class="no-js" lang="en">
   <head>
+  	<%@taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CloudZon.huddle | Careers</title>
@@ -19,7 +20,7 @@
       <nav class="top-bar" data-topbar role="navigation">
         <ul class="title-area">
           <li class="name">
-            <h1><a href="#">CloudZon<span>.huddle</span><img src="img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
+            <h1><a href="huddle">CloudZon<span>.huddle</span><img src="img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
           </li>
            <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
           <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
@@ -31,7 +32,11 @@
             <li><a href="huddle">Home</a></li>
             <li><a href="company">Company</a></li>
             <li><a href="careers">Careers</a></li>
-            <li><a href="#">Log In</a></li>
+            <li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
+		        <ul class="dropdown">
+		        	<li><a id="logOutBtn" href="user/logout.json">Logout</a></li>            
+		        </ul>
+		    </li>
           </ul>
 
           <!-- Left Nav Section -->
