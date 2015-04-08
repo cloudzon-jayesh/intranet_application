@@ -14,6 +14,10 @@ import com.cloudzon.huddle.dto.AccessTokenContainer;
 import com.cloudzon.huddle.dto.AccountVerificationToken;
 import com.cloudzon.huddle.dto.ActivityRolePermissionDTO;
 import com.cloudzon.huddle.dto.ChangePasswordDto;
+import com.cloudzon.huddle.dto.CommentDTO;
+import com.cloudzon.huddle.dto.DiscussionCommentDTO;
+import com.cloudzon.huddle.dto.DiscussionDTO;
+import com.cloudzon.huddle.dto.DiscussionListDTO;
 import com.cloudzon.huddle.dto.DocumentDTO;
 import com.cloudzon.huddle.dto.DocumentListDTO;
 import com.cloudzon.huddle.dto.EditEmployeeDTO;
@@ -40,6 +44,7 @@ import com.cloudzon.huddle.dto.GroupPermissionDTO;
 import com.cloudzon.huddle.dto.UserLoginDto;
 import com.cloudzon.huddle.dto.UserRoleDTO;
 import com.cloudzon.huddle.model.Activity;
+import com.cloudzon.huddle.model.Discussion;
 import com.cloudzon.huddle.model.Documents;
 import com.cloudzon.huddle.model.Events;
 import com.cloudzon.huddle.model.Meetings;
@@ -176,7 +181,7 @@ public interface UserService {
 	
 	public void deleteEvent(Events objEvents);
 	
-	public void editEvent(EventsDTO eventsDTO) throws IOException,
+	public void editEvent(EventsDTO eventsDTO,HttpServletRequest servletRequest) throws IOException,
 	TemplateException, MessagingException, ParseException ; 
 	
 	public void addMeeting(MeetingDTO meetingDTO)throws IOException,
@@ -213,5 +218,17 @@ public interface UserService {
 	public DocumentListDTO editDocumentList(DocumentListDTO documentListDTO);
 	
 	public void editDocument(DocumentDTO documentDTO, HttpServletRequest servletRequest) throws IOException,
+	TemplateException, MessagingException, ParseException;
+	
+	public List<DiscussionListDTO> getAllDiscussion(SignupUser signupUser);
+	
+	public void addDiscussion(DiscussionDTO discussionDTO)throws IOException,
+	TemplateException, MessagingException, ParseException;
+	
+	public void deleteDiscussion(Discussion discussion);
+	
+	public DiscussionCommentDTO getDiscussion(Discussion discussion);
+	
+	public void addComment(CommentDTO commentDTO)throws IOException,
 	TemplateException, MessagingException, ParseException;
 }

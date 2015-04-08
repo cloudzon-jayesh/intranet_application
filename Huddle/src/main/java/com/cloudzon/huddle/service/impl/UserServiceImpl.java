@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
+import javax.naming.event.EventDirContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.dom4j.io.DocumentResult;
@@ -31,9 +32,14 @@ import com.cloudzon.huddle.dto.AccessTokenContainer;
 import com.cloudzon.huddle.dto.AccountVerificationToken;
 import com.cloudzon.huddle.dto.ActivityRolePermissionDTO;
 import com.cloudzon.huddle.dto.ChangePasswordDto;
+import com.cloudzon.huddle.dto.CommentDTO;
+import com.cloudzon.huddle.dto.DiscussionCommentDTO;
+import com.cloudzon.huddle.dto.DiscussionDTO;
+import com.cloudzon.huddle.dto.DiscussionListDTO;
 import com.cloudzon.huddle.dto.DocumentDTO;
 import com.cloudzon.huddle.dto.DocumentListDTO;
 import com.cloudzon.huddle.dto.EditEmployeeDTO;
+import com.cloudzon.huddle.dto.EventImagesDTO;
 import com.cloudzon.huddle.dto.EventsListDTO;
 import com.cloudzon.huddle.dto.EmailVerificationRequest;
 import com.cloudzon.huddle.dto.EmployeeDetailDTO;
@@ -69,6 +75,9 @@ import com.cloudzon.huddle.exception.NotFoundException.NotFound;
 import com.cloudzon.huddle.exception.TokenHasExpiredException;
 import com.cloudzon.huddle.model.Activity;
 import com.cloudzon.huddle.model.ActivityRolePermission;
+import com.cloudzon.huddle.model.Discussion;
+import com.cloudzon.huddle.model.DiscussionComment;
+import com.cloudzon.huddle.model.DiscussionRole;
 import com.cloudzon.huddle.model.DocumentRole;
 import com.cloudzon.huddle.model.Documents;
 import com.cloudzon.huddle.model.EventImages;
@@ -87,6 +96,9 @@ import com.cloudzon.huddle.model.VerificationToken;
 import com.cloudzon.huddle.model.VerificationToken.VerificationTokenType;
 import com.cloudzon.huddle.repository.ActivityRepository;
 import com.cloudzon.huddle.repository.ActivityRolePermissionRepository;
+import com.cloudzon.huddle.repository.DiscussionCommentRepository;
+import com.cloudzon.huddle.repository.DiscussionRepository;
+import com.cloudzon.huddle.repository.DiscussionRoleRepository;
 import com.cloudzon.huddle.repository.DocumentsRepository;
 import com.cloudzon.huddle.repository.DocumentsRoleRepository;
 import com.cloudzon.huddle.repository.EventImagesRepository;
@@ -168,6 +180,15 @@ public class UserServiceImpl implements UserService {
 	
 	@Resource 
 	private DocumentsRoleRepository documentRoleRepository;
+	
+	@Resource 
+	private DiscussionRepository discussionRepository;
+	
+	@Resource 
+	private DiscussionRoleRepository discussionRoleRepository;
+	
+	@Resource 
+	private DiscussionCommentRepository discussionCommentRepository;
 	
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncode;
@@ -756,37 +777,27 @@ public class UserServiceImpl implements UserService {
 				.getUserName());
 		if(objUser!=null)
 		{
-			//if (objUser.getIsVerified()) {
-				if (this.bCryptPasswordEncode.matches(loginDto.getPassword(),
-						objUser.getPassword())) {
-					objSetUserPermissionDTO = new SetUserPermissionDTO();
-					objSetUserPermissionDTO.setFirstName(objUser.getFirstName());
-					objSetUserPermissionDTO.setLastName(objUser.getLastName());
-					objSetUserPermissionDTO.setUserName(objUser.getUserName());
-					
-					objRoleDTOs = this.roleRepository.getRoleIdByUserId(objUser.getId());
-					objSetUserPermissionDTO.setRoleIds(objRoleDTOs);
-					objActivityDTOs = this.activityRolePermissionRepository.getActivityPermissionList(objSetUserPermissionDTO.getRoleIds());
-					if(objActivityDTOs != null  && objActivityDTOs.size() > 0)
-					{
-						for(ActivityDTO objActivityDTO : objActivityDTOs)
-						{
-							objRoleActivityPermissionDTO = new RoleActivityPermissionDTO();
-							objRoleActivityPermissionDTO.setActivityLink(objActivityDTO.getActivityLink());
-							objRoleActivityPermissionDTO.setPermissions(this.activityRolePermissionRepository.getActivityPermissions(objActivityDTO.getId(), objSetUserPermissionDTO.getRoleIds()));
-							list.add(objRoleActivityPermissionDTO);
-						}
-					}
-					objSetUserPermissionDTO.setRoleActivityPermissionDTOs(list);
-				} else {
-					throw new AuthenticationException();
-				}
+				objSetUserPermissionDTO = new SetUserPermissionDTO();
+				objSetUserPermissionDTO.setFirstName(objUser.getFirstName());
+				objSetUserPermissionDTO.setLastName(objUser.getLastName());
+				objSetUserPermissionDTO.setUserName(objUser.getUserName());
 				
-			}/*else {
-				throw new AuthenticationException(
-						"Please confirm your account", "User not verified");
+				objRoleDTOs = this.roleRepository.getRoleIdByUserId(objUser.getId());
+				objSetUserPermissionDTO.setRoleIds(objRoleDTOs);
+				objActivityDTOs = this.activityRolePermissionRepository.getActivityPermissionList(objSetUserPermissionDTO.getRoleIds());
+				if(objActivityDTOs != null  && objActivityDTOs.size() > 0)
+				{
+					for(ActivityDTO objActivityDTO : objActivityDTOs)
+					{
+						objRoleActivityPermissionDTO = new RoleActivityPermissionDTO();
+						objRoleActivityPermissionDTO.setActivityLink(objActivityDTO.getActivityLink());
+						objRoleActivityPermissionDTO.setPermissions(this.activityRolePermissionRepository.getActivityPermissions(objActivityDTO.getId(), objSetUserPermissionDTO.getRoleIds()));
+						list.add(objRoleActivityPermissionDTO);
+					}
+				}
+				objSetUserPermissionDTO.setRoleActivityPermissionDTOs(list);
 			}
-		}*/else {
+		else {
 			throw new NotFoundException(NotFound.UserNotFound);
 		}
 		return objSetUserPermissionDTO;
@@ -880,15 +891,16 @@ public class UserServiceImpl implements UserService {
 				{
 					if(tempMultipartFile != null)
 					{
-						fileName =tempEvents.getId() +"_"+ objEvents.getEventName()+"_"+  (n++);
+						fileName =tempEvents.getId() +"_event_image_"+ (n++);
 						if (ImageUtils.uploadEventImage(fileName,
 								tempMultipartFile, servletRequest)) {
 								objEventImages = new EventImages();
 								eventImageId = new StringBuffer();
 								eventImageId.delete(0, eventImageId.length())
 										.append(fileName).append(".png");
+								objEventImages.setActive(true);
 								objEventImages.setImages(eventImageId.toString());
-								objEventImages.setEventId(tempEvents);
+								objEventImages.setEvents(tempEvents);
 								this.eventImagesRepository.saveAndFlush(objEventImages);
 							}
 					}
@@ -915,7 +927,11 @@ public class UserServiceImpl implements UserService {
 	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
 	public EventsListDTO editEventList(Events objEvents) {
 		logger.info("get Events list");
-		return this.eventsRepository.getEventsById(objEvents.getId());
+		EventsListDTO eventsListDTO = new EventsListDTO();
+		eventsListDTO = this.eventsRepository.getEventsById(objEvents.getId()); 
+		List<EventImagesDTO> eventImages = this.eventImagesRepository.getImagesofEvent(objEvents.getId());
+		eventsListDTO.setEventImagesDTOs(eventImages);
+		return eventsListDTO; 
 	}
 	
 	@Override
@@ -933,7 +949,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
-	public void editEvent(EventsDTO eventsDTO) throws IOException,
+	public void editEvent(EventsDTO eventsDTO,HttpServletRequest servletRequest) throws IOException,
 	TemplateException, MessagingException, ParseException
 	{
 		SimpleDateFormat dateFormat = null;
@@ -952,6 +968,69 @@ public class UserServiceImpl implements UserService {
 			tempEvents.setTime(timeFormat.parse(eventsDTO.getTime()));
 			this.eventsRepository.saveAndFlush(tempEvents);
 		}
+		StringBuffer eventImageId = null;
+		List<EventImages> objEventImagesList = null;
+		List<EventImages> eventImages = this.eventImagesRepository.getImagesByEventID(eventsDTO.getId());
+		if(eventImages != null && eventImages.size() > 0)
+		{
+			for(EventImages objImages : eventImages)
+			{
+				objImages.setActive(false);
+				this.eventImagesRepository.saveAndFlush(objImages);
+			}
+		}
+		List<Long> imageIds = eventsDTO.getImageIds();
+		
+		if(imageIds !=null && imageIds.size() > 0)
+		{
+			for(Long tempId : imageIds)
+			{
+				
+				objEventImagesList = this.eventImagesRepository.getImagesByIdEventID(tempId, eventsDTO.getId());
+				if(objEventImagesList  != null)
+				{
+					for(EventImages tempImages : objEventImagesList)
+					{
+						tempImages.setActive(true);
+						this.eventImagesRepository.saveAndFlush(tempImages);
+					}
+				}
+			}
+		}
+		
+		EventImages objEventImages= null;
+		int  n = eventImages.size();
+		String fileName = "";
+		try {
+			if (eventsDTO.getImages() != null && eventsDTO.getImages().size() > 0) {
+				System.out.println("call");
+				for(MultipartFile tempMultipartFile : eventsDTO.getImages())
+				{
+					if(tempMultipartFile != null)
+					{
+						fileName =tempEvents.getId() +"_event_image_"+ (n++);
+						if (ImageUtils.uploadEventImage(fileName,
+								tempMultipartFile, servletRequest)) {
+								objEventImages = new EventImages();
+								eventImageId = new StringBuffer();
+								eventImageId.delete(0, eventImageId.length())
+										.append(fileName).append(".png");
+								objEventImages.setActive(true);
+								objEventImages.setImages(eventImageId.toString());
+								objEventImages.setEvents(tempEvents);
+								this.eventImagesRepository.save(objEventImages);
+							}
+					}
+					
+				}
+			} else {
+				// throw new NotFoundException(NotFound.UserNotFound);
+				System.out.println("not found image");
+			}
+		} finally {
+
+		}
+
 	}
 	@Override
 	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
@@ -1568,5 +1647,106 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public List<DiscussionListDTO> getAllDiscussion(SignupUser signupUser){
+		logger.info("get Discussion list");
+		User objUser = this.userRepository.getUserByUserName(signupUser.getUserName());
+		List<Long> objRole = this.roleRepository.getRoleIdByUserId(objUser.getId());
+		List<DiscussionListDTO> discussionListDTOs = null;
+		if(objRole != null && objRole.size() > 0)
+		{
+			
+				if(objRole.contains(1L))
+				{
+					discussionListDTOs = this.discussionRepository.getAllDiscussionByRole();
+				}
+				else
+				{
+					discussionListDTOs = this.discussionRepository.getDiscussionByRole(objRole);
+				}
+				
+			
+		}
+		return discussionListDTOs;
+	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public void addDiscussion(DiscussionDTO discussionDTO)throws IOException,
+	TemplateException, MessagingException, ParseException
+	{
+		Role objRole = null;
+		Discussion objDiscussion = null;
+		DiscussionRole objDiscussionRole = null;
+		objDiscussion = new Discussion();
+		objDiscussion.setActive(true);
+		objDiscussion.setDiscussionTopic(discussionDTO.getDiscussionTopic());
+		User objUser = this.userRepository.getUserByUserName(discussionDTO.getUserName());
+		objDiscussion.setUser(objUser);
+		this.discussionRepository.saveAndFlush(objDiscussion);
+		List<Long> getRoles = discussionDTO.getRolesId();
+		for(Long tempRoles : getRoles)
+		{
+			
+			objRole = this.roleRepository.getRoleByRoleId(tempRoles);
+			objDiscussionRole = new DiscussionRole();
+			objDiscussionRole.setActive(true);
+			objDiscussionRole.setDiscussion(objDiscussion);
+			objDiscussionRole.setRole(objRole);
+			this.discussionRoleRepository.saveAndFlush(objDiscussionRole);			
+		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public void deleteDiscussion(Discussion discussion)
+	{
+		Discussion objDiscussion = this.discussionRepository.getDiscussionById(discussion.getId());
+		if(objDiscussion!=null)
+		{
+			objDiscussion.setActive(false);
+			this.discussionRepository.saveAndFlush(objDiscussion);
+		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public DiscussionCommentDTO getDiscussion(Discussion discussion)
+	{
+		logger.info("get Discussion");
+		DiscussionCommentDTO objDiscussionCommentDTO = new DiscussionCommentDTO();
+		Discussion objDiscussion = this.discussionRepository.getDiscussionById(discussion.getId());
+		User objUser = objDiscussion.getUser();
+		objDiscussionCommentDTO.setUserName(objUser.getUserName());
+		objDiscussionCommentDTO.setProfilePic(objUser.getProfilePic());
+		objDiscussionCommentDTO.setId(objDiscussion.getId());
+		objDiscussionCommentDTO.setDisscussionTopic(objDiscussion.getDiscussionTopic());
+		List<CommentDTO> objCommentDTOs = this.discussionCommentRepository.getAllCommentsByDiscssionId(discussion.getId());
+		if(objCommentDTOs !=null && objCommentDTOs.size() > 0)
+		{
+			objDiscussionCommentDTO.setCommentDTO(objCommentDTOs);
+		}
+		return objDiscussionCommentDTO;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public void addComment(CommentDTO commentDTO)throws IOException,
+	TemplateException, MessagingException, ParseException
+	{
+		User objUser = this.userRepository.getUserByUserName(commentDTO.getUserName());
+		DiscussionComment objDiscussionComment = null;
+		Discussion objDiscussion = null;
+		if(objUser != null)
+		{
+			objDiscussionComment = new DiscussionComment();
+			objDiscussionComment.setActive(true);
+			objDiscussionComment.setComment(commentDTO.getComment());
+			objDiscussion = this.discussionRepository.getDiscussionById(commentDTO.getId());
+			objDiscussionComment.setDiscussion(objDiscussion);
+			objDiscussionComment.setUser(objUser);
+			this.discussionCommentRepository.saveAndFlush(objDiscussionComment);
+		}
+	}
 }
