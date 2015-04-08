@@ -1,6 +1,7 @@
 package com.cloudzon.huddle.dto;
 
 import java.util.Date;
+import java.util.List;
 
 public class EventsListDTO 
 {
@@ -9,6 +10,12 @@ public class EventsListDTO
 	private String description;
 	private Date date;
 	private Date time;
+	private List<EventImagesDTO> eventImagesDTOs;
+	
+	
+	public EventsListDTO() {
+		super();
+	}
 	public EventsListDTO(Long id, String eventName, String description,
 			Date date, Date time) {
 		super();
@@ -48,7 +55,10 @@ public class EventsListDTO
 	public void setTime(Date time) {
 		this.time = time;
 	}
-	
-	
-
+	public List<EventImagesDTO> getEventImagesDTOs() {
+		return eventImagesDTOs;
+	}
+	public void setEventImagesDTOs(List<EventImagesDTO> eventImagesDTOs) {
+		this.eventImagesDTOs = eventImagesDTOs;
+	}
 }

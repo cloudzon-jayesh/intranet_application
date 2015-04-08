@@ -1,5 +1,9 @@
 package com.cloudzon.huddle.dto;
 
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
 
 public class EventsDTO 
 {
@@ -8,7 +12,8 @@ public class EventsDTO
 	private String description;
 	private String date;
 	private String time;
-
+	private List<MultipartFile> images;
+	private List<Long> imageIds;
 	
 	public Long getId() {
 		return id;
@@ -40,4 +45,17 @@ public class EventsDTO
 	public void setTime(String time) {
 		this.time = time;
 	}
+	public List<MultipartFile> getImages() {
+		return images;
+	}
+	public void setImages(List<MultipartFile> images) {
+		this.images = images;
+	}
+	public List<Long> getImageIds() {
+		return imageIds;
+	}
+	public void setImageIds(List<Long> imageIds) {
+		this.imageIds = imageIds;
+	}
+	
 }
