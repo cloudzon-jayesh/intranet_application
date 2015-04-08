@@ -108,12 +108,6 @@ var PermissionView = Backbone.View
 							tBody.append(tr);
 							$("#event_data").append(tBody);
 						}
-						var trl = $("<tr></tr>");
-						var tdd = $("<td colspan='3' style='border: 1px solid #ccc; text-align: center;'></td>");
-						var button = $("<input value='Set Permission' class='add-btn' id='addButton' type='Button'>");
-						tdd.append(button);
-						trl.append(tdd);
-						$("#event_data").append(trl);
 						
 						$('#roles').change(function(){
 							$.ajax({

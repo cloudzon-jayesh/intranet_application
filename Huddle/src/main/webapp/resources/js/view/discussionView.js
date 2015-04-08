@@ -8,6 +8,8 @@ var discussionView = Backbone.View.extend({
 		var template = _.template($("#discussion_template").html(), {});
 		this.$el.html(template);
 		this.getDiscussionData();
+		
+		
 	},
 	getDiscussionData : function()
 	{
@@ -44,7 +46,7 @@ var discussionView = Backbone.View.extend({
 					var td1 = $("<td>" + (i+1)	+ "</td>");
 					var td2 = $("<td>"+ data[i].discussionTopic +"</td>");
 					var td3 = $("<td></td>");
-					var comment = $('<a data-reveal-id="commentModal"  class="comment_button" attr-name="'+ data[i].id + '">View</a>');
+					var comment = $('<a class="comment_button" attr-name="'+ data[i].id + '">View</a>');
 					var button =$("<a href=# class='delete_button' title='delete' attr-name='"+ data[i].id + "'>&nbsp;<img src= 'images/delete.png' style='width:25px; height:25px;'></a>");
 					td0.append(button);
 					td3.append(comment);
@@ -54,15 +56,33 @@ var discussionView = Backbone.View.extend({
 					tr.append(td3);
 					tBody.append(tr);
 					$("#discussion_data").append(tBody);
+					if($("#flag").val().indexOf("R") >= 0)
+					{
+						console.log("read");
+						th0.hide();
+						td0.hide();
+						button.hide();
+					}
+					if($("#flag").val().indexOf("W") >= 0)
+					{
+						console.log("wr");
+						th0.hide();
+						td0.hide();
+					}
+					if($("#flag").val().indexOf("D") >= 0)
+					{
+						console.log("del");
+						th0.show();
+						td0.show();
+						button.show();
+					}
 				}
 				
 				$('.comment_button').click(function() {
 					var name = $(this).attr("attr-name");
 					console.log(name);
 					$("#hidId").val(name);
-					var commentDiscussionView1 = new commentDiscussionView({
-						el : $("#commentModal"),
-					});
+					var commentDiscussionView1 = new commentDiscussionView();
 					commentDiscussionView1.render();
 					$('#commentModal').foundation('reveal', 'open');
 				});
@@ -191,7 +211,7 @@ var commentDiscussionView = Backbone.View.extend({
 	initialize : function() {
 	},
 	render : function() {
-		var template = _.template($("#edit_template").html(), {});
+		var template = _.template($("#comment_template").html(), {});
 		this.$el.html(template);
 		this.getDiscussionFromId();
 	},
@@ -221,7 +241,7 @@ var commentDiscussionView = Backbone.View.extend({
 					'</div>'+
 						'<div class="clearfix"></div>');
 				$("#commentDiv").append(discussion);
-				var comments = data.commentDTO
+				var comments = data.commentDTO;
 				if(comments != null)
 				{
 					var len = comments.length;
@@ -254,7 +274,7 @@ var commentDiscussionView = Backbone.View.extend({
 				$("#commentDiv").append(addCommentBox);
 				$("#commentDiv").on("click",".add_field", function(e){ 
 			        e.preventDefault(); 
-			        if($("#comment").val() != '')
+			        if( $.trim($("#comment").val()).length > 0 && $("#comment").val() != null)
 			        {
 			        	$.ajax({
 							url : 'user/addComment.json',
@@ -271,9 +291,7 @@ var commentDiscussionView = Backbone.View.extend({
 								}),
 							success: function (response) {
 								console.log("done");
-								var commentDiscussionView2 = new commentDiscussionView({
-									el : $("#commentModal"),
-								});
+								var commentDiscussionView2 = new commentDiscussionView();
 								commentDiscussionView2.render();
 								$('#commentModal').foundation('reveal', 'open');
 							},
@@ -288,7 +306,47 @@ var commentDiscussionView = Backbone.View.extend({
 			        	$("#comment").css("border-color","red");
 			        }
 			    });
-			},
+				/*$('#comment').bind('keypress', function(e) {
+					if (e.keyCode == 13 && e.shiftKey)
+				    {
+						$('#comment').append("\n");
+				        e.preventDefault();
+				    }
+					else if(e.keyCode==13){
+						if($("#comment").val() != '')
+				        {
+					    	$.ajax({
+								url : 'user/addComment.json',
+								type : "POST",
+								headers : {
+									'Accept' : 'application/json',
+									'Content-Type' : 'application/json; charset=UTF-8'
+								},
+								data : JSON.stringify(
+									{
+										"userName": $("#hidUser").val(),
+										"id" : $("#hidId").val(),
+										"comment" : $("#comment").val()
+									}),
+								success: function (response) {
+									console.log("done");
+									var commentDiscussionView2 = new commentDiscussionView();
+									commentDiscussionView2.render();
+									$('#commentModal').foundation('reveal', 'open');
+								},
+								error : function(response)
+								{
+									console.log("error come");
+								}
+				        	});
+				        }
+				        else
+				        {
+				        	$("#comment").css("border-color","red");
+				        }
+					   }
+					});*/
+				},
 		error : function(response)
 		{
 			console.log("error come");

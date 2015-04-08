@@ -17,7 +17,7 @@ var EmployeeView = Backbone.View
 								console.log(response.Object);
 							},
 							success : function(data) {
-								// console.log(data);
+								console.log($("#flag").val());
 								var len = data.length;
 								var txt;
 								var thead = $("<thead></thead>");
@@ -80,6 +80,24 @@ var EmployeeView = Backbone.View
 									tr.append(td5);
 									tr.append(td6);
 									tBody.append(tr);
+									if($("#flag").val().indexOf("R") >= 0)
+									{
+										console.log("read");
+										th0.hide();
+										td0.hide();
+										button.hide();
+									}
+									if($("#flag").val().indexOf("W") >= 0)
+									{
+										console.log("wr");
+										th0.show();
+										td0.show();
+										button.show();
+									}
+									if($("#flag").val().indexOf("D") >= 0)
+									{
+										console.log("del");
+									}
 								}
 								
 								$("#employee_data").append(tBody);

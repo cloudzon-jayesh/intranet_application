@@ -16,10 +16,11 @@ var eventView = Backbone.View.extend({
 			type : 'GET',
 			success : function(data)
 			{
+				console.log("per : "+$("#flag").val())
 				var len = data.length;
 				var thead = $("<thead></thead>");
 				var trh = $("<tr></tr>");
-				var th0 = $("<th>Action</th>");
+				var th0 = $("<th class='col1'>Action</th>");
 				var th1 = $("<th>No</th>");
 				var th2 = $("<th>Event Name</th>");
 				var th3 = $("<th>Date</th>");
@@ -49,7 +50,7 @@ var eventView = Backbone.View.extend({
 					var eventTime = hours+":"+minutes;					
 					
 					var tr = $("<tr></tr>");
-					var td0 = $("<td></td>")
+					var td0 = $("<td class='col1'></td>")
 					var td1 = $("<td>" + (i+1)	+ "</td>");
 					var td2 = $("<td>"+ data[i].eventName +"</td>");
 					var td3 = $("<td>"+ eventDate +"</td>");
@@ -64,6 +65,29 @@ var eventView = Backbone.View.extend({
 					tr.append(td3);
 					tr.append(td4);
 					tBody.append(tr);
+					
+					if($("#flag").val().indexOf("R") >= 0)
+					{
+						console.log("read");
+						th0.hide();
+						td0.hide();
+						button1.hide();
+						button2.hide();
+					}
+					if($("#flag").val().indexOf("W") >= 0)
+					{
+						console.log("wr");
+						th0.show();
+						td0.show();
+						button1.show();
+					}
+					if($("#flag").val().indexOf("D") >= 0)
+					{
+						console.log("del");
+						th0.show();
+						td0.show();
+						button2.show();
+					}
 					$("#event_data").append(tBody);
 				}
 				
@@ -101,12 +125,14 @@ var eventView = Backbone.View.extend({
 				var table = $('#event_data').dataTable({
 					responsive: true,
 					 "searching": false,
-					  	"order": [[ 0, "desc" ]],
+					  	"order": [[ 1, "desc" ]],
 					    "iDisplayLength": 5,
 					    "columnDefs": [ { orderable: false, targets: [0] }],
 					    "bAutoWidth": false,
 					    "bLengthChange": false
 				});
+		        /*var bVis = table.fnSettings().aoColumns[0].bVisible;
+		        table.fnSetColumnVis(0, bVis ? false : true);*/
 			}
 		});
 			

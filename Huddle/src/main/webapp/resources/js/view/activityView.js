@@ -53,7 +53,28 @@ var activityView = Backbone.View.extend({
 					tr.append(td2);
 					tr.append(td3);
 					tBody.append(tr);
-					
+					if($("#flag").val().indexOf("R") >= 0)
+					{
+						console.log("read");
+						th0.hide();
+						td0.hide();
+						button1.hide();
+						button2.hide();
+					}
+					if($("#flag").val().indexOf("W") >= 0)
+					{
+						console.log("wr");
+						th0.show();
+						td0.show();
+						button1.show();
+					}
+					if($("#flag").val().indexOf("D") >= 0)
+					{
+						console.log("del");
+						th0.show();
+						td0.show();
+						button2.show();
+					}
 				}
 				$("#activity_data").append(tBody);
 				$('.edit_button').click(function() {

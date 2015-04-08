@@ -1,0 +1,78 @@
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `xchangehotel`.`advanceSearch`$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `advanceSearch`(IN hotelname VARCHAR(100),IN noofrooms INT(10),IN noofadults INT(10),IN noofchildren INT(10),IN mincost INT(10),IN maxcost INT(10),IN hotelbrandmin INT(2),IN hotelbrandmax INT(2),checkindate DATE,checkoutdate DATE,IN dealfromhotel BOOLEAN,IN forhotel BOOLEAN ,IN rating INT(2) ,IN userroomsellingflag BOOLEAN,IN amenitiesdesc VARCHAR(100),IN noofcount INT(2))
+BEGIN
+   DECLARE str1 VARCHAR(16);
+  SET str1 =  'WEASDA';
+ IF(rating IS NULL) THEN
+ SELECT hmaster.hotelid,hmaster.hotelname,hmaster.hotelbrand,hmaster.address,hmaster.city,hmaster.state,hmaster.pincode,hmaster.country,hmaster.phonenumber,hmaster.faxnumber,hmaster.mobilenumber,hmaster.email,hmaster.website,hmaster.latitude,hmaster.longitude,hmaster.active,
+ hroom.roomid,hroom.category,hroom.noofrooms,hroom.noofadults,hroom.noofchildren,hroom.checkintime,hroom.checkouttime,hroom.cost,hroom.startdate,hroom.enddate,hroom.userroomsellingid,hroom.userroomsellingflag,hroom.active,hroom.roomdesc,hroom.block,
+ hrating.forhotel,AVG(hrating.rating),
+ hroomphotos.roomphotoid,hroomphotos.defaultphoto
+ FROM xc_hotelmaster AS hmaster 
+ LEFT OUTER JOIN xc_hotelroom AS hroom
+ ON   hmaster.hotelid=hroom.hotelid
+ LEFT OUTER JOIN xc_hotelroomdetails AS roomdet
+ ON hroom.roomid= roomdet.roomid
+ LEFT OUTER JOIN xc_hotelrating AS hrating
+ ON hmaster.hotelid=hrating.hotelid
+ LEFT OUTER JOIN xc_hotelroomphotos AS hroomphotos 
+ ON hroomphotos.roomid = hroom.roomid
+ WHERE 
+ (hmaster.city LIKE CONCAT(IFNULL (hotelname,''),'%')OR
+ hmaster.pincode LIKE CONCAT(IFNULL (hotelname,''),'%')OR
+ hmaster.city LIKE CONCAT(IFNULL (hotelname,''),'%'))AND
+ hroom.noofrooms =  IFNULL(noofrooms, hroom.noofrooms)AND 
+ hroom.noofadults=IFNULL(noofadults, hroom.noofadults)AND
+ hroom.noofchildren = IFNULL(noofchildren,hroom.noofchildren)AND
+ hroom.cost BETWEEN mincost AND maxcost AND
+ hmaster.hotelbrand BETWEEN IFNULL(hotelbrandmin,hmaster.hotelbrand) AND IFNULL(hotelbrandmax,hmaster.hotelbrand)AND 
+ hroom.startdate <= IFNULL(checkindate, hroom.startdate)AND
+ hroom.enddate >= IFNULL(checkoutdate, hroom.enddate) AND
+ hroomphotos.defaultphoto =TRUE AND
+ hroom.userroomsellingflag = IFNULL(userroomsellingflag, hroom.userroomsellingflag) AND
+ FIND_IN_SET (roomdet.amenitiesdesc, IFNULL(amenitiesdesc,roomdet.amenitiesdesc)) 
+ 
+ GROUP BY hroom.roomid HAVING COUNT(roomdet.roomid)=noofcount;
+ ELSE 
+ SELECT hmaster.hotelid,hmaster.hotelname,hmaster.hotelbrand,hmaster.address,hmaster.city,hmaster.state,hmaster.pincode,hmaster.country,hmaster.phonenumber,hmaster.faxnumber,hmaster.mobilenumber,hmaster.email,hmaster.website,hmaster.latitude,hmaster.longitude,hmaster.active,
+ hroom.roomid,hroom.category,hroom.noofrooms,hroom.noofadults,hroom.noofchildren,hroom.checkintime,hroom.checkouttime,hroom.cost,hroom.startdate,hroom.enddate,hroom.userroomsellingid,hroom.userroomsellingflag,hroom.active,hroom.roomdesc,hroom.block,
+ hrating.forhotel,AVG(hrating.rating),
+ hroomphotos.roomphotoid,hroomphotos.defaultphoto
+ FROM xc_hotelmaster AS hmaster 
+ LEFT OUTER JOIN xc_hotelroom AS hroom
+ ON   hmaster.hotelid=hroom.hotelid
+  LEFT OUTER JOIN xc_hotelroomdetails AS roomdet
+ ON hroom.roomid= roomdet.roomid
+ LEFT OUTER JOIN xc_hotelrating AS hrating
+ ON hmaster.hotelid=hrating.hotelid
+ LEFT OUTER JOIN xc_hotelroomphotos AS hroomphotos 
+ ON hroomphotos.roomid = hroom.roomid
+ WHERE 
+ (hmaster.city LIKE CONCAT(IFNULL (hotelname,''),'%')OR
+ hmaster.pincode LIKE CONCAT(IFNULL (hotelname,''),'%')OR
+ hmaster.city LIKE CONCAT(IFNULL (hotelname,''),'%'))AND
+ hroom.noofrooms =  IFNULL(noofrooms, hroom.noofrooms)AND 
+ hroom.noofadults=IFNULL(noofadults, hroom.noofadults)AND
+ hroom.noofchildren = IFNULL(noofchildren,hroom.noofchildren)AND
+ hroom.cost BETWEEN mincost AND maxcost AND
+ hmaster.hotelbrand BETWEEN IFNULL(hotelbrandmin,hmaster.hotelbrand) AND IFNULL(hotelbrandmax,hmaster.hotelbrand)AND 
+ hroom.startdate <= IFNULL(checkindate, hroom.startdate)AND
+ hroom.enddate >= IFNULL(checkoutdate, hroom.enddate)AND
+ hrating.forhotel = IFNULL(forhotel, hrating.forhotel) AND
+ hrating.rating <= IFNULL(rating, hrating.rating )AND 
+ hroomphotos.defaultphoto =TRUE AND
+ hroom.userroomsellingflag = IFNULL(userroomsellingflag, hroom.userroomsellingflag) AND
+ FIND_IN_SET (roomdet.amenitiesdesc, IFNULL(amenitiesdesc,roomdet.amenitiesdesc)) 
+ GROUP BY hroom.roomid HAVING COUNT(roomdet.roomid)=noofcount;
+ END IF;
+ 
+    END$$
+
+DELIMITER ;
+
+
+
+http://stackoverflow.com/questions/3516795/mysql-stored-function-using-string-variable-as-query
