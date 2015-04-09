@@ -111,7 +111,7 @@ var discussionView = Backbone.View.extend({
 				var table = $('#discussion_data').dataTable({
 					responsive: true,
 					 "searching": false,
-					  	"order": [[ 0, "desc" ]],
+					  	"order": [[ 1, "desc" ]],
 					    "iDisplayLength": 5,
 					    "columnDefs": [ { orderable: false, targets: [0] }],
 					    "bAutoWidth": false,

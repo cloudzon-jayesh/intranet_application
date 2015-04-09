@@ -44,7 +44,8 @@ var documentView = Backbone.View.extend({
 					var td0 = $("<td></td>")
 					var td1 = $("<td>" + (i+1)	+ "</td>");
 					var td2 = $("<td>"+ data[i].documentName +"</td>");
-					var td3 = $("<td>"+ data[i].documentPath +"</td>");
+					var td3 = $("<td><a target='_blank' href= 'documents/"+ data[i].documentPath +"'>"+data[i].documentPath+"</a></td>");
+					//var td3 = $("<td>"+ data[i].documentPath +"</td>");
 					var button1 =$("<a href=# class='edit_button' title='edit' attr-name='"+ data[i].id + "'><img src= 'images/edit.png' style='width:25px; height:25px;'></a>");
 					var button2 =$("<a href=# class='delete_button' title='delete' attr-name='"+ data[i].id + "'>&nbsp;<img src= 'images/delete.png' style='width:25px; height:25px;'></a>");
 					td0.append(button1);

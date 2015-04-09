@@ -35,7 +35,7 @@ var LoginView = Backbone.View.extend({
 				data : JSON.stringify(this.loginModel),
 				success: function (response) {
 				     //console.log("Found the User: " + response.get("access_token"));
-				     window.location = "huddle";
+				     window.location = "test";
 				},
 				error : function(loginModel,e) {
 					var response = $.parseJSON(e.responseText);
