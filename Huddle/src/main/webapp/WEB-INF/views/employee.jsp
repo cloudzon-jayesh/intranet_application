@@ -23,7 +23,13 @@
 <link type="text/css" rel="stylesheet" href="css/dataTables.responsive.css" />
 <link type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" />
     <style type="text/css">
-    	 .errorText{color:red;}
+    	 cf:before, .cf:after { content: ""; display: table; }
+		.cf:after { clear: both; }
+		.cf { zoom: 1; }
+		.block{display:block; background-color:#fff; box-shadow: 0 0 16px #ccc; padding:1% 13px; max-width:89%; margin: 0 auto;}
+		.btn-main{padding: 5px 12px;margin-top: 15px;float: right;margin-right: 32px; }
+		.pageTitle{margin:20px 70px; display:block; font-size:20px; color:#000;}
+		.errorText{color:red;}
 		.input-left-main{width:48%; float:left;}
 		.input-main{width:100%;}
 		
@@ -31,7 +37,6 @@
 		.input-main label{margin-bottom:10px;}
 		.input-block{width:100%; float:left;}
 		.browser-select{border:1px solid #999; padding:7px;}
-		.btn-main{padding:15px 80px; margin-top:15px;  }
 		.text-main{width:100%; float:left; text-align:center;}
 		.text-main p{width:100%; display:inline-block; border-bottom:1px solid #ccc; padding-bottom:50px;}
 		.select-box{width:100%; border-radius:3px;}
@@ -66,16 +71,15 @@ th {border: 2px;}
 .paging-nav .selected-page {background: #187ed5;font-weight: bold;}
 .hidden {display: none;}
 </style>
-
-
 </head>
+
 <body>
 <header>
 		<nav class="top-bar" data-topbar role="navigation">
 			<ul class="title-area">
 				<li class="name">
 					<h1>
-						<a href="huddle">CloudZon<span>.huddle</span><img
+						<a href="dashboard">CloudZon<span>.huddle</span><img
 							src="_img/talk.png" alt="chat" height="16" width="16" hspace="3"
 							style="padding-bottom: 10px"></a>
 					</h1>
@@ -87,7 +91,7 @@ th {border: 2px;}
 			<section class="top-bar-section">
 				<!-- Right Nav Section -->
 				<ul class="right">
-					<li><a href="huddle">Home</a></li>
+					<li><a href="dashboard">Home</a></li>
 					<li><a href="company">Company</a></li>
 					<li><a href="careers">Careers</a></li>
 					<c:if test="${ sessionUser !=null}">
@@ -99,7 +103,6 @@ th {border: 2px;}
             		</c:if>
 				</ul>
 				<!-- Left Nav Section -->
-
 			</section>
 		</nav>
 </header>
@@ -127,143 +130,102 @@ th {border: 2px;}
 	</footer>
 	
 	<script type="text/template" id="employee_template">
-			<div class="content-container">
-			<div class="row outer-title">
-				<div class="large-12 medium-12 small-12 columns">
-					<p>
-						Employee Details<br> <span>cloudZon culture</span>
-					</p>
-				<button href="#" id="new_emp_btn" data-reveal-id="firstModal" class="radius button">Add New Employee</button>					
-				</div>
-				<hr>
-			</div>
-
-			<div class="row">
-				<div class="large-12 medium-12 small-12 columns">
-					<form method="post">
-					<table id="employee_data" cellspacing="0" style="width: 100%;">
-						
-					</table>
-					</form>
-				</div>
-			</div>
-		</div>			
-						
+		<a href="" class="pageTitle">Employee Details</a>
+		<div class="block cf">
+			<button href="#" id="new_emp_btn" data-reveal-id="firstModal" class="radius btn-main">Add New Employee</button>
+			<form method="post">
+			<table id="employee_data" cellspacing="0" style="width: 100%;">
+			</table>
+			</form>
+		</div>				
 	</script>
 	
 	 
-		<div id="firstModal" class="reveal-modal" data-reveal
-		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
-		</div>
+	<div id="firstModal" class="reveal-modal" data-reveal aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+	</div>
 	<script type="text/template" id="main_template">
-		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
-		<div class="main-container" id="main-container">
-			<div class="content-container">
-				<div class="row outer-title">
-					<div class="large-12 medium-12 small-12 columns text-main">
-						<p>Employee Sign Up</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	
-	<div class="row login-container">
-		<div class="large-7  medium-12 small-12 columns input-block">
+	<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+	<a href="" class="pageTitle">Employee Sign Up</a>
+		<div class="block cf">
 			<span id="error"></span>
 			<form onSubmit="return false;">
-				<div class="input-left-main">
-					<div class="input-main">
-						<label for="name">First Name</label>
-						<div class="control-group firstName">
-							<input type="text" id="firstName" maxlength="40" name="firstName">
-							<span class="help-inline"></span>
-						</div>
-					</div>
-
-					<div class="input-main">
-						<label for="name">Last Name</label>
-						<div class="control-group lastName">
-							<input type="text" id="lastName" maxlength="40" name="lastName">
-							<span class="help-inline"></span>
-						</div>
-					</div>
-					<div class="input-main">
-						<label for="name">Mobile Number : </label>
-						<div class="control-group mobileNumber">
-							<input type="text" id="mobileNumber" maxlength="12"
-								name="mobileNumber"> <span class="help-inline"></span>
-						</div>
-					</div>
-					<div class="input-main">
-						<label for="email">Email</label>
-						<div class="control-group email">
-							<input type="text" id="email" maxlength="40" name="email">
-							<span class="help-inline"></span>
-						</div>
-					</div>
-					<div class="input-main">
-						<label for="pswd">Password</label>
-						<div class="control-group password">
-							<input type="password" maxlength="40" id="password"
-								name="password"> <span class="help-inline"></span>
-						</div>
-					</div>
-					<div class="input-main">
-						<label for="repswd">Retype Password</label>
-						<div class="control-group retypePassword">
-							<input type="password" maxlength="40" id="retypePassword"
-								name="retypePassword"> <span class="help-inline"></span>
-						</div>
-					</div>
-					<div class="input-main">
-						<label for="bday">Birthday</label>
-						<div class="control-group dob" id="bdateSection">
-							<input type="text" class="datepicker" id="b_date"
-								readonly="readonly" autocomplete="off" name="birthday">
-							<span class="help-inline"></span>
-						</div>
-					</div>
-					<div class="input-main ">
-						<label for="joiningDate">Joining Date</label>
-						<div class="control-group joiningDate" id="JdateSection">
-							<input type="text" class="datepicker" id="j_date"
-								readonly="readonly" autocomplete="off" name="joiningDate">
-							<span class="help-inline"></span>
-						</div>
-					</div>
-				</div>
-				<div class="input-right-main">
-					<span class="title">Group</span>
-					<div class="control-group groupName" id="groupName">
+			<div class="input-left-main">
+				<div class="input-main">
+					<label for="name">First Name</label>
+					<div class="control-group firstName">
+						<input type="text" id="firstName" maxlength="40" name="firstName">
 						<span class="help-inline"></span>
 					</div>
 				</div>
-				
-				<button class='right radius btn-main open-second' id="signUp_button">Sign Up</button>
-
-			</form>
-		</div>
-		</div>
-	
+				<div class="input-main">
+					<label for="name">Last Name</label>
+					<div class="control-group lastName">
+						<input type="text" id="lastName" maxlength="40" name="lastName">
+						<span class="help-inline"></span>
+					</div>
+				</div>
+				<div class="input-main">
+					<label for="name">Mobile Number : </label>
+					<div class="control-group mobileNumber">
+						<input type="text" id="mobileNumber" maxlength="12"
+							name="mobileNumber"> <span class="help-inline"></span>
+					</div>
+				</div>
+				<div class="input-main">
+					<label for="email">Email</label>
+					<div class="control-group email">
+						<input type="text" id="email" maxlength="40" name="email">
+						<span class="help-inline"></span>
+					</div>
+				</div>
+				<div class="input-main">
+					<label for="pswd">Password</label>
+					<div class="control-group password">
+						<input type="password" maxlength="40" id="password"
+							name="password"> <span class="help-inline"></span>
+					</div>
+				</div>
+				<div class="input-main">
+					<label for="repswd">Retype Password</label>
+					<div class="control-group retypePassword">
+						<input type="password" maxlength="40" id="retypePassword"
+							name="retypePassword"> <span class="help-inline"></span>
+					</div>
+				</div>
+				<div class="input-main">
+					<label for="bday">Birthday</label>
+					<div class="control-group dob" id="bdateSection">
+						<input type="text" class="datepicker" id="b_date"
+							readonly="readonly" autocomplete="off" name="birthday">
+						<span class="help-inline"></span>
+					</div>
+				</div>
+				<div class="input-main ">
+					<label for="joiningDate">Joining Date</label>
+					<div class="control-group joiningDate" id="JdateSection">
+						<input type="text" class="datepicker" id="j_date"
+							readonly="readonly" autocomplete="off" name="joiningDate">
+						<span class="help-inline"></span>
+					</div>
+				</div>
+			</div>
+			<div class="input-right-main">
+				<span class="title">Group</span>
+				<div class="control-group groupName" id="groupName">
+					<span class="help-inline"></span>
+				</div>
+			</div>
+			<button  id="signUp_button" class='right radius btn-main open-second'>Sign Up</button>
+		</form>
+	</div>
 	</script>
 	<div id="secondModal" class="reveal-modal" data-reveal
 		aria-labelledby="secondModalTitle" aria-hidden="true" role="dialog">
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
-		<div class="main-container" id="main-container">
-		<div class="content-container">
-			<div class="row outer-title">
-				<div class="large-12 medium-12 small-12 columns text-main">
-					<p>Employee Sign Up Profile Picture</p>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- <script type="text/template" id="main_template"> -->
-	
-	<div class="row login-container"  align="center">
-		<div class="large-7  medium-12 small-12 columns input-block" align="center">
-			<div id="imgdiv" style="width: 280px; height: 300px; border:solid 1px; vertical-align:middle; display: inline-block;">
-			<img id="image-container" src='<c:url value="images/profilePicture/profile-pic-img.png"></c:url>' />
+		<a href="" class="pageTitle">Employee Sign Up Profile Picture</a>
+		<div class="block cf">
+			<div id="imgdiv" style="width: 280px; height: 300px; border:solid 1px; vertical-align:middle; margin : 0px 35%; display: inline-block;">
+				<img id="image-container" style="width: 280px; height: 300px;" src='<c:url value="images/profilePicture/profile-pic-img.png"></c:url>' />
 			</div>
 				<form enctype="multipart/form-data" 
 				 method="post" action="user/uploadProfile.json" >	
@@ -271,10 +233,9 @@ th {border: 2px;}
 					<label for="profilePic">Select Profile Photo</label> <input
 						type="file" id="fileinput" name="fileinput" accept="image/*"
 						class="browser-select"> <br>
-						 <button  class=" radius" type="button" id="load-image" >Preview</button>
+					 <button  class=" radius" type="button" id="load-image" >Preview</button>
 					<button class=" radius" id="upload_button">Upload</button>
 				</form>
-			</div>
 		</div>
 	</div>
 	<div id="thirdModal" class="reveal-modal" data-reveal
@@ -282,17 +243,8 @@ th {border: 2px;}
 		</div>
 	<script type="text/template" id="edit_template">
 	<a class="close-reveal-modal" aria-label="Close">&#215;</a>
-	<div class="main-container" id="main-container">
-			<div class="content-container">
-				<div class="row outer-title">
-					<div class="large-12 medium-12 small-12 columns text-main">
-						<p>Employee Update Details</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	<div class="row login-container">
-		<div class="large-7  medium-12 small-12 columns input-block">
+	<a href="" class="pageTitle">Employee Update Details</a>
+		<div class="block cf">
 			<span id="error"></span>
 			<form onSubmit="return false;">
 				<div class="input-left-main">
@@ -362,9 +314,7 @@ th {border: 2px;}
 						<span class="help-inline"></span>
 					</div>
 				</div>
-				<button class="right radius btn-main" id="update_button">
-					Update</button>
-		
+				<button class="right radius btn-main" id="update_button">Update</button>
 		</form>
 	</div>
 	</script>

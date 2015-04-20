@@ -15,7 +15,13 @@
 <link rel="stylesheet" type="text/css" href="css/style.css"/>
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
 <style type="text/css">
-    	.error{border:1px solid red;}
+    	.cf:before, .cf:after { content: ""; display: table; }
+		.cf:after { clear: both; }
+		.cf { zoom: 1; }
+		.block{display:block; background-color:#fff; box-shadow: 0 0 16px #ccc; padding:1% 13px; max-width:89%; margin: 0 auto;}
+		.btn-main{padding: 5px 12px;margin-top: 15px;float: right;margin-right: 32px; }
+		.pageTitle{margin:20px 70px; display:block; font-size:20px; color:#000;}
+		.error{border:1px solid red;}
 		.input-left-main{width:100%; float:left;}
 		.input-main{width:100%; float:left; margin-bottom:20px;}
 		
@@ -46,7 +52,7 @@
   <nav class="top-bar" data-topbar role="navigation">
     <ul class="title-area">
       <li class="name">
-        <h1><a href="huddle">CloudZon<span>.huddle</span><img src="_img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
+        <h1><a href="dashboard">CloudZon<span>.huddle</span><img src="_img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
       </li>
       <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
       <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
@@ -54,7 +60,7 @@
     <section class="top-bar-section">
       <!-- Right Nav Section -->
       <ul class="right">
-        <li><a href="huddle">Home</a></li>
+        <li><a href="dashboard">Home</a></li>
         <li><a href="company">Company</a></li>
         <li><a href="careers">Careers</a></li>
         <li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
@@ -137,6 +143,21 @@
       </div>
   </div>
 </div> -->
+	<footer>
+	  <div class="row" id="top-footer">
+	    <div class="large-12 medium-12 small-12 columns">
+	      <div><a href="#"><img src="_img/g.png" alt="google+"></a></div>
+	      <div><a href="#"><img src="_img/tweet.png" alt="twitter"></a></div>
+	      <div><a href="#"><img src="_img/face.png" alt="facebook"></a></div>
+	    </div>
+	  </div>
+	  <div class="row" id="bottom-footer">
+	    <div class="large-12 medium-12 small-12 columns">
+	      <div>©2015 CloudZon. All rights reserved.</div>
+	    </div>
+	  </div>
+</footer>
+
 <script src="js/jquery.js"></script>
 	<script src="js/jquery-ui.js"></script>
 	<script src="js/web-fonts.js"></script>
@@ -151,44 +172,19 @@
 	<script src="js/model/PermissionModel.js"></script>
 	<script src="js/view/PermissionView.js"></script>
 
-	<script type="text/template" id="group_template">
-<div class="content-container">
-    <div class="row outer-title">
-      <div class="large-12 medium-12 small-12 columns text-main">
-        <p>Employee Permision</p>
-      </div>
-    </div>
-    </div>
-<div class="row login-container">
-    <div class="large-7  medium-12 small-12 columns input-block">
-      <div class="input-left-main" >
-		<span id='msgBox' style='color:#008CBA;margin:0 0 20px 10px; padding :0 0 10px 0;'></span>        
-		<div class="input-main" id="group_data" style="border:1px solid #ccc; margin:0 0 20px 0; padding : 10px; ">
-          Select Group : 
+<script type="text/template" id="group_template">
+	<a href="" class="pageTitle">Employee Permision</a>
+	<div class="block cf">
+	      <div class="input-left-main" >
+			<span id='msgBox' style='color:#008CBA;margin:0 0 20px 10px; padding :0 0 10px 0;'></span>        
+			<div class="input-main" id="group_data" style="border:1px solid #ccc; margin:0 0 20px 0; padding : 10px; ">
+	          Select Group : 
+			</div>
+				<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="event_data">
+				</table>
+				<input value='Set Permission' class='add-btn right' id='addButton' type='Button'>
 		</div>
-			<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="event_data">
-			</table>
-			<input value='Set Permission' class='add-btn right' id='addButton' type='Button'>
-		</div>
-      </div>
-     </div>
   </div>
-</div>
-<footer>
-  <div class="row" id="top-footer">
-    <div class="large-12 medium-12 small-12 columns">
-      <div><a href="#"><img src="_img/g.png" alt="google+"></a></div>
-      <div><a href="#"><img src="_img/tweet.png" alt="twitter"></a></div>
-      <div><a href="#"><img src="_img/face.png" alt="facebook"></a></div>
-    </div>
-  </div>
-  <div class="row" id="bottom-footer">
-    <div class="large-12 medium-12 small-12 columns">
-      <div>©2015 CloudZon. All rights reserved.</div>
-    </div>
-  </div>
-</footer>
-
  </script>
 	<script>
 var permissionView = new PermissionView();

@@ -18,6 +18,12 @@
    	<link type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" />
    	<link type="text/css" rel="stylesheet" href="css/jquery.datetimepicker.css">
     <style type="text/css">
+    	 .cf:before, .cf:after { content: ""; display: table; }
+		.cf:after { clear: both; }
+		.cf { zoom: 1; }
+		.block{display:block; background-color:#fff; box-shadow: 0 0 16px #ccc; padding:1% 13px; max-width:89%; margin: 0 auto;}
+		.btn-main{padding: 5px 12px;margin-top: 15px;float: right;margin-right: 32px; }
+		.pageTitle{margin:20px 70px; display:block; font-size:20px; color:#000;}
     	 .errorText{color:red;}
 		.input-left-main{width:48%; float:left;}
 		.input-main{width:100%;}
@@ -26,7 +32,6 @@
 		.input-main label{margin-bottom:10px;}
 		.input-block{width:100%; float:left;}
 		.browser-select{border:1px solid #999; padding:7px;}
-		.btn-main{padding:15px 80px; margin-top:15px;  }
 		.text-main{width:100%; float:left; text-align:center;}
 		.text-main p{width:100%; display:inline-block; border-bottom:1px solid #ccc; padding-bottom:50px;}
 		.select-box{width:100%; border-radius:3px;}
@@ -57,7 +62,7 @@
   <nav class="top-bar" data-topbar role="navigation">
     <ul class="title-area">
       <li class="name">
-        <h1><a href="huddle">CloudZon<span>.huddle</span><img src="_img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
+        <h1><a href="dashboard">CloudZon<span>.huddle</span><img src="_img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
       </li>
       <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
       <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
@@ -65,7 +70,7 @@
     <section class="top-bar-section">
       <!-- Right Nav Section -->
       <ul class="right">
-        <li><a href="huddle">Home</a></li>
+        <li><a href="dashboard">Home</a></li>
         <li><a href="company">Company</a></li>
         <li><a href="careers">Careers</a></li>
         <li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
@@ -84,19 +89,8 @@
 	<div id="addDocumentModal" class="reveal-modal" data-reveal
 		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
-			<div class="content-container">
-				<div class="row outer-title">
-					<div class="large-12 medium-12 small-12 columns">
-						<p>
-						
-							Add Document <br>
-							<span></span>
-						</p>
-					</div>
-					<hr>
-				</div>
-				<div class="row login-container">
-					<div class="large-7  medium-12 small-12 columns input-block">
+				<a href="" class="pageTitle">Add Document</a>
+					<div class="block cf">
 						<span id="error"></span>
 						<form id="documentForm" method="post" onSubmit="return false;">
 							<div class="input-left-main">
@@ -127,27 +121,14 @@
 						</form>
 					</div>
 				</div>
-			</div>
-		</div>
 				
 	<div id="editDocumentModal" class="reveal-modal" data-reveal
 		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
 		</div>
 		<script type="text/template" id="edit_template">
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
-		<div class="content-container">
-				<div class="row outer-title">
-					<div class="large-12 medium-12 small-12 columns">
-						<p>
-						
-							Update Document <br>
-							<span></span>
-						</p>
-					</div>
-					<hr>
-				</div>
-				<div class="row login-container">
-					<div class="large-7  medium-12 small-12 columns input-block">
+			<a href="" class="pageTitle">Update Document</a>
+					<div class="block cf">
 						<span id="error"></span>
 						<form id="documentForm" method="post" onSubmit="return false;">
 							<div class="input-left-main">
@@ -181,8 +162,6 @@
 							<button class='right radius btn-main' id="editDocumentButton">Update Document</button>
 						</form>
 					</div>
-				</div>
-			</div>
 		</script>
 	<footer>
   <div class="row" id="top-footer">
@@ -200,26 +179,13 @@
 </footer>
 
 <script type="text/template" id="document_template">
-<div class="content-container">
-    <div class="row outer-title">
-      <div class="large-12 medium-12 small-12 columns text-main">
-        <p>Documents</p>
-<input type="hidden" id="hidUser" value='<c:out value="${sessionUser.getUsername() }"></c:out>'>
-      </div>
-    </div>
-    </div>
-<div class="row login-container">
-    <div class="large-7  medium-12 small-12 columns input-block">
-      <button data-reveal-id="addDocumentModal" id="addNewDocument" class="radius btn-main">Add Documents</button>
-			<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="document_data">
-			</table>
-		</div>
-      </div>
-     </div>
-  </div>
-</div>
-
-
+<a href="" class="pageTitle">Documents</a>
+	<div class="block cf">
+		<input type="hidden" id="hidUser" value='<c:out value="${sessionUser.getUsername() }"></c:out>'>
+	    <button data-reveal-id="addDocumentModal" id="addNewDocument" class="radius btn-main">Add Documents</button>
+		<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="document_data">
+		</table>
+	</div>
 </script>
 
 	<script src="js/jquery.js"></script>

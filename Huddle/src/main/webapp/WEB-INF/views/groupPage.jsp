@@ -18,6 +18,12 @@
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
 <link type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" />
 <style type="text/css">
+		.cf:before, .cf:after { content: ""; display: table; }
+		.cf:after { clear: both; }
+		.cf { zoom: 1; }
+		.block{display:block; background-color:#fff; box-shadow: 0 0 16px #ccc; padding:1% 13px; max-width:89%; margin: 0 auto;}
+		.btn-main{padding: 5px 12px;margin-top: 15px;float: right;margin-right: 32px; }
+		.pageTitle{margin:20px 70px; display:block; font-size:20px; color:#000;}
 		.errorText{color:red;}
     	.error{border:1px solid red;}
 		.input-left-main{width:100%; float:left;}
@@ -26,8 +32,6 @@
 		.input-main-input{ border-radius:3px !important; padding:4px 10px !important; height:auto; width:80% !important; float:left;}
 		.input-main label{margin-bottom:10px;}
 		.input-block{width:100%; float:left;}
-		
-		.btn-main{padding:9px 56px;  background-color:#000; color:#fff; border:none;  border-radius:5px; cursor:pointer; margin-bottom:20px;}
 		
 		.add-btn{width:auto; padding:5px 25px; background-color:#000; color:#fff; border-radius:5px; border:none}
 		@media (max-width:640px) {
@@ -50,7 +54,7 @@
   <nav class="top-bar" data-topbar role="navigation">
     <ul class="title-area">
       <li class="name">
-        <h1><a href="huddle">CloudZon<span>.huddle</span><img src="_img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
+        <h1><a href="dashboard">CloudZon<span>.huddle</span><img src="_img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
       </li>
       <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
       <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
@@ -58,7 +62,7 @@
     <section class="top-bar-section">
       <!-- Right Nav Section -->
       <ul class="right">
-        <li><a href="huddle">Home</a></li>
+        <li><a href="dashboard">Home</a></li>
         <li><a href="company">Company</a></li>
         <li><a href="careers">Careers</a></li>
         <li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
@@ -77,71 +81,40 @@
     <input type="hidden" Id="flag">
 	<div id="addGroupModal" class="reveal-modal" data-reveal
 		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
-			<a class="close-reveal-modal" aria-label="Close">&#215;</a>
-			<div class="content-container">
-				<div class="row outer-title">
-					<div class="large-12 medium-12 small-12 columns">
-						<p>
-							Add Group <br>
-							<span></span>
-						</p>
-					</div>
-					<hr>
-				</div>
-				<div class="row login-container">
-					<div class="large-8 medium-12 small-12 columns">
-						<div class="input-left-main">
-							<div class="input-main"
-								style="border: 1px solid #ccc; margin: 0 0 20px 0; padding: 10px;">
-								<input type="hidden" id="hidId">
-								<div class="input-main">
-									<label for="name">Group Name</label>
-									<div class="control-group roleName">
-										<input type="text" id="roleName" maxlength="40" name="roleName">
-										<span class="help-inline"></span>
-									</div>
-								</div>			
-								<button class='right radius btn-main' id="addGroupButton">Add Group</button>
-							</div>
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+		<a href="" class="pageTitle">Add Group</a>
+		<div class="block cf">
+			<div class="input-left-main">
+					<input type="hidden" id="hidId">
+					<div class="input-main">
+						<label for="name">Group Name</label>
+						<div class="control-group roleName">
+							<input type="text" id="roleName" maxlength="40" name="roleName">
+							<span class="help-inline"></span>
 						</div>
-					</div>
-				</div>
+					</div>			
+					<button class='right radius btn-main' id="addGroupButton">Add Group</button>
 			</div>
 		</div>
-		
+	</div>
 		<div id="editGroupModal" class="reveal-modal" data-reveal
 		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
 		</div>
 		<script type="text/template" id="edit_template">
-			<a class="close-reveal-modal" aria-label="Close">&#215;</a>
-			<div class="content-container">
-				<div class="row outer-title">
-					<div class="large-12 medium-12 small-12 columns">
-						<p>
-							Add Group <br>
-							<span></span>
-						</p>
-					</div>
-					<hr>
-				</div>
-				<div class="row login-container">
-					<div class="large-8 medium-12 small-12 columns">
-						<div class="input-left-main">
-							<div class="input-main"
-								style="border: 1px solid #ccc; margin: 0 0 20px 0; padding: 10px;">
-							<div class="input-main">
-								<label for="name">Group Name</label>
-								<div class="control-group roleName">
-									<input type="text" id="editRoleName" maxlength="40" name="roleName">
-									<span class="help-inline"></span>
-								</div>
-							</div>								 
-								<button class='right radius btn-main' id="editGroupButton">Update Group</button>
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+			<a href="" class="pageTitle">Update Group</a>
+				<div class="block cf">
+					<div class="input-left-main">
+						<div class="input-main">
+							<label for="name">Group Name</label>
+							<div class="control-group roleName">
+								<input type="text" id="editRoleName" maxlength="40" name="roleName">
+								<span class="help-inline"></span>
 							</div>
-						</div>
+						</div>								 
+						<button class='right radius btn-main' id="editGroupButton">Update Group</button>
 					</div>
 				</div>
-			</div>
 		</script>
 	<footer>
   <div class="row" id="top-footer">
@@ -159,25 +132,12 @@
 </footer>
 
 <script type="text/template" id="group_template">
-<div class="content-container">
-    <div class="row outer-title">
-      <div class="large-12 medium-12 small-12 columns text-main">
-        <p>Add Group</p>
-      </div>
-    </div>
-    </div>
-<div class="row login-container">
-    <div class="large-7  medium-12 small-12 columns input-block">
+<a href="" class="pageTitle">Groups</a>
+	<div class="block cf">
       <button data-reveal-id="addGroupModal" id="addNewGroup" class="radius btn-main">Add Group</button>
 			<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="group_data">
 			</table>
-		</div>
-      </div>
-     </div>
-  </div>
-</div>
-
-
+	</div>
 </script>
 
 	<script src="js/jquery.js"></script>

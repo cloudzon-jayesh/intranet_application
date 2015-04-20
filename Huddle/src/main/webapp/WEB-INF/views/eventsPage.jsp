@@ -19,7 +19,13 @@
 	<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
 	<link type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" />
     <style type="text/css">
-    	 .errorText{color:red;}
+    	 .cf:before, .cf:after { content: ""; display: table; }
+		.cf:after { clear: both; }
+		.cf { zoom: 1; }
+		.block{display:block; background-color:#fff; box-shadow: 0 0 16px #ccc; padding:1% 13px; max-width:89%; margin: 0 auto;}
+		.btn-main{padding: 5px 12px;margin-top: 15px;float: right;margin-right: 32px; }
+		.pageTitle{margin:20px 70px; display:block; font-size:20px; color:#000;}
+		.errorText{color:red;}
 		.input-left-main{width:48%; float:left;}
 		.input-main{width:100%;}
 		
@@ -27,7 +33,6 @@
 		.input-main label{margin-bottom:10px;}
 		.input-block{width:100%; float:left;}
 		.browser-select{border:1px solid #999; padding:7px;}
-		.btn-main{padding:15px 80px; margin-top:15px;  }
 		.text-main{width:100%; float:left; text-align:center;}
 		.text-main p{width:100%; display:inline-block; border-bottom:1px solid #ccc; padding-bottom:50px;}
 		.select-box{width:100%; border-radius:3px;}
@@ -58,7 +63,7 @@
   <nav class="top-bar" data-topbar role="navigation">
     <ul class="title-area">
       <li class="name">
-        <h1><a href="huddle">CloudZon<span>.huddle</span><img src="_img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
+        <h1><a href="dashboard">CloudZon<span>.huddle</span><img src="_img/talk.png" alt="chat" height="16"width="16" hspace="3" style="padding-bottom:10px"></a></h1>
       </li>
       <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
       <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
@@ -66,7 +71,7 @@
     <section class="top-bar-section">
       <!-- Right Nav Section -->
       <ul class="right">
-        <li><a href="huddle">Home</a></li>
+        <li><a href="dashboard">Home</a></li>
         <li><a href="company">Company</a></li>
         <li><a href="careers">Careers</a></li>
         <li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
@@ -86,65 +91,50 @@
 	<div id="addEventModal" class="reveal-modal" data-reveal
 		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
-			<div class="content-container">
-				<div class="row outer-title">
-					<div class="large-12 medium-12 small-12 columns">
-						<p>
-							Add Event <br>
-							<span></span>
-						</p>
+		<a href="" class="pageTitle">Add Event</a>
+			<div class="block cf">
+				<span id="error"></span>
+				<form id="eventForm" enctype="multipart/form-data" onsubmit="return false">
+					<div class="input-left-main">
+					<input type="hidden" Id="hidId">
+						<label for="eventName">Event Name </label>
+						<div class="control-group eventName">
+							<input type="text" size="40" name="eventName" id="eventName" >
+							<span class="help-inline"></span>
+						</div> 
+						<label for="description">Description</label>
+						<div class="description control-group">
+							<textarea rows="3" cols="10" name="description" id="description"></textarea>
+							<span class="help-inline"></span>
+						</div>
+						<label for="date">Date</label>
+						<div class="date control-group">
+							<input type="text" name="date" id="date" readonly="readonly" autocomplete="off">
+							<span class="help-inline"></span>
+						</div>
+						<label for="time">Time</label>
+						<div class="time control-group">
+							<input type="text" name="time" id="time" autocomplete="off">
+							<span class="help-inline"></span>
+						</div>
 					</div>
-					<hr>
-				</div>
-				<div class="row login-container">
-					<div class="large-7  medium-12 small-12 columns input-block">
-						<span id="error"></span>
-						<form id="eventForm" enctype="multipart/form-data" onsubmit="return false">
-							<div class="input-left-main">
-							<input type="hidden" Id="hidId">
-								<label for="eventName">Event Name </label>
-								<div class="control-group eventName">
-									<input type="text" size="40" name="eventName" id="eventName" >
-									<span class="help-inline"></span>
-								</div> 
-								<label for="description">Description</label>
-								<div class="description control-group">
-									<textarea rows="3" cols="10" name="description" id="description"></textarea>
-									<span class="help-inline"></span>
-								</div>
-								<label for="date">Date</label>
-								<div class="date control-group">
-									<input type="text" name="date" id="date" readonly="readonly" autocomplete="off">
-									<span class="help-inline"></span>
-								</div>
-								<label for="time">Time</label>
-								<div class="time control-group">
-									<input type="text" name="time" id="time" autocomplete="off">
-									<span class="help-inline"></span>
-								</div>
-							</div>
-							<div class="input-right-main">
-								<span class="title">Images</span>
-								<div class="control-group imageGroup" id="imageGroup">
-									<div class="control-group fileinput">
-										<label for="eventImage">Select Image</label>
-										<input type="file" class="imgGroup" name="fileinput" accept="image/*"
-										class="browser-select">
-									</div>	
-									<span class="help-inline"></span>
-								</div>
-								<a class="right" id="addImageButton" >Add More Images</a>
+					<div class="input-right-main">
+						<span class="title">Images</span>
+						<div class="control-group imageGroup" id="imageGroup">
+							<div class="control-group fileinput">
+								<label for="eventImage">Select Image</label>
+								<input type="file" class="imgGroup" name="fileinput" accept="image/*"
+								class="browser-select">
 							</div>	
-							<div class="input right main">
-									
-								</div>	
-							<Button class='radius right btn-main' id="addEventButton">Add Event</Button>
-						</form>
-					</div>
-				</div>
+							<span class="help-inline"></span>
+						</div>
+						<a class="right" id="addImageButton" >Add More Images</a>
+					</div>	
+					<Button class='radius right btn-main' id="addEventButton">Add Event</Button>
+				</form>
 			</div>
 		</div>
-				
+			
 			
 		<!-- <div id="uploadModel" class="reveal-modal" data-reveal
 		aria-labelledby="secondModalTitle" aria-hidden="true" role="dialog">
@@ -177,19 +167,9 @@
 		</div>
 		<script type="text/template" id="edit_template">
 			<a class="close-reveal-modal" aria-label="Close">&#215;</a>
-			<div class="content-container">
-				<div class="row outer-title">
-					<div class="large-12 medium-12 small-12 columns">
-						<p>
-							Update Event <br>
-							<span></span>
-						</p>
-					</div>
-					<hr>
-				</div>
-				<div class="row login-container">
-					<div class="large-8 medium-12 small-12 columns">
-							<div class="input-left-main">
+			<a href="" class="pageTitle">Update Event</a>
+				<div class="block cf">
+					<div class="input-left-main">
 						<label for="eventName">Event Name </label>
 						<div class="control-group eventName">
 							<input type="text" size="40"  name="eventName" id="editEventName" >
@@ -211,22 +191,21 @@
 							<span class="help-inline"></span>
 						</div>
 					</div>
-						<div class="input-right-main">
-								<span class="title">Images</span>
-								<div class="control-group imageGroup" id="editImageGroup">
-									<div class="control-group fileinput">
-										<label for="projectImage">Project Images</label>
-										<input type="file" class="imgGroup" name="images" accept="image/*"
-										class="browser-select" style="display:none;">
-										<input name="editImagesChecked" checked="checked" type="checkbox" value="0" class="imgGroup" style="display:none;">
-									</div>	
-									<span class="help-inline"></span>
-								</div>
-								<a class="radius right" id="editAddImageButton">Add More Images</a>
+					<div class="input-right-main">
+						<span class="title">Images</span>
+						<div class="control-group imageGroup" id="editImageGroup">
+							<div class="control-group fileinput">
+								<label for="projectImage">Project Images</label>
+								<input type="file" class="imgGroup" name="images" accept="image/*"
+								class="browser-select" style="display:none;">
+								<input name="editImagesChecked" checked="checked" type="checkbox" value="0" class="imgGroup" style="display:none;">
 							</div>	
-						<button class='right radius btn-main' id="editEventButton">Update Event</button></div>
+							<span class="help-inline"></span>
 						</div>
-			</div>
+						<a class="radius right" id="editAddImageButton">Add More Images</a>
+					</div>	
+					<button class='right radius btn-main' id="editEventButton">Update Event</button></div>
+				</div>
 		</script>
 	<footer>
   <div class="row" id="top-footer">
@@ -244,25 +223,12 @@
 </footer>
 
 <script type="text/template" id="event_template">
-<div class="content-container">
-    <div class="row outer-title">
-      <div class="large-12 medium-12 small-12 columns text-main">
-        <p>Events</p>
-      </div>
-    </div>
-    </div>
-<div class="row login-container">
-    <div class="large-7  medium-12 small-12 columns input-block">
+<a href="" class="pageTitle">Events</a>
+	<div class="block cf">
       <button data-reveal-id="addEventModal" id="addNewEvent" class="radius btn-main">Add Events</button>
-			<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="event_data">
-			</table>
-		</div>
-      </div>
-     </div>
-  </div>
-</div>
-
-
+		<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="event_data">
+		</table>
+	</div>
 </script>
 
 	<script src="js/jquery.js"></script>
