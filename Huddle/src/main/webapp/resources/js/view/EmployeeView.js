@@ -82,21 +82,18 @@ var EmployeeView = Backbone.View
 									tBody.append(tr);
 									if($("#flag").val().indexOf("R") >= 0)
 									{
-										console.log("read");
 										th0.hide();
 										td0.hide();
 										button.hide();
 									}
 									if($("#flag").val().indexOf("W") >= 0)
 									{
-										console.log("wr");
 										th0.show();
 										td0.show();
 										button.show();
 									}
 									if($("#flag").val().indexOf("D") >= 0)
 									{
-										console.log("del");
 									}
 								}
 								

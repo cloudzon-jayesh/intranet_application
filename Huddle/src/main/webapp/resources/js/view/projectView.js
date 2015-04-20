@@ -24,6 +24,140 @@ var projectView = Backbone.View.extend({
 			success : function(data)
 			{
 				var len = data.length;
+				for(var i=0;i<len;i++)
+				{
+					var userName = (data[i].userName).split('@');
+					var blocks = $('<div class="block img">'+
+						   '<h2>'+data[i].projectName+'</h2>'+
+						   '<h3>'+data[i].url+'</h3>'+
+						   '<div class="name-post cf">'+
+						   		'<img src="img/H.png">'+
+								   '<div class="overlay">'+
+								   '<div class="first-part">'+
+								   '<a href="#" title="Overview">'+
+								   	'<div class="overview-part cf" attr-name='+data[i].id+'>'+
+										'<img class="image" src="img/overview.png" alt="overview">'+
+										'<h4>Overview</h4>'+
+									'</div>'+
+									'</a>'+
+									'<a href="#" title="Tasks">'+
+									'<div class="discussion-part cf newTask" attr-name='+data[i].id+'>'+
+										'<img class="image" src="img/discussion.png" alt="tasks">'+
+										'<h4>Tasks</h4>'+
+									'</div>'+
+									'<a>'+
+									'</div>'+
+									'<div class="cf"></div>'+
+									'<div class="second-part">'+
+									'<a target="_blank" href= projects/project/'+ data[i].projectPath +' title="Project">'+
+									'<div class="files-part cf">'+
+										'<img class="image" src="img/files.png" alt="overview">'+
+										'<h4>Projects</h4>'+
+									'</div>'+
+									'</a>'+
+									'<a target="_blank" href= projects/document/'+ data[i].document +' title="Documents">'+
+									'<div class="calendar-part cf">'+
+										'<img class="image" src="img/calendar.png" alt="overview">'+
+										'<h4>Documents</h4>'+
+									'</div>'+
+									'</a>'+
+								    '</div>'+
+									'</div>'+
+								'<span class="desc">'+
+									'<div class="name">'+ userName[0] +'</div>'+
+									'<div class="post">Manager</div>'+
+								'</span>'+	  
+						   '</div>'+
+						   '<a href="#" class="more-btn"><span>'+ userName[0] +'</span>'+
+						   '<span>7 Days</span>'+
+						   '</a>'+
+						   '</div>');
+						$("#effect-1").append(blocks);
+				}
+				/*<span><a href="#" class="edit_button" title="edit" attr-name="'+ data[i].id + '">Edit</a>'+
+				   '<a href="#" class="delete_button right" title="delete" attr-name="'+ data[i].id + '">Delete</a><span>'+*/
+				$('.newTask').click(function() {
+					var name = $(this).attr("attr-name");
+					console.log(name);
+					$("#hidId").val(name);
+					//$("#projectId").val(name);
+					var tasksProjectView1 = new tasksProjectView({
+						el : $("#tasksModal"),
+					});
+					tasksProjectView1.render();
+					$('#tasksModal').foundation('reveal', 'open');
+				});
+				$('.edit_button').click(function() {
+					var name = $(this).attr("attr-name");
+					console.log(name);
+					$("#hidId").val(name);
+					$("#projectId").val(name);
+					var editProjectView1 = new editProjectView({
+						el : $("#editProjectModal"),
+					});
+					editProjectView1.render();
+					$('#editProjectModal').foundation('reveal', 'open');
+				});
+				$('.delete_button').click(function() {
+					var name = $(this).attr("attr-name");
+					$.ajax({
+						url : 'user/deleteProject.json',
+						type : 'POST',
+						data : JSON.stringify({	"id" : name}),
+						headers : 
+							{
+								'Accept' : 'application/json',
+								'Content-Type' : 'application/json; charset=UTF-8'
+							},
+						success :function(data)
+						{
+							console.log("Success");
+							projectView.render();
+						},
+						error : function(data) {
+							console.log("Error");
+						}
+					});
+				});
+				$('.overview-part').click(function() {
+					var name = $(this).attr("attr-name");
+					console.log(name);
+					$("#hidId").val(name);
+					//$("#projectId").val(name);
+					var statusProjectView1 = new statusProjectView({
+						el : $("#statusModal"),
+					});
+					statusProjectView1.render();
+					$('#statusModal').foundation('reveal', 'open');
+				});
+				if (Modernizr.touch) {
+		            // show the close overlay button
+		            $(".close-overlay").removeClass("hidden");
+		            // handle the adding of hover class when clicked
+		            $(".img").click(function(e){
+		                if (!$(this).hasClass("hover")) {
+		                    $(this).addClass("hover");
+		                }
+		            });
+		            // handle the closing of the overlay
+		            $(".close-overlay").click(function(e){
+		                e.preventDefault();
+		                e.stopPropagation();
+		                if ($(this).closest(".img").hasClass("hover")) {
+		                    $(this).closest(".img").removeClass("hover");
+		                }
+		            });
+		        } else {
+		            // handle the mouseenter functionality
+		            $(".img").mouseenter(function(){
+		                $(this).addClass("hover");
+		            })
+		            // handle the mouseleave functionality
+		            .mouseleave(function(){
+		                $(this).removeClass("hover");
+		            });
+		        }
+				/*var len = data.length;
 				var thead = $("<thead></thead>");
 				var trh = $("<tr></tr>");
 				var th0 = $("<th>Action</th>");
@@ -72,7 +206,6 @@ var projectView = Backbone.View.extend({
 					$("#project_data").append(tBody);
 					if($("#flag").val().indexOf("R") >= 0)
 					{
-						console.log("read");
 						th0.hide();
 						td0.hide();
 						button1.hide();
@@ -80,20 +213,18 @@ var projectView = Backbone.View.extend({
 					}
 					if($("#flag").val().indexOf("W") >= 0)
 					{
-						console.log("wr");
 						th0.show();
 						td0.show();
 						button1.show();
 					}
 					if($("#flag").val().indexOf("D") >= 0)
 					{
-						console.log("del");
 						th0.show();
 						td0.show();
 						button2.show();
-					}
+					}*/
 				}
-				$('.edit_button').click(function() {
+				/*$('.edit_button').click(function() {
 					var name = $(this).attr("attr-name");
 					console.log(name);
 					$("#hidId").val(name);
@@ -124,8 +255,8 @@ var projectView = Backbone.View.extend({
 							console.log("Error");
 						}
 					});
-				});
-				var table = $('#project_data').dataTable({
+				});*/
+				/*var table = $('#project_data').dataTable({
 					responsive: true,
 					 "searching": false,
 					  	"order": [[ 1, "desc" ]],
@@ -133,8 +264,8 @@ var projectView = Backbone.View.extend({
 					    "columnDefs": [ { orderable: false, targets: [0] }],
 					    "bAutoWidth": false,
 					    "bLengthChange": false
-				});
-			}
+				});*/
+			
 		});
 	}
 });
@@ -238,7 +369,7 @@ var addProject =  Backbone.View.extend({
 		{
 			flag3 = true;
 			console.log("video file error");
-			$(".video").find('.help-inline').text("Video File Size must be less than 20mb.").addClass('errorText');
+			$(".projectVideo").find('.help-inline').text("Video File Size must be less than 20mb.").addClass('errorText');
 		}
 		else
 		{ 
@@ -250,12 +381,12 @@ var addProject =  Backbone.View.extend({
 			"description" : $("#description").val(),
 			"url" : $("#url").val()
 		});
-		if (!this.projectModel.isValid() || flag1 === true  || flag2 === true  || flag3 === true)   {
+		if (!this.projectModel.isValid() || flag1 == true  || flag2 == true  || flag3 == true)   {
 			this.showErrors(this.projectModel.validationError);
 			e.preventDefault();
-			/*$("#projectForm").submit(function(){
+			$("#projectForm").submit(function(){
 				return false;
-			});*/
+			});
 		} else {
 			//$("#projectForm").submit();
 			console.log("Submiited");
@@ -274,6 +405,7 @@ var addProject =  Backbone.View.extend({
 			 data.append('document', document);
 			 data.append('video', video);
 			 data.append('group', val);
+			 data.append("userName",$("#hidUser").val());
 			 $.each($("input[name^=images]"), function(i, obj) {
 			        $.each(obj.files,function(j,file){
 			            data.append('images',file);
@@ -304,7 +436,7 @@ var addProject =  Backbone.View.extend({
 	showErrors : function(errors) {
 		_.each(errors, function(error) {
 			var controlGroup = this.$('.' + error.name);
-			//controlGroup.addClass('error');
+			controlGroup.addClass('error');
 			//console.log(error);
 			controlGroup.find('.help-inline').text(error.message);
 			controlGroup.find('.help-inline').addClass('errorText');
@@ -327,18 +459,22 @@ var editProjectView = Backbone.View.extend({
 		this.getUserRole();
 		this.getProjectFromId();
 		$("#projectId").val($("#hidId").val());
+		var self = this;
+		$("#editAddImageButton").click(function(){
+			self.addImage();
+		});
 	},
 	events : {
 		"click #editProjectButton" : "editProject",
 		"click #changeProject" : "changeProject",
 		"click #changeDocument" : "changeDocument",
 		"click #changeVideo" : "changeVideo",
-		"click #editAddImageButton" : "addImage",
+		//"click #editAddImageButton" : "addImage",
 	},
 	changeProject : function()
 	{
-		/*var projectInput = $('<div><input type="file" name="url" id="editUrl"' 
-		+'accept=".war,.rar,.zip" class="browser-select">');*/
+		var projectInput = $('<div><input type="file" name="url" id="editUrl"' 
+		+'accept=".war,.rar,.zip" class="browser-select">');
 			var remove = $('<a href="#" id="remove1">'
 			+'<img src= "images/remove.png" style="width:20px; height:20px;"></a></div>');
 		var addLink = $('<a class="radius right" id="changeProject">Change Project</a>');
@@ -354,8 +490,8 @@ var editProjectView = Backbone.View.extend({
 	},
 	changeDocument : function()
 	{
-		/*var projectInput = $('<div><input type="file" name="document" id="editDocument"' 
-			+'accept=".txt,.doc,.docx,.rtf,.pdf" class="browser-select">'*/
+		var projectInput = $('<div><input type="file" name="document" id="editDocument"' 
+			+'accept=".txt,.doc,.docx,.rtf,.pdf" class="browser-select">');
 			var remove = $('<a href="#" id="remove2">'
 			+'<img src= "images/remove.png" style="width:20px; height:20px;"></a></div>');
 		var addLink = $('<a class="radius right" id="changeDocument">Change Document</a>');
@@ -371,8 +507,8 @@ var editProjectView = Backbone.View.extend({
 	},
 	changeVideo : function()
 	{
-		/*var projectInput = $('<div><input type="file" name="video" id="editVideo"' 
-			+'accept="video/*" class="browser-select">'*/
+		var projectInput = $('<div><input type="file" name="video" id="editVideo"' 
+			+'accept="video/*" class="browser-select">');
 			var remove = $('<a href="#"  id="remove3">'
 			+'<img src= "images/remove.png" style="width:20px; height:20px;"></a></div>');
 		var addLink = $('<a class="radius right" id="changeVideo">Change Video</a>');
@@ -640,6 +776,398 @@ var editProjectView = Backbone.View.extend({
 		_.each(errors, function(error) {
 			var controlGroup = this.$('.' + error.name);
 			console.log(error.name);
+			controlGroup.addClass('error');
+			controlGroup.find('.help-inline').text(error.message);
+			controlGroup.find('.help-inline').addClass('errorText');
+		}, this);
+	},
+	hideErrors : function() {
+		this.$('.control-group').removeClass('error');
+		this.$('.help-inline').text('');
+	}
+});
+
+var tasksProjectView = Backbone.View.extend({
+
+	el : $(""),
+	initialize : function() {
+	},
+	render : function() {
+		var template = _.template($("#tasks_template").html(), {});
+		this.$el.html(template);
+		this.getTasksFromId();
+		var view = this;
+		$("#editProjectBtn").click(function(){
+			view.editProject();
+		});
+		$("#deleteProjectBtn").click(function(){
+			view.deleteProject();
+		});
+	},
+	editProject : function()
+	{
+		var editProjectView1 = new editProjectView({
+			el : $("#editProjectModal"),
+		});
+		editProjectView1.render();
+		$('#editProjectModal').foundation('reveal', 'open');
+	},
+	deleteProject : function()
+	{
+		$.ajax({
+			url : 'user/deleteProject.json',
+			type : 'POST',
+			data : JSON.stringify({	"id" : $("#hidId").val()}),
+			headers : 
+				{
+					'Accept' : 'application/json',
+					'Content-Type' : 'application/json; charset=UTF-8'
+				},
+			success :function(data)
+			{
+				console.log("Success");
+				$('#tasksModal').foundation('reveal', 'close');
+				projectView.render();
+			},
+			error : function(data) {
+				console.log("Error");
+			}
+		});
+	},
+	getTasksFromId : function()
+	{
+		var view = this;
+		var id = $("#hidId").val();
+		$.ajax({
+			url : 'user/getTasks.json',
+			type : "POST",
+			headers : {
+				'Accept' : 'application/json',
+				'Content-Type' : 'application/json; charset=UTF-8'
+			},
+			data : JSON.stringify(
+				{
+					"id" : id
+				}),
+		success: function (data) {
+			
+			var len = data.length;
+			var thead = $("<thead></thead>");
+			var trh = $("<tr></tr>");
+			var th1 = $("<th>Action</th>");
+			var th2 = $("<th>Tasks</th>");
+			var th3 = $("<th>Start Date</th>");
+			var th4 = $("<th>End Date</th>");
+			var th5 = $("<th>Status</th>");
+			trh.append(th1);
+			trh.append(th2);
+			trh.append(th3);
+			trh.append(th4);
+			trh.append(th5);
+			thead.append(trh);
+			$("#task_data").html(thead);
+			var tBody = $("<tbody></tbody>");
+			var todaysDate = new Date();
+			for (var i = (len-1); i >= 0; i--) 
+			{
+				var m_names = new Array("Jan", "Feb", "Mar", 
+						"Apr", "May", "Jun", "Jul", "Aug", "Sep", 
+						"Octr", "Nov", "Dec");
+				var sDate = new Date(data[i].startDate);
+				var date1 = sDate.getDate();
+				var month1 = sDate.getMonth();
+				var year1 = sDate.getFullYear();
+				var startDate = date1 + "-" + m_names[month1]+ "-" + year1;
+				
+				var eDate = new Date(data[i].endDate);
+				var date2 = eDate.getDate();
+				var month2 = eDate.getMonth();
+				var year2 = eDate.getFullYear();
+				var endDate = date2 + "-" + m_names[month2]+ "-" + year2;
+				
+				var tr = $("<tr></tr>");
+				var td1 = $("<td></td>");
+				var td2 = $("<td>"+ data[i].tasks +"</td>");
+				var td3 = $("<td>"+ startDate +"</td>");
+				var td4 = $("<td>"+ endDate +"</td>");
+				
+				var button1 = $("<a href=# class='complete_button' title='Complete' attr-name='"+ data[i].id + "'>&nbsp;<img src= 'img/project.png' style='width:15px; height:15px;'></a>");
+				var button2 =$("<a href=# class='delete_button' title='delete' attr-name='"+ data[i].id + "'>&nbsp;<img src= 'images/delete.png' style='width:20px; height:20px;'></a>");
+				console.log(data[i].complete);
+				
+				if(todaysDate >= eDate)
+				{
+					if(data[i].complete == true)
+					{
+						console.log("true");
+						var td5 = $("<td><font color='blue'>DONE</font></td>");
+					}
+					else
+					{
+						var td5 = $("<td><font color='red'><b>PRIOR</b></font></td>");
+						console.log("doneee");
+					}
+				}
+				else
+				{
+					if(data[i].complete == true)
+					{
+						console.log("true");
+						var td5 = $("<td><font color='blue'><b>DONE</b></font></td>");
+					}
+					else
+					{
+						var td5 = $("<td><font color='green'><b>IN WORKING</b></font></td>");
+						console.log("work");
+					}
+				}
+				td1.append(button1);
+				td1.append(button2);
+				tr.append(td1);
+				tr.append(td2);
+				tr.append(td3);
+				tr.append(td4);
+				tr.append(td5);
+				tBody.append(tr);
+				
+				$("#task_data").append(tBody);
+				if($("#flag").val().indexOf("R") >= 0)
+				{
+					console.log($("#flag").val());
+					th1.hide();
+					td1.hide();
+					button1.hide();
+					button2.hide();
+					$("#editProjectBtn").hide();
+					$("#deleteProjectBtn").hide();
+				}
+				if($("#flag").val().indexOf("W") >= 0)
+				{
+					console.log($("#flag").val());
+					th1.show();
+					td1.show();
+					button1.show();
+					$("#editProjectBtn").show();
+					$("#deleteProjectBtn").show();
+				}
+				if($("#flag").val().indexOf("D") >= 0)
+				{
+					console.log($("#flag").val());
+					th1.show();
+					td1.show();
+					button2.show();
+					$("#editProjectBtn").show();
+					$("#deleteProjectBtn").show();
+				}
+			}
+			var tr1 = $("<tr></tr>");
+			var tdb = $('<td></td>');
+			
+
+			var td6 = $('<td></td>');
+			var div1 = $('<div class="control-group taskName"></div>');
+			var inputTask = $('<input type="text" size="40" name="taskName" id="taskName" placeholder="Task">');
+			var span1 = $('<span class="help-inline"></span>');
+			div1.append(inputTask);
+			div1.append(span1);
+			td6.append(div1);
+			
+			var td7 = $('<td></td>');
+			var div2 = $('<div class="control-group startDate"></div>');
+			var inputStart = $('<input type="text" name="startDate" id="startDate" placeholder="Start Date">');
+			var span2 = $('<span class="help-inline"></span>');
+			div2.append(inputStart);
+			div2.append(span2);
+			td7.append(div2);
+			
+			var td8 = $('<td></td>');
+			var div3 = $('<div class="control-group endDate"></div>');
+			var inputEnd = $('<input type="text" name="endDate" id="endDate" placeholder="End Date">');
+			var span3 = $('<span class="help-inline"></span>');
+			div3.append(inputEnd);
+			div3.append(span3);
+			td8.append(div3);
+			
+			var td9 = $('<td></td>');
+			var btn = $('<Button class="radius btn-main" id="addTaskButton">Add Tasks</Button>');
+			
+			btn.click(function()
+			{
+				view.addNewTask();
+			});
+			td9.append(btn);
+			
+			var plus = $('<img class="image" src="img/Add.png" title="Add Task" alt="Add" style="height:30px;width:30px;">');
+			tdb.append(plus);
+			/*var td6 = $('<td>'
+					+'<div class="control-group taskName">'
+					+'<input type="text" size="40" name="taskName" id="taskName" >'
+					+'<span class="help-inline"></span>'
+					+'</div>' 
+					+'</td>');*/
+			/*var td7 = $('<td>'
+					+'<div class="control-group startDate">'
+					+'<input type="text" name="startDate" id="startDate" >'
+					+'<span class="help-inline"></span>'
+					+'</div>'
+					+'</td>');
+			var td8 = $('<td>'
+					+'<div class="control-group endDate">'
+					+'<input type="text" name="endDate" id="endDate" >'
+					+'<span class="help-inline"></span>'
+					+'</div>'
+					+'</td>');*/
+			/*var td9 = $('<td>'
+					+'<Button class="radius right btn-main" id="addTaskButton">Add Tasks</Button>'
+					+'</td>');*/
+			tr1.append(tdb);
+			tr1.append(td6);
+			tr1.append(td7);
+			tr1.append(td8);
+			tr1.append(td9);
+			
+			if($("#flag").val().indexOf("R") >= 0)
+			{
+				
+			}
+			if($("#flag").val().indexOf("W") >= 0)
+			{
+				tBody.append(tr1);
+			}
+			$("#task_data").append(tBody);
+			inputStart.datepicker(
+			{
+				dateFormat: 'dd/mm/yy',
+				minDate : 0,
+				changeMonth: true,
+	            changeYear: true,
+	            yearRange: "+0:+10",
+				onSelect : function(dateText, datePicker) 
+				{
+					console.log('onSelect', dateText);
+					$(this).selectedDate = dateText;
+		           // inputEnd.datepicker("option", "minDate", dateText);
+		            var date = $(this).datepicker('getDate');
+	                if (date) 
+	                {
+	                	date.setDate(date.getDate() + 1);
+	                }
+	                inputEnd.datepicker('option', 'minDate', date);
+				}
+			});
+			
+			inputEnd.datepicker(
+			{
+				dateFormat: 'dd/mm/yy',
+				minDate : 1,
+				changeMonth: true,
+	            changeYear: true,
+	            yearRange: "+0:+10",
+				onSelect : function(dateText, datePicker) 
+				{
+					console.log('onSelect', dateText);
+					$(this).selectedDate = dateText;
+				}
+			});
+			$('.complete_button').click(function() {
+				var name = $(this).attr("attr-name");
+				$.ajax({
+					url : 'user/setCompleteTask.json',
+					type : 'POST',
+					data : JSON.stringify({	"id" : name}),
+					headers : 
+						{
+							'Accept' : 'application/json',
+							'Content-Type' : 'application/json; charset=UTF-8'
+						},
+					success :function(data)
+					{
+						console.log("Success");
+						var tasksProjectView1 = new tasksProjectView();
+						tasksProjectView1.getTasksFromId();
+						//$('#tasksModal').foundation('reveal', 'open');
+					},
+					error : function(data) {
+						console.log("Error");
+					}
+				});
+			});
+			$('.delete_button').click(function() {
+				var name = $(this).attr("attr-name");
+				$.ajax({
+					url : 'user/deleteTask.json',
+					type : 'POST',
+					data : JSON.stringify({	"id" : name}),
+					headers : 
+					{
+						'Accept' : 'application/json',
+						'Content-Type' : 'application/json; charset=UTF-8'
+					},
+					success :function(data)
+					{
+						console.log("Success");
+						var tasksProjectView1 = new tasksProjectView({
+							el : $("#tasksModal"),
+						});
+						tasksProjectView1.render();
+						$('#tasksModal').foundation('reveal', 'open');
+					},
+					error : function(data) {
+						console.log("Error");
+					}
+				});
+			});
+		},
+		error : function(response)
+		{
+			console.log("error come");
+		}
+		});
+	},
+	addNewTask : function()
+	{
+		this.hideErrors();
+		this.taskModel = new taskModel({
+			"tasks" : $("#taskName").val(),
+			"startDate" : $("#startDate").val(),
+			"endDate" :$("#endDate").val(),
+			"projectId" : $("#hidId").val()
+		});
+		
+		if (!this.taskModel.isValid() && flag === true) {
+			this.showErrors(this.taskModel.validationError);
+			e.preventDefault();
+		} 
+		else
+		{
+			$.ajax({
+				type : "POST",
+				url : "user/addTasks.json",
+				headers : {
+					'Accept' : 'application/json',
+					'Content-Type' : 'application/json; charset=UTF-8'
+				},
+				data : JSON.stringify(this.taskModel),
+				success: function (response) {
+					console.log("Add Success");
+					var tasksProjectView1 = new tasksProjectView({
+						el : $("#tasksModal"),
+					});
+					tasksProjectView1.render();
+				},
+				error : function(e) {
+					var response = $.parseJSON(e.responseText);
+					var obj = JSON.stringify(response.errorMessage);
+					$("#error").html("<font color='red'>" + obj+ "</font>");
+				}
+			});
+			
+		}
+	},
+	showErrors : function(errors) {
+		_.each(errors, function(error) {
+			var controlGroup = this.$('.' + error.name);
+			console.log(error.name);
 			//controlGroup.addClass('error');
 			controlGroup.find('.help-inline').text(error.message);
 			controlGroup.find('.help-inline').addClass('errorText');
@@ -650,3 +1178,153 @@ var editProjectView = Backbone.View.extend({
 		this.$('.help-inline').text('');
 	}
 });
+var statusProjectView = Backbone.View.extend({
+
+	el : $(""),
+	initialize : function() {
+	},
+	render : function() {
+		var template = _.template($("#status_template").html(), {});
+		this.$el.html(template);
+		var id = $("#hidId").val();
+		$.ajax({
+			url : "user/getStatus.json",
+			type : "POST",
+			headers : {
+				'Accept' : 'application/json',
+				'Content-Type' : 'application/json; charset=UTF-8'
+			},
+			data : JSON.stringify(
+			{
+				"id" : id
+			}),
+			success: function (data) {
+				var project = $("<h4><b>Project Name</b> :  "+ data.projectName+" </h4>");
+				$("#statusDiv").append(project);
+				var progress = $('<div id="progressbar"></div>');
+				$("#statusDiv").append(progress);
+				
+				$('#progressbar').jQMeter(
+				{
+					goal: ''+ data.allTask,
+					raised: ''+ data.completedTask, 
+					width:'300px',
+					bgColor: "#000",
+					barColor: "#018bb9"
+				});
+				var taskStatus = $("<h5>Completed Task : "+data.completedTask+   "  out of   "+data.allTask+"</h5>")
+				$("#statusDiv").append(taskStatus);
+			},
+			error : function(data)  {
+				console.log("error");
+			}
+		});
+	}
+});
+/*
+var projectView = Backbone.View.extend({
+
+	el : $("#main-container"),
+	initialize : function() {
+	},
+	render : function() {
+		//var template = _.template($("#project_template").html(), {});
+		//this.$el.html(template);
+		this.getProjectData();
+		
+	},
+	getProjectData : function()
+	{
+		$.ajax({
+			url : 'user/getAllProjects.json',
+			type : 'POST',
+			headers : {
+				'Accept' : 'application/json',
+				'Content-Type' : 'application/json; charset=UTF-8'
+			},
+			data : JSON.stringify({
+				"userName": $("#hidUser").val()
+			}),
+			success : function(data)
+			{
+				var len = data.length;
+				for(var i=0;i<len;i++)
+				{
+					var blocks = $('<div class="block img">'+
+					   '<h2>'+data[i].projectName+'</h2>'+
+					   '<h3>'+data[i].url+'</h3>'+
+					   '<div class="name-post cf">'+
+					   		'<img src="img/H.png">'+
+							   '<div class="overlay">'+
+							   '<div class="first-part">'+
+							   '<a href="#" title="Overview">'+
+							   	'<div class="overview-part cf">'+
+									'<img class="image" src="img/overview.png" alt="overview">'+
+									'<h4>Overview</h4>'+
+								'</div>'+
+								'</a>'+
+								'<a href="#" title="Overview">'+
+								'<div class="discussion-part cf">'+
+									'<img class="image" src="img/discussion.png" alt="overview">'+
+									'<h4>Discussion</h4>'+
+								'</div>'+
+								'<a>'+
+								'</div>'+
+								'<div class="cf"></div>'+
+								'<div class="second-part">'+
+								'<a target="_blank" href= projects/project/'+ data[i].projectPath +' title="Project">'+
+								'<div class="files-part cf">'+
+									'<img class="image" src="img/files.png" alt="overview">'+
+									'<h4>Projects</h4>'+
+								'</div>'+
+								'</a>'+
+								'<a target="_blank" href= projects/document/'+ data[i].document +' title="Documents">'+
+								'<div class="calendar-part cf">'+
+									'<img class="image" src="img/calendar.png" alt="overview">'+
+									'<h4>Documents</h4>'+
+								'</div>'+
+								'</a>'+
+							    '</div>'+
+								'</div>'+
+							'<span class="desc">'+
+								'<div class="name">Hitesh Patel</div>'+
+								'<div class="post">Manager</div>'+
+							'</span>'+	  
+					   '</div>'+
+					   '<a href="#" class="more-btn"><span>Hitesh Patel</span>'+
+					   '<span>7 days</span>'+
+					   '</a>'+
+					   '</div>');
+					$("#effect-1").append(blocks);
+				}
+				if (Modernizr.touch) {
+		            // show the close overlay button
+		            $(".close-overlay").removeClass("hidden");
+		            // handle the adding of hover class when clicked
+		            $(".img").click(function(e){
+		                if (!$(this).hasClass("hover")) {
+		                    $(this).addClass("hover");
+		                }
+		            });
+		            // handle the closing of the overlay
+		            $(".close-overlay").click(function(e){
+		                e.preventDefault();
+		                e.stopPropagation();
+		                if ($(this).closest(".img").hasClass("hover")) {
+		                    $(this).closest(".img").removeClass("hover");
+		                }
+		            });
+		        } else {
+		            // handle the mouseenter functionality
+		            $(".img").mouseenter(function(){
+		                $(this).addClass("hover");
+		            })
+		            // handle the mouseleave functionality
+		            .mouseleave(function(){
+		                $(this).removeClass("hover");
+		            });
+		        }
+			}
+		});
+	}
+});*/

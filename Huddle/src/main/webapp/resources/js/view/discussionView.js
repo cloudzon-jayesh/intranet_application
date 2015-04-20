@@ -58,20 +58,17 @@ var discussionView = Backbone.View.extend({
 					$("#discussion_data").append(tBody);
 					if($("#flag").val().indexOf("R") >= 0)
 					{
-						console.log("read");
 						th0.hide();
 						td0.hide();
 						button.hide();
 					}
 					if($("#flag").val().indexOf("W") >= 0)
 					{
-						console.log("wr");
 						th0.hide();
 						td0.hide();
 					}
 					if($("#flag").val().indexOf("D") >= 0)
 					{
-						console.log("del");
 						th0.show();
 						td0.show();
 						button.show();

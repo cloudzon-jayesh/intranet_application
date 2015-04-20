@@ -4,9 +4,6 @@ var projectEditModel = Backbone.Model.extend(
 	defaults : {
 		"projectName" : '',
 		"description" : '',
-		"url":'',
-		"document":'',
-		"video":'',
 		"groupName":''
 	},
 
