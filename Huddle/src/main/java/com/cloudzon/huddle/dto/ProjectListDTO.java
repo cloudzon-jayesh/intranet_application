@@ -14,13 +14,15 @@ public class ProjectListDTO
 	private String video;
 	private List<Long> rolesId;
 	private List<ProjectImagesDTO> projectImagesDTO;
+	private String userName;
 	
 	public ProjectListDTO() {
 		super();
 	}
-
+	
 	public ProjectListDTO(Long id, String projectName, String description,
-			String projectPath, String url, String document, String video) {
+			String projectPath, String url, String document, String video,
+			String userName) {
 		super();
 		this.id = id;
 		this.projectName = projectName;
@@ -29,8 +31,8 @@ public class ProjectListDTO
 		this.url = url;
 		this.document = document;
 		this.video = video;
+		this.userName = userName;
 	}
-
 
 	public Long getId() {
 		return id;
@@ -102,4 +104,13 @@ public class ProjectListDTO
 	public void setProjectImagesDTO(List<ProjectImagesDTO> projectImagesDTO) {
 		this.projectImagesDTO = projectImagesDTO;
 	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	
 }

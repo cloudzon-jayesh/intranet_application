@@ -15,6 +15,7 @@ public class ProjectDTO
 	private MultipartFile video;
 	private List<MultipartFile> images;
 	private List<Long> rolesId;
+	private String userName;
 	
 	public String getProjectName() {
 		return projectName;
@@ -64,4 +65,11 @@ public class ProjectDTO
 	public void setRolesId(List<Long> rolesId) {
 		this.rolesId = rolesId;
 	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	
 }
