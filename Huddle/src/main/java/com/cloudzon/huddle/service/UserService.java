@@ -35,12 +35,15 @@ import com.cloudzon.huddle.dto.MeetingListDTO;
 import com.cloudzon.huddle.dto.ProjectDTO;
 import com.cloudzon.huddle.dto.ProjectEditDTO;
 import com.cloudzon.huddle.dto.ProjectListDTO;
+import com.cloudzon.huddle.dto.ProjectStatusDTO;
+import com.cloudzon.huddle.dto.ProjectTasksDTO;
 import com.cloudzon.huddle.dto.ResetPasswordDTO;
 import com.cloudzon.huddle.dto.RoleDTO;
 import com.cloudzon.huddle.dto.RolePermissionDTO;
 import com.cloudzon.huddle.dto.SetUserPermissionDTO;
 import com.cloudzon.huddle.dto.SignupUser;
 import com.cloudzon.huddle.dto.GroupPermissionDTO;
+import com.cloudzon.huddle.dto.TaskDTO;
 import com.cloudzon.huddle.dto.UserLoginDto;
 import com.cloudzon.huddle.dto.UserRoleDTO;
 import com.cloudzon.huddle.model.Activity;
@@ -187,7 +190,7 @@ public interface UserService {
 	public void addMeeting(MeetingDTO meetingDTO)throws IOException,
 	TemplateException, MessagingException, ParseException;
 	
-	public List<MeetingListDTO> getAllMeetings(SignupUser signupUser);
+	public List<MeetingListDTO> getAllMeetings(SignupUser signupUser) throws ParseException;
 	
 	public void deleteMeeting(Meetings meetings);
 	
@@ -207,6 +210,19 @@ public interface UserService {
 	
 	public void editProject(ProjectEditDTO projectEditDTO, HttpServletRequest servletRequest) throws IOException,
 	TemplateException, MessagingException, ParseException;
+	
+	public List<ProjectTasksDTO> getTasks(Projects projects);
+	
+	public void addTasks(TaskDTO taskDTO)throws IOException,
+	TemplateException, MessagingException, ParseException;
+	
+	public void setCompleteTask(TaskDTO taskDTO)throws IOException,
+	TemplateException, MessagingException, ParseException;
+	
+	public void deleteTask(TaskDTO taskDTO)throws IOException,
+	TemplateException, MessagingException, ParseException;
+	
+	public ProjectStatusDTO getStatus(Projects projects);
 	
 	public void addDocument(DocumentDTO documentDTO, HttpServletRequest servletRequest) throws IOException,
 	TemplateException, MessagingException, ParseException;

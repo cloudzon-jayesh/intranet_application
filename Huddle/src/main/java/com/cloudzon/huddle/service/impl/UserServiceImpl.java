@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -55,6 +56,8 @@ import com.cloudzon.huddle.dto.ProjectDTO;
 import com.cloudzon.huddle.dto.ProjectEditDTO;
 import com.cloudzon.huddle.dto.ProjectImagesDTO;
 import com.cloudzon.huddle.dto.ProjectListDTO;
+import com.cloudzon.huddle.dto.ProjectStatusDTO;
+import com.cloudzon.huddle.dto.ProjectTasksDTO;
 import com.cloudzon.huddle.dto.ResetPasswordDTO;
 import com.cloudzon.huddle.dto.RoleActivityPermissionDTO;
 import com.cloudzon.huddle.dto.RoleDTO;
@@ -62,6 +65,7 @@ import com.cloudzon.huddle.dto.RolePermissionDTO;
 import com.cloudzon.huddle.dto.SetUserPermissionDTO;
 import com.cloudzon.huddle.dto.SignupUser;
 import com.cloudzon.huddle.dto.GroupPermissionDTO;
+import com.cloudzon.huddle.dto.TaskDTO;
 import com.cloudzon.huddle.dto.UserLoginDto;
 import com.cloudzon.huddle.dto.UserRoleDTO;
 import com.cloudzon.huddle.dto.ValidationErrorDTO;
@@ -87,6 +91,7 @@ import com.cloudzon.huddle.model.Meetings;
 import com.cloudzon.huddle.model.Permission;
 import com.cloudzon.huddle.model.ProjectImages;
 import com.cloudzon.huddle.model.ProjectRole;
+import com.cloudzon.huddle.model.ProjectTasks;
 import com.cloudzon.huddle.model.Projects;
 import com.cloudzon.huddle.model.Role;
 import com.cloudzon.huddle.model.RolePermission;
@@ -108,6 +113,7 @@ import com.cloudzon.huddle.repository.MeetingsRepository;
 import com.cloudzon.huddle.repository.PermissionRepository;
 import com.cloudzon.huddle.repository.ProjectImagesRepository;
 import com.cloudzon.huddle.repository.ProjectRoleRepository;
+import com.cloudzon.huddle.repository.ProjectTasksRepository;
 import com.cloudzon.huddle.repository.ProjectsRepository;
 import com.cloudzon.huddle.repository.RolePermissionRepository;
 import com.cloudzon.huddle.repository.RoleRepository;
@@ -174,6 +180,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Resource 
 	private ProjectRoleRepository projectRoleRepository;
+	
+	@Resource 
+	private ProjectTasksRepository projectTasksRepository;
 	
 	@Resource 
 	private DocumentsRepository documentsRepository;
@@ -1062,7 +1071,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
-	public List<MeetingListDTO> getAllMeetings(SignupUser signupUser){
+	public List<MeetingListDTO> getAllMeetings(SignupUser signupUser)throws ParseException{
 		logger.info("get Meeting list");
 		User objUser = this.userRepository.getUserByUserName(signupUser.getUserName());
 		List<Long> objRole = this.roleRepository.getRoleIdByUserId(objUser.getId());
@@ -1180,6 +1189,8 @@ public class UserServiceImpl implements UserService {
 		tempProjects.setProjectName(projectDTO.getProjectName());
 		tempProjects.setDescription(projectDTO.getDescription());
 		tempProjects.setUrl(projectDTO.getUrl());
+		User user = this.userRepository.getUserByUserName(projectDTO.getUserName());
+		tempProjects.setUser(user);
 		this.projectsRepository.saveAndFlush(tempProjects);
 		StringBuffer projectId = null;
 		if(projectDTO.getProjectPath() != null)
@@ -1292,8 +1303,6 @@ public class UserServiceImpl implements UserService {
 				{
 					projectListDTOs = this.projectsRepository.getProjectsByRole(objRole);
 				}
-				
-			
 		}
 		return projectListDTOs;
 	}
@@ -1489,6 +1498,70 @@ public class UserServiceImpl implements UserService {
 			}
 			
 		}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public List<ProjectTasksDTO> getTasks(Projects projects)
+	{
+		logger.info("get Tasks");
+		List<ProjectTasksDTO> projectTasksDTOs = this.projectTasksRepository.getAllTasksByProjectId(projects.getId());
+		return projectTasksDTOs;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public ProjectStatusDTO getStatus(Projects projects)
+	{
+		logger.info("get Tasks");
+		ProjectStatusDTO projectStatusDTO = new  ProjectStatusDTO();
+		Projects objProjects = this.projectsRepository.getProjectsById(projects.getId());
+		projectStatusDTO.setId(objProjects.getId());
+		projectStatusDTO.setProjectName(objProjects.getProjectName());
+		List<ProjectTasksDTO> projectTasksDTOs = this.projectTasksRepository.getAllTasksByProjectId(projects.getId());
+		projectStatusDTO.setAllTask(projectTasksDTOs.size());
+		List<ProjectTasksDTO> objProjectTasksDTOs = this.projectTasksRepository.getAllCompletedTasksByProjectId(projects.getId());
+		projectStatusDTO.setCompletedTask(objProjectTasksDTOs.size());
+		return projectStatusDTO;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public void addTasks(TaskDTO taskDTO)throws IOException,
+	TemplateException, MessagingException, ParseException
+	{
+		SimpleDateFormat dateFormat = null;
+		dateFormat = new SimpleDateFormat(Constant.DATE_FORMAT);
+		Projects objProjects = this.projectsRepository.getProjectsById(taskDTO.getProjectId());
+		ProjectTasks objProjectTasks = new ProjectTasks();
+		objProjectTasks.setActive(true);
+		objProjectTasks.setTasks(taskDTO.getTasks());
+		objProjectTasks.setStartDate(dateFormat.parse(taskDTO.getStartDate()));
+		objProjectTasks.setEndDate(dateFormat.parse(taskDTO.getEndDate()));
+		objProjectTasks.setProjects(objProjects);
+		objProjectTasks.setComplete(false);
+		this.projectTasksRepository.saveAndFlush(objProjectTasks);
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public void setCompleteTask(TaskDTO taskDTO)throws IOException,
+	TemplateException, MessagingException, ParseException
+	{
+		ProjectTasks objProjectTasks = this.projectTasksRepository.getTasksById(taskDTO.getId());
+		objProjectTasks.setComplete(true);
+		this.projectTasksRepository.saveAndFlush(objProjectTasks);
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public void deleteTask(TaskDTO taskDTO)throws IOException,
+	TemplateException, MessagingException, ParseException
+	{
+		ProjectTasks objProjectTasks = this.projectTasksRepository.getTasksById(taskDTO.getId());
+		objProjectTasks.setActive(false);
+		this.projectTasksRepository.saveAndFlush(objProjectTasks);
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
 	public void addDocument(DocumentDTO documentDTO, HttpServletRequest servletRequest) throws IOException,
