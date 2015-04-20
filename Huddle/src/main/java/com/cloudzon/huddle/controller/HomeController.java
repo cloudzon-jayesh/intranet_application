@@ -258,8 +258,28 @@ public class HomeController {
 			return "login";
 		}
 	}
+	@RequestMapping(value = "dashboard", method = RequestMethod.GET)
+	public String setDashbord() {
+		User objUser = getUserDetail();
+		if(objUser != null)
+		{
+			return "dashboard";
+		}
+		else
+		{
+			return "login";
+		}
+	}
 	@RequestMapping(value = "test", method = RequestMethod.GET)
 	public String test() {
-		return "discussion";
+		User objUser = getUserDetail();
+		if(objUser != null)
+		{
+			return "test";
+		}
+		else
+		{
+			return "login";
+		}
 	}
 }

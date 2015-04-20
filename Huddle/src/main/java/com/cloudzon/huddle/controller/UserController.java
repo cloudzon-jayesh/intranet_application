@@ -63,8 +63,11 @@ import com.cloudzon.huddle.dto.MeetingListDTO;
 import com.cloudzon.huddle.dto.ProjectDTO;
 import com.cloudzon.huddle.dto.ProjectEditDTO;
 import com.cloudzon.huddle.dto.ProjectListDTO;
+import com.cloudzon.huddle.dto.ProjectStatusDTO;
+import com.cloudzon.huddle.dto.ProjectTasksDTO;
 import com.cloudzon.huddle.dto.RoleDTO;
 import com.cloudzon.huddle.dto.RolePermissionDTO;
+import com.cloudzon.huddle.dto.TaskDTO;
 import com.cloudzon.huddle.dto.UserRoleDTO;
 import com.cloudzon.huddle.dto.ForgotPasswordDto.ForgotPassword;
 import com.cloudzon.huddle.dto.LoginResponse;
@@ -612,7 +615,7 @@ public class UserController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody
 	public List<MeetingListDTO> getAllMeetings(@RequestBody SignupUser signupUser)
-			throws IOException, TemplateException, MessagingException {
+			throws IOException, TemplateException, MessagingException, ParseException {
 		logger.info("getAllMeetings start");
 		return this.userService.getAllMeetings(signupUser);
 	}
@@ -676,6 +679,7 @@ public class UserController {
 			@RequestParam("video") MultipartFile video,
 			@RequestParam("images") MultipartFile[] images,
 			@RequestParam("group") Long[] roles,
+			@RequestParam("userName") String userName,
 			//@RequestBody ProjectDTO projectDTO,
 			HttpServletRequest servletRequest) throws IOException,
 			TemplateException, MessagingException, ParseException {
@@ -689,6 +693,7 @@ public class UserController {
 		projectDTO.setVideo(video);
 		projectDTO.setImages(Arrays.asList(images));
 		projectDTO.setRolesId(Arrays.asList(roles));
+		projectDTO.setUserName(userName);
 		this.userService.addProject(projectDTO, servletRequest);
 		System.out.println("Upload successfully");
 		//return new ResponseMessageDto("Upload Successfully");
@@ -806,6 +811,77 @@ public class UserController {
 		System.out.println("Upload successfully");
 		//return new ResponseMessageDto("Upload Successfully");
 		return "redirect:/setProject";
+	}
+	
+	/**
+	 * get List for ADD tasks
+	 * 
+	 */
+	@RequestMapping(value = "/getTasks", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public List<ProjectTasksDTO> getTasks(@RequestBody Projects projects)
+			throws IOException, TemplateException, MessagingException {
+		logger.info("getTasks start");
+		return this.userService.getTasks(projects);
+	}
+	
+	/**
+	 * Add Project Tasks
+	 * 
+	 */
+	@RequestMapping(value = "/addTasks", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ResponseMessageDto addTasks(
+			 @RequestBody TaskDTO taskDTO) throws IOException,
+			TemplateException, MessagingException, ParseException {
+		logger.info("New Task Added");
+		this.userService.addTasks(taskDTO);
+		return new ResponseMessageDto("Task is Added");
+	}
+	
+	/**
+	 * make complete Project Tasks
+	 * 
+	 */
+	@RequestMapping(value = "/setCompleteTask", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ResponseMessageDto setCompleteTask(
+			 @RequestBody TaskDTO taskDTO) throws IOException,
+			TemplateException, MessagingException, ParseException {
+		logger.info("Task Completed");
+		this.userService.setCompleteTask(taskDTO);
+		return new ResponseMessageDto("Task is Completed");
+	}
+	
+	/**
+	 * delete Project Tasks
+	 * 
+	 */
+	@RequestMapping(value = "/deleteTask", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ResponseMessageDto deleteTask(
+			 @RequestBody TaskDTO taskDTO) throws IOException,
+			TemplateException, MessagingException, ParseException {
+		logger.info("Delete Task");
+		this.userService.deleteTask(taskDTO);
+		return new ResponseMessageDto("Task is Deleted");
+	}
+	
+	/**
+	 * get Status of Project
+	 * 
+	 */
+	@RequestMapping(value = "/getStatus", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ProjectStatusDTO getStatus(@RequestBody Projects projects)
+			throws IOException, TemplateException, MessagingException {
+		logger.info("getStatus start");
+		return this.userService.getStatus(projects);
 	}
 	
 	/**
