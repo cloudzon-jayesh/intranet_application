@@ -11,12 +11,12 @@ import com.cloudzon.huddle.model.Projects;
 
 public interface ProjectsRepository extends BaseRepository<Projects>
 {
-	@Query("SELECT DISTINCT  NEW com.cloudzon.huddle.dto.ProjectListDTO(project.id,project.projectName,project.description,project.projectPath,project.url,project.document,project.video,user.userName) FROM ProjectRole AS projectRole JOIN projectRole.projects AS project JOIN project.user AS user JOIN projectRole.role AS role where projectRole.active=true AND project.active=true AND role.id IN :roleId")
+	@Query("SELECT DISTINCT  NEW com.cloudzon.huddle.dto.ProjectListDTO(project.id,project.projectName,project.description,project.projectPath,project.url,project.video,user.userName) FROM ProjectRole AS projectRole JOIN projectRole.projects AS project JOIN project.user AS user JOIN projectRole.role AS role where projectRole.active=true AND project.active=true AND role.id IN :roleId")
 	public List<ProjectListDTO> getProjectsByRole(@Param("roleId")List<Long> roleId);
 	
 	@Query("SELECT project FROM Projects As project where project.active = true AND project.id =:id")
 	public Projects getProjectsById(@Param("id")Long id);
 	
-	@Query("SELECT DISTINCT NEW com.cloudzon.huddle.dto.ProjectListDTO(project.id,project.projectName,project.description,project.projectPath,project.url,project.document,project.video,user.userName) FROM ProjectRole AS projectRole JOIN projectRole.projects AS project JOIN project.user AS user where projectRole.active=true AND project.active=true")
+	@Query("SELECT DISTINCT NEW com.cloudzon.huddle.dto.ProjectListDTO(project.id,project.projectName,project.description,project.projectPath,project.url,project.video,user.userName) FROM ProjectRole AS projectRole JOIN projectRole.projects AS project JOIN project.user AS user where projectRole.active=true AND project.active=true")
 	public List<ProjectListDTO> getAllProjectsByRole();
 }

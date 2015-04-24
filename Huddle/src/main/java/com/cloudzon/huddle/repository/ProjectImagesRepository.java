@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.cloudzon.huddle.dto.ProjectImagesDTO;
+import com.cloudzon.huddle.model.ProjectDocuments;
 import com.cloudzon.huddle.model.ProjectImages;
 
 public interface ProjectImagesRepository extends BaseRepository<ProjectImages>
@@ -18,4 +19,7 @@ public interface ProjectImagesRepository extends BaseRepository<ProjectImages>
 	
 	@Query("SELECT projectImage FROM ProjectImages AS projectImage JOIN projectImage.projects AS project where project.active = true AND project.id =:projectId")
 	public List<ProjectImages> getImagesByProjectID(@Param("projectId")Long projectId);
+	
+	@Query("SELECT projectImages FROM ProjectImages AS projectImages JOIN projectImages.projects AS project where projectImages.id =:id")
+	public ProjectImages getAllImagesById(@Param("id")Long id);
 }
