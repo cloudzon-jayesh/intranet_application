@@ -34,9 +34,6 @@ public class Projects extends BaseEntity
 	@Column(name="video")
 	private String video;
 	
-	@Column(name="document")
-	private String document;
-	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
@@ -84,14 +81,6 @@ public class Projects extends BaseEntity
 		this.video = video;
 	}
 
-	public String getDocument() {
-		return document;
-	}
-
-	public void setDocument(String document) {
-		this.document = document;
-	}
-	
 	public User getUser() {
 		return user;
 	}
