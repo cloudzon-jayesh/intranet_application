@@ -49,14 +49,14 @@ var projectView = Backbone.View.extend({
 									'</div>'+
 									'<div class="cf"></div>'+
 									'<div class="second-part">'+
-									'<a target="_blank" href= projects/project/'+ data[i].projectPath +' title="Project">'+
-									'<div class="files-part cf">'+
+									'<a  href="#"  title="Images">'+
+									'<div class="files-part cf newImage" attr-name='+data[i].id+'>'+
 										'<img class="image" src="img/files.png" alt="overview">'+
-										'<h4>Projects</h4>'+
+										'<h4>Images</h4>'+
 									'</div>'+
 									'</a>'+
-									'<a target="_blank" href= projects/document/'+ data[i].document +' title="Documents">'+
-									'<div class="calendar-part cf">'+
+									'<a title="Documents">'+
+									'<div class="calendar-part cf newDocument"  attr-name='+data[i].id+'>'+
 										'<img class="image" src="img/calendar.png" alt="overview">'+
 										'<h4>Documents</h4>'+
 									'</div>'+
@@ -87,6 +87,28 @@ var projectView = Backbone.View.extend({
 					tasksProjectView1.render();
 					$('#tasksModal').foundation('reveal', 'open');
 				});
+				$('.newDocument').click(function() {
+					var name = $(this).attr("attr-name");
+					console.log(name);
+					$("#hidId").val(name);
+					//$("#projectId").val(name);
+					var documentsProjectView1 = new documentsProjectView({
+						el : $("#documentsModal"),
+					});
+					documentsProjectView1.render();
+					$('#documentsModal').foundation('reveal', 'open');
+				});
+				$('.newImage').click(function() {
+					var name = $(this).attr("attr-name");
+					console.log(name);
+					$("#hidId").val(name);
+					//$("#projectId").val(name);
+					var imagesProjectView1 = new imagesProjectView({
+						el : $("#imagesModal"),
+					});
+					imagesProjectView1.render();
+					$('#imagesModal').foundation('reveal', 'open');
+				});
 				$('.edit_button').click(function() {
 					var name = $(this).attr("attr-name");
 					console.log(name);
@@ -99,25 +121,28 @@ var projectView = Backbone.View.extend({
 					$('#editProjectModal').foundation('reveal', 'open');
 				});
 				$('.delete_button').click(function() {
-					var name = $(this).attr("attr-name");
-					$.ajax({
-						url : 'user/deleteProject.json',
-						type : 'POST',
-						data : JSON.stringify({	"id" : name}),
-						headers : 
+					var result = confirm("Are you sure you want to Delete?");
+					if (result) {
+						var name = $(this).attr("attr-name");
+						$.ajax({
+							url : 'user/deleteProject.json',
+							type : 'POST',
+							data : JSON.stringify({	"id" : name}),
+							headers : 
+								{
+									'Accept' : 'application/json',
+									'Content-Type' : 'application/json; charset=UTF-8'
+								},
+							success :function(data)
 							{
-								'Accept' : 'application/json',
-								'Content-Type' : 'application/json; charset=UTF-8'
+								console.log("Success");
+								projectView.render();
 							},
-						success :function(data)
-						{
-							console.log("Success");
-							projectView.render();
-						},
-						error : function(data) {
-							console.log("Error");
-						}
-					});
+							error : function(data) {
+								console.log("Error");
+							}
+						});
+					}
 				});
 				$('.overview-part').click(function() {
 					var name = $(this).attr("attr-name");
@@ -277,12 +302,12 @@ var addProject =  Backbone.View.extend({
 	},
 	events : {
 		"click #addProjectButton" : "addProject",
-		"click #addImageButton" : "addImage",
+		//"click #addImageButton" : "addImage",
 	},
 	render : function() {
 		this.getUserRole();
 	},
-	addImage : function(){
+	/*addImage : function(){
 		
 		var addItems = $(
 				'<div class="control-group images">'
@@ -295,7 +320,7 @@ var addProject =  Backbone.View.extend({
 			        e.preventDefault(); 
 			        $(this).parent('div').remove(); 
 			    });
-	},
+	},*/
 	getUserRole : function()
 	{
 		$.ajax({
@@ -323,7 +348,7 @@ var addProject =  Backbone.View.extend({
 		var flag2 = false;
 		var flag3 = false;
 		var urlext = $('#projectPath').val().split('.').pop().toLowerCase();
-		var docext = $('#document').val().split('.').pop().toLowerCase();
+		//var docext = $('#document').val().split('.').pop().toLowerCase();
 		if($("#projectPath").val() != '')
 		{
 				flag1 = true;
@@ -344,7 +369,7 @@ var addProject =  Backbone.View.extend({
 		}
 		
 		
-		if($("#document").val() != '' )
+		/*if($("#document").val() != '' )
 		{
 			flag2 = true;
 			
@@ -363,7 +388,7 @@ var addProject =  Backbone.View.extend({
 				console.log("document file error: "+flag2);
 				$(".document").find('.help-inline').text("").addClass('errorText');
 			}
-		}
+		}*/
 		
 		if($("#video").val() != '' && $("#video")[0].files[0].size > 20971520)
 		{
@@ -391,27 +416,35 @@ var addProject =  Backbone.View.extend({
 			//$("#projectForm").submit();
 			console.log("Submiited");
 			 var project = $('#projectPath')[0].files[0];
-			 var document = $("#document")[0].files[0];
+			 //var document = $("#document")[0].files[0];
 			 var video = $("#video")[0].files[0];
 			 var val = [];
 		        $(':checkbox:checked').each(function(i){
 		          val[i] = $(this).val();
 		        });
 			 var data = new FormData();
+			 if($('#projectPath').val() != '')
+			 {
+				 data.append('projectPath', project);
+			 }
+			 if($('#video').val() != '')
+			 {
+				 data.append('video', video);
+			 }
 			 data.append('projectName', $("#projectName").val());
 			 data.append('description', $("#description").val());
 			 data.append('url', $("#url").val());
-			 data.append('projectPath', project);
-			 data.append('document', document);
-			 data.append('video', video);
+			 
+			// data.append('document', document);
+			 
 			 data.append('group', val);
 			 data.append("userName",$("#hidUser").val());
-			 $.each($("input[name^=images]"), function(i, obj) {
+			/* $.each($("input[name^=images]"), function(i, obj) {
 			        $.each(obj.files,function(j,file){
 			            data.append('images',file);
 			            console.log(file);
 			        })
-			});
+			});*/
 		   
 		 	 $.ajax({
 				    url: 'user/addProject.json',
@@ -459,15 +492,16 @@ var editProjectView = Backbone.View.extend({
 		this.getUserRole();
 		this.getProjectFromId();
 		$("#projectId").val($("#hidId").val());
-		var self = this;
+		/*var self = this;
 		$("#editAddImageButton").click(function(){
 			self.addImage();
 		});
+		$('.fancybox').fancybox();*/
 	},
 	events : {
 		"click #editProjectButton" : "editProject",
 		"click #changeProject" : "changeProject",
-		"click #changeDocument" : "changeDocument",
+		//"click #changeDocument" : "changeDocument",
 		"click #changeVideo" : "changeVideo",
 		//"click #editAddImageButton" : "addImage",
 	},
@@ -488,7 +522,7 @@ var editProjectView = Backbone.View.extend({
 	        $("#remove1").remove();
 	    });
 	},
-	changeDocument : function()
+	/*changeDocument : function()
 	{
 		var projectInput = $('<div><input type="file" name="document" id="editDocument"' 
 			+'accept=".txt,.doc,.docx,.rtf,.pdf" class="browser-select">');
@@ -504,7 +538,7 @@ var editProjectView = Backbone.View.extend({
 	        $("#editDocument").css("display","none");
 	        $("#remove2").remove();
 	    });
-	},
+	},*/
 	changeVideo : function()
 	{
 		var projectInput = $('<div><input type="file" name="video" id="editVideo"' 
@@ -522,7 +556,7 @@ var editProjectView = Backbone.View.extend({
 	        $("#remove3").remove();
 	    });
 	},
-	addImage : function(){
+	/*addImage : function(){
 		
 		var addItems = $(
 				'<div class="control-group images">'
@@ -535,7 +569,7 @@ var editProjectView = Backbone.View.extend({
 			        e.preventDefault(); 
 			        $(this).parent('div').remove(); 
 			    });
-	},
+	},*/
 	getUserRole : function()
 	{
 		$.ajax({
@@ -579,22 +613,23 @@ var editProjectView = Backbone.View.extend({
 				$("#editDescription").val(data.description);
 				$("#editUrl").val(data.url);
 				$("#projectLink").val(data.projectPath);
-				$("#documentLink").val(data.document);
+				//$("#documentLink").val(data.document);
 				$("#videoLink").val(data.video);
-				var images = data.projectImagesDTO;
+				/*var images = data.projectImagesDTO;
 				var imgaes = "";
 				for(var i=0;i<images.length;i++)
 				{
 					chk ='<div class="input-main imgDiv">'
+						+'<span id="close" class="remove_image" title="remove"><big>X</big></span>'
 						+'<input name="editImagesChecked" checked="checked" type="checkbox" value="'+images[i].id+'" class="imgGroup" disabled="disabled">'
-						+'<span>&nbsp;<img src="projects/images/'+images[i].images+'" alt='+images[i].images+'  style="height:25%; width:25%;margin:5px;"></span>'
-					+'<a href="#" class="remove_image"><img src= "images/remove.png" style="width:20px; height:20px;"></a></div>';
+						+'<span>&nbsp;<a class="fancybox" href="projects/images/'+images[i].images+'" data-fancybox-group="gallery" title=""><img src="projects/images/'+images[i].images+'" alt='+images[i].images+'  style="height:25%; width:25%;margin:5px;"></a></span>'
+					+'</div>';
 					$("#editImageGroup").append(chk);
 				}
 				$(".imgDiv").on("click",".remove_image", function(e){ 
 			        e.preventDefault(); 
 			        $(this).parent('div').remove(); 
-			    });
+			    });*/
 				var roles = data.rolesId;
 					var getval;
 					if (roles !== null) {
@@ -622,7 +657,7 @@ var editProjectView = Backbone.View.extend({
 		var flag2 = false;
 		var flag3 = false;
 		var urlext = $('#editProjectPath').val().split('.').pop().toLowerCase();
-		var docext = $('#editDocument').val().split('.').pop().toLowerCase();
+		//var docext = $('#editDocument').val().split('.').pop().toLowerCase();
 		if($("#editProjectPath").val() != '')
 		{
 				flag1 = true;
@@ -648,7 +683,7 @@ var editProjectView = Backbone.View.extend({
 		}*/
 		
 		
-		if($("#editDocument").val() != '' )
+		/*if($("#editDocument").val() != '' )
 		{
 			flag2 = true;
 			
@@ -667,7 +702,7 @@ var editProjectView = Backbone.View.extend({
 				console.log("document file error: "+flag2);
 				$(".document").find('.help-inline').text("").addClass('errorText');
 			}
-		}
+		}*/
 		/*else
 		{
 			flag2 = true;
@@ -705,16 +740,16 @@ var editProjectView = Backbone.View.extend({
 		} else {
 			
 			 var project = $('#editProjectPath')[0].files[0];
-			 var document = $("#editDocument")[0].files[0];
+			 //var document = $("#editDocument")[0].files[0];
 			 var video = $("#editVideo")[0].files[0];
 			 var val = [];
 		        $('.group:checkbox:checked').each(function(i){
 		          val[i] = $(this).val();
 		        });
-		     var imgVal = [];
+		    /* var imgVal = [];
 		        $('.imgGroup:checkbox:checked').each(function(i){
 		        	imgVal[i] = $(this).val();
-		        });
+		        });*/
 			 var data = new FormData();
 			 if($('#editProjectPath').val() != '')
 			 {
@@ -724,14 +759,14 @@ var editProjectView = Backbone.View.extend({
 			 {
 				 data.append('projectPath', null);
 			 }
-			 if($("#editDocument").val() != '')
+			/* if($("#editDocument").val() != '')
 			 {
 				 data.append('document', document);
 			 }
 			 else
 			 {
 				 data.append('document', null);
-			 }
+			 }*/
 			 if($("#editVideo").val() != '')
 			 {
 				 data.append('video', video);
@@ -744,14 +779,14 @@ var editProjectView = Backbone.View.extend({
 			 data.append('projectName', $("#editProjectName").val());
 			 data.append('description', $("#editDescription").val());
 			 data.append('url', $("#editUrl").val());
-			 data.append('editImagesChecked', imgVal);
+			 //data.append('editImagesChecked', imgVal);
 			 data.append('editGroupName', val);
-			 $.each($("input[name^=images]"), function(i, obj) {
+			 /*$.each($("input[name^=images]"), function(i, obj) {
 			        $.each(obj.files,function(j,file){
 			            data.append('images',file);
 			            console.log(file);
 			        })
-			});
+			});*/
 		   
 		 	 $.ajax({
 				    url: 'user/editProject.json',
@@ -777,6 +812,232 @@ var editProjectView = Backbone.View.extend({
 			var controlGroup = this.$('.' + error.name);
 			console.log(error.name);
 			controlGroup.addClass('error');
+			controlGroup.find('.help-inline').text(error.message);
+			controlGroup.find('.help-inline').addClass('errorText');
+		}, this);
+	},
+	hideErrors : function() {
+		this.$('.control-group').removeClass('error');
+		this.$('.help-inline').text('');
+	}
+});
+var documentsProjectView = Backbone.View.extend({
+
+	el : $(""),
+	initialize : function() {
+	},
+	render : function() {
+		var template = _.template($("#documents_template").html(), {});
+		this.$el.html(template);
+		this.getDocumentsFromId();
+	},
+	getDocumentsFromId : function()
+	{
+		var view = this;
+		var id = $("#hidId").val();
+		$.ajax({
+			url : 'user/getDocuments.json',
+			type : "POST",
+			headers : {
+				'Accept' : 'application/json',
+				'Content-Type' : 'application/json; charset=UTF-8'
+			},
+			data : JSON.stringify(
+				{
+					"id" : id
+				}),
+		success: function (data) {
+			var len = data.length;
+			var thead = $("<thead></thead>");
+			var trh = $("<tr></tr>");
+			var th1 = $("<th>Action</th>");
+			var th2 = $("<th>Document Name</th>");
+			var th3 = $("<th>Download</th>");
+			trh.append(th1);
+			trh.append(th2);
+			trh.append(th3);
+			thead.append(trh);
+			$("#document_data").html(thead);
+			var tBody = $("<tbody></tbody>");
+			if(len > 0)
+			{
+				for (var i = (len-1); i >= 0; i--) 
+				{ 
+					var tr = $("<tr></tr>");
+					var td1 = $("<td></td>");
+					var td2 = $("<td>"+ data[i].documentName+"</td>");
+					var td3 = $('<td><a target="_blank" href= projects/document/'+ data[i].documents +' title="Document">Download</a></td>');
+					var button =$("<a href=# class='delete_button' title='delete' attr-name='"+ data[i].id + "'>&nbsp;<img src= 'images/delete.png' style='width:20px; height:20px;'></a>");
+					
+					td1.append(button);
+					tr.append(td1);
+					tr.append(td2);
+					tr.append(td3);
+					tBody.append(tr);
+					
+					$("#document_data").append(tBody);
+					if($("#flag").val().indexOf("R") >= 0)
+					{
+						console.log($("#flag").val());
+						th1.hide();
+						td1.hide();
+						button.hide();
+					}
+					if($("#flag").val().indexOf("W") >= 0)
+					{
+						console.log($("#flag").val());
+						th1.show();
+						td1.show();
+						button.show();
+					}
+					if($("#flag").val().indexOf("D") >= 0)
+					{
+						console.log($("#flag").val());
+						th1.show();
+						td1.show();
+						button.show();
+					}
+				}
+			}
+			else
+			{
+				var tr = $("<tr align='center'></tr>");
+				var tdd = $("<td colspan='3'><b>No Documents</b></td>");
+				tr.append(tdd);
+				tBody.append(tr);
+				$("#document_data").append(tBody);
+			}
+					
+				
+				var tr1 = $("<tr></tr>");
+				var tdb = $('<td></td>');
+				
+	
+				var td6 = $('<td></td>');
+				var div1 = $('<div class="control-group documentName"></div>');
+				var inputDoc = $('<input type="text" size="40" name="documentName" id="documentName" placeholder="Document Name">');
+				var span1 = $('<span class="help-inline"></span>');
+				div1.append(inputDoc);
+				div1.append(span1);
+				td6.append(div1);
+				
+				var td7 = $('<td></td>');
+				var div2 = $('<div class="control-group documents"></div>');
+				var inputStart = $('<input type="file" name="documents" id="documents" accept=".txt,.doc,.docx,.rtf,.pdf" class="browser-select">');
+				var span2 = $('<span class="help-inline"></span>');
+				div2.append(inputStart);
+				div2.append(span2);
+				td7.append(div2);
+				
+				var td8 = $('<td></td>');
+				var btn = $('<Button class="radius btn-main" id="addDocumentButton">Add Documents</Button>');
+				
+				btn.click(function()
+				{
+					view.addNewDocument();
+				});
+				td8.append(btn);
+				
+				var plus = $('<img class="image" src="img/Add.png" title="Add Task" alt="Add" style="height:30px;width:30px;">');
+				tdb.append(plus);
+				tr1.append(tdb);
+				tr1.append(td6);
+				tr1.append(td7);
+				tr1.append(td8);
+				
+				if($("#flag").val().indexOf("R") >= 0)
+				{
+					
+				}
+				if($("#flag").val().indexOf("W") >= 0)
+				{
+					tBody.append(tr1);
+				}
+				$("#document_data").append(tBody);
+				
+				$('.delete_button').click(function() {
+					var result = confirm("Are you sure you want to Delete?");
+					if (result) {
+						var name = $(this).attr("attr-name");
+						$.ajax({
+							url : 'user/deleteProjectDocument.json',
+							type : 'POST',
+							data : JSON.stringify({	"id" : name}),
+							headers : 
+							{
+								'Accept' : 'application/json',
+								'Content-Type' : 'application/json; charset=UTF-8'
+							},
+							success :function(data)
+							{
+								console.log("Success");
+								var documentsProjectView1 = new documentsProjectView({
+						    		el : $("#documentsModal"),
+						    	});
+						    	documentsProjectView1.render();
+							},
+							error : function(data) {
+								console.log("Error");
+							}
+						});
+					}
+				});
+				$('.edit_button').click(function() {
+					var name = $(this).attr("attr-name");
+				});
+		},
+		error : function(response)
+		{
+			console.log("error come");
+		}	
+	});
+	},
+	addNewDocument : function()
+	{
+		this.hideErrors();
+		var document = $("#documents")[0].files[0];
+		 var data = new FormData();
+		 data.append("documentName", $("#documentName").val());
+		 data.append("projectId", $("#hidId").val());
+		 data.append("documents", document);
+		
+		 this.projectDocumentModel = new projectDocumentModel({
+				"documentName" :  $("#documentName").val(),
+			});
+		if (!this.projectDocumentModel.isValid()) {
+			this.showErrors(this.projectDocumentModel.validationError);
+		} 
+		else
+		{
+			 $.ajax({
+				    url: 'user/addProjectDocuments.json',
+				    data:data,
+				    cache: false,
+				    contentType: false,
+				    processData: false,
+				    type: 'POST',
+				    mimeType: "multipart/form-data",
+				    success: function (response) {
+				    	console.log("Add Success");
+				    	var documentsProjectView1 = new documentsProjectView({
+				    		el : $("#documentsModal"),
+				    	});
+				    	documentsProjectView1.render();
+				},
+				error : function(e) {
+					var response = $.parseJSON(e.responseText);
+					var obj = JSON.stringify(response.errorMessage);
+					$("#error").html("<font color='red'>" + obj+ "</font>");
+				}
+			});
+			
+		}
+	},
+	showErrors : function(errors) {
+		_.each(errors, function(error) {
+			var controlGroup = this.$('.' + error.name);
+			console.log(error.name);
+			//controlGroup.addClass('error');
 			controlGroup.find('.help-inline').text(error.message);
 			controlGroup.find('.help-inline').addClass('errorText');
 		}, this);
@@ -814,25 +1075,28 @@ var tasksProjectView = Backbone.View.extend({
 	},
 	deleteProject : function()
 	{
-		$.ajax({
-			url : 'user/deleteProject.json',
-			type : 'POST',
-			data : JSON.stringify({	"id" : $("#hidId").val()}),
-			headers : 
+		var result = confirm("Are you sure you want to Delete?");
+		if (result) {
+			$.ajax({
+				url : 'user/deleteProject.json',
+				type : 'POST',
+				data : JSON.stringify({	"id" : $("#hidId").val()}),
+				headers : 
+					{
+						'Accept' : 'application/json',
+						'Content-Type' : 'application/json; charset=UTF-8'
+					},
+				success :function(data)
 				{
-					'Accept' : 'application/json',
-					'Content-Type' : 'application/json; charset=UTF-8'
+					console.log("Success");
+					$('#tasksModal').foundation('reveal', 'close');
+					projectView.render();
 				},
-			success :function(data)
-			{
-				console.log("Success");
-				$('#tasksModal').foundation('reveal', 'close');
-				projectView.render();
-			},
-			error : function(data) {
-				console.log("Error");
-			}
-		});
+				error : function(data) {
+					console.log("Error");
+				}
+			});
+		}
 	},
 	getTasksFromId : function()
 	{
@@ -850,7 +1114,7 @@ var tasksProjectView = Backbone.View.extend({
 					"id" : id
 				}),
 		success: function (data) {
-			
+				
 			var len = data.length;
 			var thead = $("<thead></thead>");
 			var trh = $("<tr></tr>");
@@ -868,255 +1132,248 @@ var tasksProjectView = Backbone.View.extend({
 			$("#task_data").html(thead);
 			var tBody = $("<tbody></tbody>");
 			var todaysDate = new Date();
-			for (var i = (len-1); i >= 0; i--) 
+			if(len > 0)
 			{
-				var m_names = new Array("Jan", "Feb", "Mar", 
-						"Apr", "May", "Jun", "Jul", "Aug", "Sep", 
-						"Octr", "Nov", "Dec");
-				var sDate = new Date(data[i].startDate);
-				var date1 = sDate.getDate();
-				var month1 = sDate.getMonth();
-				var year1 = sDate.getFullYear();
-				var startDate = date1 + "-" + m_names[month1]+ "-" + year1;
-				
-				var eDate = new Date(data[i].endDate);
-				var date2 = eDate.getDate();
-				var month2 = eDate.getMonth();
-				var year2 = eDate.getFullYear();
-				var endDate = date2 + "-" + m_names[month2]+ "-" + year2;
-				
-				var tr = $("<tr></tr>");
-				var td1 = $("<td></td>");
-				var td2 = $("<td>"+ data[i].tasks +"</td>");
-				var td3 = $("<td>"+ startDate +"</td>");
-				var td4 = $("<td>"+ endDate +"</td>");
-				
-				var button1 = $("<a href=# class='complete_button' title='Complete' attr-name='"+ data[i].id + "'>&nbsp;<img src= 'img/project.png' style='width:15px; height:15px;'></a>");
-				var button2 =$("<a href=# class='delete_button' title='delete' attr-name='"+ data[i].id + "'>&nbsp;<img src= 'images/delete.png' style='width:20px; height:20px;'></a>");
-				console.log(data[i].complete);
-				
-				if(todaysDate >= eDate)
+				for (var i = (len-1); i >= 0; i--) 
 				{
-					if(data[i].complete == true)
+					var m_names = new Array("Jan", "Feb", "Mar", 
+							"Apr", "May", "Jun", "Jul", "Aug", "Sep", 
+							"Octr", "Nov", "Dec");
+					var sDate = new Date(data[i].startDate);
+					var date1 = sDate.getDate();
+					var month1 = sDate.getMonth();
+					var year1 = sDate.getFullYear();
+					var startDate = date1 + "-" + m_names[month1]+ "-" + year1;
+					
+					var eDate = new Date(data[i].endDate);
+					var date2 = eDate.getDate();
+					var month2 = eDate.getMonth();
+					var year2 = eDate.getFullYear();
+					var endDate = date2 + "-" + m_names[month2]+ "-" + year2;
+					
+					var tr = $("<tr></tr>");
+					var td1 = $("<td></td>");
+					var td2 = $("<td>"+ data[i].tasks +"</td>");
+					var td3 = $("<td>"+ startDate +"</td>");
+					var td4 = $("<td>"+ endDate +"</td>");
+					
+					var button1 = $("<a href=# class='complete_button' title='Complete' attr-name='"+ data[i].id + "'>&nbsp;<img src= 'img/project.png' style='width:15px; height:15px;'></a>");
+					var button2 =$("<a href=# class='delete_button' title='delete' attr-name='"+ data[i].id + "'>&nbsp;<img src= 'images/delete.png' style='width:20px; height:20px;'></a>");
+					console.log(data[i].complete);
+					
+					if(todaysDate >= eDate)
 					{
-						console.log("true");
-						var td5 = $("<td><font color='blue'>DONE</font></td>");
+						if(data[i].complete == true)
+						{
+							console.log("true");
+							var td5 = $("<td><font color='blue'>DONE</font></td>");
+						}
+						else
+						{
+							var td5 = $("<td><font color='red'><b>PRIOR</b></font></td>");
+							console.log("doneee");
+						}
 					}
 					else
 					{
-						var td5 = $("<td><font color='red'><b>PRIOR</b></font></td>");
-						console.log("doneee");
+						if(data[i].complete == true)
+						{
+							console.log("true");
+							var td5 = $("<td><font color='blue'><b>DONE</b></font></td>");
+						}
+						else
+						{
+							var td5 = $("<td><font color='green'><b>IN WORKING</b></font></td>");
+							console.log("work");
+						}
+					}
+					td1.append(button1);
+					td1.append(button2);
+					tr.append(td1);
+					tr.append(td2);
+					tr.append(td3);
+					tr.append(td4);
+					tr.append(td5);
+					tBody.append(tr);
+					
+					$("#task_data").append(tBody);
+					if($("#flag").val().indexOf("R") >= 0)
+					{
+						console.log($("#flag").val());
+						th1.hide();
+						td1.hide();
+						button1.hide();
+						button2.hide();
+						$("#editProjectBtn").hide();
+						$("#deleteProjectBtn").hide();
+					}
+					if($("#flag").val().indexOf("W") >= 0)
+					{
+						console.log($("#flag").val());
+						th1.show();
+						td1.show();
+						button1.show();
+						$("#editProjectBtn").show();
+						$("#deleteProjectBtn").show();
+					}
+					if($("#flag").val().indexOf("D") >= 0)
+					{
+						console.log($("#flag").val());
+						th1.show();
+						td1.show();
+						button2.show();
+						$("#editProjectBtn").show();
+						$("#deleteProjectBtn").show();
 					}
 				}
-				else
-				{
-					if(data[i].complete == true)
-					{
-						console.log("true");
-						var td5 = $("<td><font color='blue'><b>DONE</b></font></td>");
-					}
-					else
-					{
-						var td5 = $("<td><font color='green'><b>IN WORKING</b></font></td>");
-						console.log("work");
-					}
-				}
-				td1.append(button1);
-				td1.append(button2);
-				tr.append(td1);
-				tr.append(td2);
-				tr.append(td3);
-				tr.append(td4);
-				tr.append(td5);
+			}
+			else
+			{
+				var tr = $("<tr align='center'></tr>");
+				var tdd = $("<td colspan='4'><b>No Tasks</b></td>");
+				tr.append(tdd);
 				tBody.append(tr);
-				
 				$("#task_data").append(tBody);
+			}
+				var tr1 = $("<tr></tr>");
+				var tdb = $('<td></td>');
+				
+	
+				var td6 = $('<td></td>');
+				var div1 = $('<div class="control-group taskName"></div>');
+				var inputTask = $('<input type="text" size="40" name="taskName" id="taskName" placeholder="Task">');
+				var span1 = $('<span class="help-inline"></span>');
+				div1.append(inputTask);
+				div1.append(span1);
+				td6.append(div1);
+				
+				var td7 = $('<td></td>');
+				var div2 = $('<div class="control-group startDate"></div>');
+				var inputStart = $('<input type="text" name="startDate" id="startDate" placeholder="Start Date">');
+				var span2 = $('<span class="help-inline"></span>');
+				div2.append(inputStart);
+				div2.append(span2);
+				td7.append(div2);
+				
+				var td8 = $('<td></td>');
+				var div3 = $('<div class="control-group endDate"></div>');
+				var inputEnd = $('<input type="text" name="endDate" id="endDate" placeholder="End Date">');
+				var span3 = $('<span class="help-inline"></span>');
+				div3.append(inputEnd);
+				div3.append(span3);
+				td8.append(div3);
+				
+				var td9 = $('<td></td>');
+				var btn = $('<Button class="radius btn-main" id="addTaskButton">Add Tasks</Button>');
+				
+				btn.click(function()
+				{
+					view.addNewTask();
+				});
+				td9.append(btn);
+				
+				var plus = $('<img class="image" src="img/Add.png" title="Add Task" alt="Add" style="height:30px;width:30px;">');
+				tdb.append(plus);
+				tr1.append(tdb);
+				tr1.append(td6);
+				tr1.append(td7);
+				tr1.append(td8);
+				tr1.append(td9);
+				
 				if($("#flag").val().indexOf("R") >= 0)
 				{
-					console.log($("#flag").val());
-					th1.hide();
-					td1.hide();
-					button1.hide();
-					button2.hide();
-					$("#editProjectBtn").hide();
-					$("#deleteProjectBtn").hide();
+					
 				}
 				if($("#flag").val().indexOf("W") >= 0)
 				{
-					console.log($("#flag").val());
-					th1.show();
-					td1.show();
-					button1.show();
-					$("#editProjectBtn").show();
-					$("#deleteProjectBtn").show();
+					tBody.append(tr1);
 				}
-				if($("#flag").val().indexOf("D") >= 0)
+				$("#task_data").append(tBody);
+				inputStart.datepicker(
 				{
-					console.log($("#flag").val());
-					th1.show();
-					td1.show();
-					button2.show();
-					$("#editProjectBtn").show();
-					$("#deleteProjectBtn").show();
-				}
-			}
-			var tr1 = $("<tr></tr>");
-			var tdb = $('<td></td>');
-			
-
-			var td6 = $('<td></td>');
-			var div1 = $('<div class="control-group taskName"></div>');
-			var inputTask = $('<input type="text" size="40" name="taskName" id="taskName" placeholder="Task">');
-			var span1 = $('<span class="help-inline"></span>');
-			div1.append(inputTask);
-			div1.append(span1);
-			td6.append(div1);
-			
-			var td7 = $('<td></td>');
-			var div2 = $('<div class="control-group startDate"></div>');
-			var inputStart = $('<input type="text" name="startDate" id="startDate" placeholder="Start Date">');
-			var span2 = $('<span class="help-inline"></span>');
-			div2.append(inputStart);
-			div2.append(span2);
-			td7.append(div2);
-			
-			var td8 = $('<td></td>');
-			var div3 = $('<div class="control-group endDate"></div>');
-			var inputEnd = $('<input type="text" name="endDate" id="endDate" placeholder="End Date">');
-			var span3 = $('<span class="help-inline"></span>');
-			div3.append(inputEnd);
-			div3.append(span3);
-			td8.append(div3);
-			
-			var td9 = $('<td></td>');
-			var btn = $('<Button class="radius btn-main" id="addTaskButton">Add Tasks</Button>');
-			
-			btn.click(function()
-			{
-				view.addNewTask();
-			});
-			td9.append(btn);
-			
-			var plus = $('<img class="image" src="img/Add.png" title="Add Task" alt="Add" style="height:30px;width:30px;">');
-			tdb.append(plus);
-			/*var td6 = $('<td>'
-					+'<div class="control-group taskName">'
-					+'<input type="text" size="40" name="taskName" id="taskName" >'
-					+'<span class="help-inline"></span>'
-					+'</div>' 
-					+'</td>');*/
-			/*var td7 = $('<td>'
-					+'<div class="control-group startDate">'
-					+'<input type="text" name="startDate" id="startDate" >'
-					+'<span class="help-inline"></span>'
-					+'</div>'
-					+'</td>');
-			var td8 = $('<td>'
-					+'<div class="control-group endDate">'
-					+'<input type="text" name="endDate" id="endDate" >'
-					+'<span class="help-inline"></span>'
-					+'</div>'
-					+'</td>');*/
-			/*var td9 = $('<td>'
-					+'<Button class="radius right btn-main" id="addTaskButton">Add Tasks</Button>'
-					+'</td>');*/
-			tr1.append(tdb);
-			tr1.append(td6);
-			tr1.append(td7);
-			tr1.append(td8);
-			tr1.append(td9);
-			
-			if($("#flag").val().indexOf("R") >= 0)
-			{
+					dateFormat: 'dd/mm/yy',
+					minDate : 0,
+					changeMonth: true,
+		            changeYear: true,
+		            yearRange: "+0:+10",
+					onSelect : function(dateText, datePicker) 
+					{
+						console.log('onSelect', dateText);
+						$(this).selectedDate = dateText;
+			           // inputEnd.datepicker("option", "minDate", dateText);
+			            var date = $(this).datepicker('getDate');
+		                if (date) 
+		                {
+		                	date.setDate(date.getDate() + 1);
+		                }
+		                inputEnd.datepicker('option', 'minDate', date);
+					}
+				});
 				
-			}
-			if($("#flag").val().indexOf("W") >= 0)
-			{
-				tBody.append(tr1);
-			}
-			$("#task_data").append(tBody);
-			inputStart.datepicker(
-			{
-				dateFormat: 'dd/mm/yy',
-				minDate : 0,
-				changeMonth: true,
-	            changeYear: true,
-	            yearRange: "+0:+10",
-				onSelect : function(dateText, datePicker) 
+				inputEnd.datepicker(
 				{
-					console.log('onSelect', dateText);
-					$(this).selectedDate = dateText;
-		           // inputEnd.datepicker("option", "minDate", dateText);
-		            var date = $(this).datepicker('getDate');
-	                if (date) 
-	                {
-	                	date.setDate(date.getDate() + 1);
-	                }
-	                inputEnd.datepicker('option', 'minDate', date);
-				}
-			});
-			
-			inputEnd.datepicker(
-			{
-				dateFormat: 'dd/mm/yy',
-				minDate : 1,
-				changeMonth: true,
-	            changeYear: true,
-	            yearRange: "+0:+10",
-				onSelect : function(dateText, datePicker) 
-				{
-					console.log('onSelect', dateText);
-					$(this).selectedDate = dateText;
-				}
-			});
-			$('.complete_button').click(function() {
-				var name = $(this).attr("attr-name");
-				$.ajax({
-					url : 'user/setCompleteTask.json',
-					type : 'POST',
-					data : JSON.stringify({	"id" : name}),
-					headers : 
+					dateFormat: 'dd/mm/yy',
+					minDate : 1,
+					changeMonth: true,
+		            changeYear: true,
+		            yearRange: "+0:+10",
+					onSelect : function(dateText, datePicker) 
+					{
+						console.log('onSelect', dateText);
+						$(this).selectedDate = dateText;
+					}
+				});
+				$('.complete_button').click(function() {
+					var name = $(this).attr("attr-name");
+					$.ajax({
+						url : 'user/setCompleteTask.json',
+						type : 'POST',
+						data : JSON.stringify({	"id" : name}),
+						headers : 
+							{
+								'Accept' : 'application/json',
+								'Content-Type' : 'application/json; charset=UTF-8'
+							},
+						success :function(data)
 						{
-							'Accept' : 'application/json',
-							'Content-Type' : 'application/json; charset=UTF-8'
+							console.log("Success");
+							var tasksProjectView1 = new tasksProjectView();
+							tasksProjectView1.getTasksFromId();
+							//$('#tasksModal').foundation('reveal', 'open');
 						},
-					success :function(data)
-					{
-						console.log("Success");
-						var tasksProjectView1 = new tasksProjectView();
-						tasksProjectView1.getTasksFromId();
-						//$('#tasksModal').foundation('reveal', 'open');
-					},
-					error : function(data) {
-						console.log("Error");
-					}
+						error : function(data) {
+							console.log("Error");
+						}
+					});
 				});
-			});
-			$('.delete_button').click(function() {
-				var name = $(this).attr("attr-name");
-				$.ajax({
-					url : 'user/deleteTask.json',
-					type : 'POST',
-					data : JSON.stringify({	"id" : name}),
-					headers : 
-					{
-						'Accept' : 'application/json',
-						'Content-Type' : 'application/json; charset=UTF-8'
-					},
-					success :function(data)
-					{
-						console.log("Success");
-						var tasksProjectView1 = new tasksProjectView({
-							el : $("#tasksModal"),
+				$('.delete_button').click(function() {
+					var result = confirm("Are you sure you want to Delete?");
+					if (result) {
+						var name = $(this).attr("attr-name");
+						$.ajax({
+							url : 'user/deleteTask.json',
+							type : 'POST',
+							data : JSON.stringify({	"id" : name}),
+							headers : 
+							{
+								'Accept' : 'application/json',
+								'Content-Type' : 'application/json; charset=UTF-8'
+							},
+							success :function(data)
+							{
+								console.log("Success");
+								var tasksProjectView1 = new tasksProjectView({
+									el : $("#tasksModal"),
+								});
+								tasksProjectView1.render();
+								$('#tasksModal').foundation('reveal', 'open');
+							},
+							error : function(data) {
+								console.log("Error");
+							}
 						});
-						tasksProjectView1.render();
-						$('#tasksModal').foundation('reveal', 'open');
-					},
-					error : function(data) {
-						console.log("Error");
 					}
 				});
-			});
 		},
 		error : function(response)
 		{
@@ -1134,9 +1391,8 @@ var tasksProjectView = Backbone.View.extend({
 			"projectId" : $("#hidId").val()
 		});
 		
-		if (!this.taskModel.isValid() && flag === true) {
+		if (!this.taskModel.isValid()) {
 			this.showErrors(this.taskModel.validationError);
-			e.preventDefault();
 		} 
 		else
 		{
@@ -1178,6 +1434,203 @@ var tasksProjectView = Backbone.View.extend({
 		this.$('.help-inline').text('');
 	}
 });
+
+var imagesProjectView = Backbone.View.extend({
+
+	el : $(""),
+	initialize : function() {
+	},
+	render : function() {
+		var template = _.template($("#images_template").html(), {});
+		this.$el.html(template);
+		this.getImagesFromId();
+		$('.fancybox').fancybox();
+	},
+	/*events 
+	{
+		"click addImageButton" : "addNewProjectImage"
+	},*/
+	getImagesFromId : function()
+	{
+		var view = this;
+		var id = $("#hidId").val();
+		$.ajax({
+			url : 'user/getProjectImages.json',
+			type : "POST",
+			headers : {
+				'Accept' : 'application/json',
+				'Content-Type' : 'application/json; charset=UTF-8'
+			},
+			data : JSON.stringify(
+			{
+					"id" : id
+			}),
+			success: function (data) {
+				
+			var len = data.length;
+			var tBody = $("<tbody></tbody>");
+			var addImg = $('<div class="control-group imageGroup" id="imageGroup">'
+					+'<div class="control-group images">'
+					+'<label for="projectImage">Select Image</label>'
+					+'<input type="file" multiple="multiple" class="imgGroup" id="imgGroup" name="images" accept="image/*"'
+					+'class="browser-select">'
+					+'</div>'	
+					+'<span class="help-inline"></span>'
+					+'</div>');
+			
+			var btn = $('<Button class="radius btn-main" id="addImageButton">Add Images</Button>');
+			var tr1 = $("<tr></tr>");
+			var td1 = $("<td></td>");
+			var td2 = $("<td></td>");
+			td1.append(addImg);
+			td2.append(btn);
+			tr1.append(td1);
+			tr1.append(td2);
+			btn.click(function()
+			{
+				if($("#imgGroup").val() != "")
+				{
+					view.addNewProjectImage();
+				}
+				else
+				{
+					$(".imageGroup").find('.help-inline').text("Please Select Image.").addClass('errorText');
+				}
+				
+			});
+			if($("#flag").val().indexOf("R") >= 0)
+			{
+				
+			}
+			if($("#flag").val().indexOf("W") >= 0)
+			{
+				tBody.append(tr1);
+			}
+			
+			$("#projectImagesDiv").append(tBody);
+			if(len > 0)
+			{
+				for (var i = (len-1); i >= 0; i--) 
+				{ 
+					var imageDiv = $('<div class="imgBlock"></div>')
+					var images = $('<a class="fancybox" href="projects/images/'+ data[i].images+'" data-fancybox-group="gallery" title=""><img src="projects/images/'+ data[i].images+'" alt="Image Not Displayed"  ></a>');
+					var span = $("<span class='right' style='padding:2px;'><a href=# class='delete_button' title='delete' attr-name='"+ data[i].id + "'>&nbsp;<img src= 'images/delete.png' style='width:12px; height:12px;'></a></span>");
+					imageDiv.append(span);
+					imageDiv.append(images);
+					$("#projectImagesDiv").append(imageDiv);
+					if($("#flag").val().indexOf("R") >= 0)
+					{
+						console.log($("#flag").val());
+						span.hide();
+					}
+					if($("#flag").val().indexOf("W") >= 0)
+					{
+						console.log($("#flag").val());
+						span.show();
+					}
+					if($("#flag").val().indexOf("D") >= 0)
+					{
+						console.log($("#flag").val());
+						span.show();
+					}
+				}
+			}
+			else
+			{
+				var tr = $("<tr align='center'></tr>");
+				var tdd = $("<td><b>No Images</b></td>");
+				tr.append(tdd);
+				tBody.append(tr);
+				$("#projectImagesDiv").append(tBody);
+			}
+				
+				
+				
+				$('.delete_button').click(function() {
+					var result = confirm("Are you sure you want to Delete?");
+					if (result) {
+						var name = $(this).attr("attr-name");
+						$.ajax({
+							url : 'user/deleteProjectImage.json',
+							type : 'POST',
+							data : JSON.stringify({	"projectId" : name}),
+							headers : 
+							{
+								'Accept' : 'application/json',
+								'Content-Type' : 'application/json; charset=UTF-8'
+							},
+							success :function(data)
+							{
+								console.log("Success");
+								var imagesProjectView1 = new imagesProjectView({
+									el : $("#imagesModal"),
+								});
+								imagesProjectView1.render();
+								$('#imagesModal').foundation('reveal', 'open');
+							},
+							error : function(data) {
+								console.log("Error");
+							}
+						});
+					}
+					
+				});
+		},
+		error : function(response)
+		{
+			console.log("error come");
+		}
+		});
+	},
+	addNewProjectImage : function()
+	{		
+			 var data = new FormData();
+			 data.append('projectId', $("#hidId").val());
+			 $.each($("input[name^=images]"), function(i, obj) {
+			        $.each(obj.files,function(j,file){
+			            data.append('images',file);
+			            console.log(file);
+			        })
+			});
+		   
+		 	 $.ajax({
+				    url: 'user/addProjectImages.json',
+				    data:data,
+				    cache: false,
+				    contentType: false,
+				    processData: false,
+				    type: 'POST',
+				    mimeType: "multipart/form-data",
+				    
+				    success: function(){
+				    	var imagesProjectView2 = new imagesProjectView({
+							el : $("#imagesModal"),
+						});
+						imagesProjectView2.render();
+						$('#imagesModal').foundation('reveal', 'open');
+				    	console.log("success");
+				    },
+				    error: function(data){
+				    	console.log("error");
+				    }
+		 	 	}); 
+	
+	},
+	showErrors : function(errors) {
+		_.each(errors, function(error) {
+			var controlGroup = this.$('.' + error.name);
+			console.log(error.name);
+			//controlGroup.addClass('error');
+			controlGroup.find('.help-inline').text(error.message);
+			controlGroup.find('.help-inline').addClass('errorText');
+		}, this);
+	},
+	hideErrors : function() {
+		this.$('.control-group').removeClass('error');
+		this.$('.help-inline').text('');
+	}
+});
+
 var statusProjectView = Backbone.View.extend({
 
 	el : $(""),
@@ -1187,6 +1640,7 @@ var statusProjectView = Backbone.View.extend({
 		var template = _.template($("#status_template").html(), {});
 		this.$el.html(template);
 		var id = $("#hidId").val();
+		
 		$.ajax({
 			url : "user/getStatus.json",
 			type : "POST",
@@ -1199,6 +1653,7 @@ var statusProjectView = Backbone.View.extend({
 				"id" : id
 			}),
 			success: function (data) {
+				
 				var project = $("<h4><b>Project Name</b> :  "+ data.projectName+" </h4>");
 				$("#statusDiv").append(project);
 				var progress = $('<div id="progressbar"></div>');
@@ -1208,12 +1663,50 @@ var statusProjectView = Backbone.View.extend({
 				{
 					goal: ''+ data.allTask,
 					raised: ''+ data.completedTask, 
-					width:'300px',
+					width:'350px',
+					height:'25px',
 					bgColor: "#000",
 					barColor: "#018bb9"
 				});
 				var taskStatus = $("<h5>Completed Task : "+data.completedTask+   "  out of   "+data.allTask+"</h5>")
-				$("#statusDiv").append(taskStatus);
+				var link = $("<a target='_blank' href= 'projects/project/"+ data.projectPath +"'>Download</a>");
+				var table = $("<table cellspacing='0' style='width: 100%; border : none;'> </table>")
+				var tBody = $("<tbody></tbody>");
+				var tr1 = $("<tr  style='Text-align:center;'></tr>");
+				var td1 = $("<td style='border:2px solid #018bb9;'></td>");
+				var td2 = $("<td style='border:2px solid #018bb9; '></td>");
+				td1.append(project);
+				td2.append(progress);
+				td2.append(taskStatus);
+				if(data.projectPath != null)
+				{
+					td1.append(link);
+				}
+				
+				tr1.append(td1);
+				tr1.append(td2);
+				tBody.append(tr1);
+				
+				/*var video = $('<video id="MY_VIDEO_1" class="video-js vjs-default-skin" controls'
+						+'preload="auto" width="640" height="264" poster="MY_VIDEO_POSTER.jpg"'
+						+'data-setup="{}">'
+						+'<source src="projects/videos/'+ data.video +'" type="video/mp4">'
+						+'<p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>'
+						+'</video>');*/
+				var video = $('<div style="max-width:640px; height:480px; margin:0 auto;"><video id="vdo" height="480" width="640">'
+						+'<source src="projects/videos/'+ data.video +'" >'
+						+'</video> </div>');
+				var tr2 = $("<tr ></tr>");
+				var td4 = $("<td colspan='2'></td>");
+				td4.append(video);
+				tr2.append(td4);
+				tBody.append(tr2);
+				table.append(tBody);
+				$("#statusDiv").append(table);
+				$('#vdo').videoPlayer({
+					'playerWidth' : 0.95,
+					'videoClass' : 'video'	
+				});
 			},
 			error : function(data)  {
 				console.log("error");
