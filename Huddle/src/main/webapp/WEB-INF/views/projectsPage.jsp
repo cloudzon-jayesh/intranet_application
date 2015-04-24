@@ -18,8 +18,16 @@
 <link rel="stylesheet" type="text/css" href="css/style.css" />
 <link rel="stylesheet" type="text/css" href="css/hover.css"/>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="css/jquery.fancybox.css"/>
+<link rel='stylesheet' type='text/css' href='css/video.css' />
+<link href="http://vjs.zencdn.net/4.12/video-js.css" rel="stylesheet">
 	<style>
-	.cf:before, .cf:after { content: ""; display: table; }
+	.fancybox-custom .fancybox-skin {
+			box-shadow: 0 0 50px #222;
+		}
+	#close {float:left; font-family:Arial, Helvetica, sans-serif; display:inline-block; padding:0px 5px; color:red;cursor: pointer; margin-top: 5%; }
+	.imgDiv {padding:3px 1px;}
+	.cf:before, .cf:after { content: ""; display: table; padding: 2px; }
 	.cf:after { clear: both; }
 	.cf { zoom: 1; }
 	.clear { clear: both; }
@@ -54,7 +62,7 @@
 	.overlay .second-part{ border-top:1px solid #fff; }
 	.overlay .second-part a .files-part{ text-decoration:none;}
 	.overlay .second-part a:hover .files-part{  background: rgba(1, 52, 69, 0.8);}
-	.overlay .second-part .files-part{ float:left; text-align:center; padding: 20px 22px 22px 23px; border-right:1px solid #fff;}
+	.overlay .second-part .files-part{ float:left; text-align:center; padding: 20px 15px 22px 23px; border-right:1px solid #fff;}
 	.overlay .second-part .files-part .image{display:inline-block;margin-left:5px;margin-bottom:10px;}
 	.overlay .second-part .files-part h4{font-size:14px; color:#fff;font-family:Arial, Helvetica, sans-serif; font-weight:normal;margin:0px; padding:0;}
 	.overlay .second-part a .calendar-part{ text-decoration:none;}
@@ -63,6 +71,9 @@
 	.overlay .second-part .calendar-part .image{display:inline-block; margin-left:5px;margin-bottom:10px;}
 	.overlay .second-part .calendar-part h4{display:block;  font-size:14px; color:#fff;font-family:Arial, Helvetica, sans-serif; font-weight:normal; margin:0; padding:0;}		
 	.pageTitle{margin:20px 70px; display:block; font-size:20px; color:#000;}
+	.imgBlock{width:200px; height:200px; display:table-cell; vertical-align:middle; background-color:#fff;  margin-left:15px; margin-top:auto; float:left;}
+	 .imgBlock img{    width: 180px;    height: 180px;}
+	 
 	 .errorText{color:red;}
 		.input-left-main{width:48%; float:left;}
 		.input-main{width:100%;}
@@ -92,7 +103,9 @@
 		.career-container li a div{width:100% !important;}
 		.input-left-main{width:100%; float:right;}
 		.input-right-main{width:100%; float:left; border:1px solid #ccc; padding:20px 0 0 2%; margin-top:10px; margin-bottom:10px;}
-	
+		.reveal-modal { top: 100px !important; position: fixed;}
+		.reveal-modal-bg {position: fixed;}
+		.vjs-default-skin .vjs-control-bar { font-size: 100% }
 	</style>
 	
 	
@@ -155,18 +168,18 @@
 									<input type="file" name="projectPath" id="projectPath" accept=".zip,.rar,.war" class="browser-select">
 									<span class="help-inline"></span>
 								</div>
-								<label for="document">Select Document</label>
+								<!-- <label for="document">Select Document</label>
 								<div class="document control-group">
 									<input type="file" name="document" id="document" accept=".txt,.doc,.docx,.rtf,.pdf" class="browser-select">
 									<span class="help-inline"></span>
-								</div>
+								</div> -->
 								<label for="video">Select Video</label>
 								<div class="projectVideo control-group">
 									<input type="file" name="projectVideo" id="video" accept="video/*" class="browser-select">
 									<span class="help-inline"></span>
 								</div>
 							</div>
-							<div class="input-right-main">
+							<!-- <div class="input-right-main">
 								<span class="title">Images</span>
 								<div class="control-group imageGroup" id="imageGroup">
 									<div class="control-group images">
@@ -177,7 +190,7 @@
 									<span class="help-inline"></span>
 								</div>
 								<a class="radius right" id="addImageButton" >Add More Images</a>
-							</div>	
+							</div>	 -->
 							<div class="input-right-main">
 								<span class="title">Group</span>
 								<div class="control-group groupName" id="groupName">
@@ -223,7 +236,7 @@
 										</div>
 									<span class="help-inline"></span>
 								</div>
-								<label for="document">Select Document</label>
+								<!--<label for="document">Select Document</label>
 								<div class="document control-group">
 									<input type="text" id="documentLink" readonly="readonly"/>
 									<input type="file" name="document" id="editDocument" accept=".txt,.doc,.docx,.rtf,.pdf" class="browser-select" style="display:none;">
@@ -231,7 +244,7 @@
 											<a class="radius right" id="changeDocument">Change Document</a>
 										</div>
 										<span class="help-inline"></span>
-								</div>
+								</div>-->
 								<label for="video">Select Video</label>
 								<div class="video control-group">
 									<input type="text" id="videoLink" readonly="readonly"/>
@@ -243,19 +256,7 @@
 								</div>								
 								
 							</div>
-							<div class="input-right-main">
-								<span class="title">Images</span>
-								<div class="control-group imageGroup" id="editImageGroup">
-									<div class="control-group fileinput">
-										<label for="projectImage">Project Images</label>
-										<input type="file" class="imgGroup" name="images" accept="image/*"
-										class="browser-select" style="display:none;">
-										<input name="editImagesChecked" checked="checked" type="checkbox" value="0" class="imgGroup" style="display:none;">
-									</div>	
-									<span class="help-inline"></span>
-								</div>
-								<a class="radius right" id="editAddImageButton">Add More Images</a>
-							</div>	
+							
 							<div class="input-right-main">
 								<span class="title">Group</span>
 								<div class="control-group groupName" id="editGroupName">
@@ -268,6 +269,19 @@
 			
 			
 		</script>
+		<!--<div class="input-right-main">
+								<span class="title">Images</span>
+								<div class="control-group imageGroup" id="editImageGroup">
+									<div class="control-group fileinput">
+										<label for="projectImage">Project Images</label>
+										<input type="file" class="imgGroup" name="images" accept="image/*"
+										class="browser-select" >
+										<input name="editImagesChecked" checked="checked" type="checkbox" value="0" class="imgGroup" style="display:none;">
+									</div>
+									<span class="help-inline"></span>
+								</div>
+								<a class="radius right" id="editAddImageButton">Add Images</a>
+							</div>	 -->
 	<footer>
   <div class="row" id="top-footer">
     <div class="large-12 medium-12 small-12 columns">
@@ -302,15 +316,24 @@
    		<div id="effect-1" class="effects clearfix">
 		</div>
 	</div
-    
-  
-
-
 </script>
+
+<div id="documentsModal" class="reveal-modal" data-reveal
+		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog" >
+</div>
+	<script type="text/template" id="documents_template">	 
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+		<a href="" class="pageTitle">Project Documents</a> 
+		<div class="dashboard-block">
+			<table id="document_data" style="width:100%;border : none;">
+			</table>
+		</div>			
+	</script> 
+	
 <div id="tasksModal" class="reveal-modal" data-reveal
 		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog" >
 </div>
-		<script type="text/template" id="tasks_template">	 
+	<script type="text/template" id="tasks_template">	 
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<a href="" class="pageTitle">Project Tasks</a> 
 		<div class="dashboard-block"> 
@@ -319,22 +342,35 @@
 			<table id="task_data" style="width:100%;border : none;">
 			</table>
 		</div>			
-</script> 
+	</script> 
 		
-		<div id="statusModal" class="reveal-modal" data-reveal
+	<div id="statusModal" class="reveal-modal" data-reveal
 		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog" >
-		</div>
-		<script type="text/template" id="status_template">	 
+	</div>
+	<script type="text/template" id="status_template">	 
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 		<a href="" class="pageTitle">Project Status</a> 
 		<div class="dashboard-block"> 
 			<div id="statusDiv">
 			</div>
 		</div>
-		</script> 
+	</script> 
+	
+	<div id="imagesModal" class="reveal-modal" data-reveal
+		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog" >
+	</div>
+	<script type="text/template" id="images_template">	 
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+		<a href="" class="pageTitle">Project Images</a> 
+		<div class="dashboard-block cf"> 
+			<div id="projectImagesDiv">
+			</div>
+		</div>
+	</script>  
 		
 	<script src="js/jquery.js"></script>
 	<script src="js/jquery-ui.js"></script>
+	<script src="js/jquery.mousewheel-3.0.6.pack.js"></script>
 	<!-- <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script> -->
 	<script src="js/web-fonts.js"></script>
 	<script src="js/sticky-footer.js"></script>
@@ -345,11 +381,16 @@
 	<script src="js/dataTables.responsive.js"></script>
 	<script type="text/javascript" src="js/modernizr.js"></script>
 	<script src="js/jqmeter.min.js"></script>
+	<script src="js/jquery.fancybox.js"></script>
+	<script src="js/jquery.fancybox.pack.js"></script>
+	<!-- <script src="http://vjs.zencdn.net/4.12/video.js"></script> -->
+	<script src="js/video.js"></script>
 	<!-- backbone js -->
 	<script src="js/underscore-min.js"></script>
 	<script src="js/backbone-min.js"></script>
 	<script src="js/model/projectModel.js"></script>
 	<script src="js/model/projectEditModel.js"></script>
+	<script src="js/model/projectDocumentModel.js"></script>
 	<script src="js/view/projectView.js"></script>
 	<script src="js/model/taskModel.js"></script>
 	

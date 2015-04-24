@@ -44,7 +44,8 @@
 		.input-left-main{width:100%; float:right;}
 		.input-right-main{width:100%; float:left; border:1px solid #ccc; padding:20px 0 0 2%; margin-top:10px; margin-bottom:10px;}
 		.input-main-input{ border-radius:3px !important; padding:4px 1% !important; height:auto; width:98% !important; float:left;}
-		
+		.reveal-modal { top: 100px !important; position: fixed;}
+		.reveal-modal-bg {position: fixed;}
 		}
 		
     </style>

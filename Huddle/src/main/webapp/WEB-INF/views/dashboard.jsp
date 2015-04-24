@@ -26,7 +26,7 @@
 	.block{width:260px;  background-color:#fff; border:2px solid #018bb9;  margin-left:25px; float:left; margin-bottom: 25px; position: relative; min-height: 302px;}
 	.scroll{overflow-y: auto;height:250px;}
 	.block h2{font-size:24px;  font-family: "Open Sans",sans-serif; color:#018bb9; display:block; text-align:center; margin-bottom:10px; }
-	.block h3{font-size:14px;  font-family: "Open Sans",sans-serif; color:#018bb9; display:block; background:url(img/osr-icon.png) no-repeat left 4px; padding:0 0 0 30px; margin-left:20px; margin-bottom:2px;}
+	.block h3{font-size:14px;  font-family: "Open Sans",sans-serif; color:#018bb9; display:block; background:url(img/osr-icon.png) no-repeat left 2px; padding:0 0 0 30px; margin-left:20px; margin-bottom:2px;}
 	.block p{font-size:12px; text-align:right;  font-family: "Open Sans",sans-serif; color:#b8b8b8; display:block; text-align:center; margin-bottom:15px; margin-bottom:15px; }
 	.block .more-btn{width:100%; font-size:20px; color:#fff; background-color:#018bb9; text-align:center; padding:15px 0px; display:block;}
 	.block .more-btn:hover{background-color:#000; color:#fff;}

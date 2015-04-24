@@ -52,7 +52,8 @@
 		.career-container li a div{width:100% !important;}
 		.input-left-main{width:100%; float:right;}
 		.input-right-main{width:100%; float:left; border:1px solid #ccc; padding:20px 0 0 2%; margin-top:10px; margin-bottom:10px;}
-				
+		.reveal-modal { top: 100px !important; position: fixed;}
+		.reveal-modal-bg {position: fixed;}		
 		}
 		
     </style>
