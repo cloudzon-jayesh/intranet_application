@@ -1,6 +1,7 @@
 package com.cloudzon.huddle.service;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -32,8 +33,12 @@ import com.cloudzon.huddle.dto.GetRolePermissionDTO;
 import com.cloudzon.huddle.dto.GroupDTO;
 import com.cloudzon.huddle.dto.MeetingDTO;
 import com.cloudzon.huddle.dto.MeetingListDTO;
+import com.cloudzon.huddle.dto.ProjectAddDocumentDTO;
+import com.cloudzon.huddle.dto.ProjectAddImagesDTO;
 import com.cloudzon.huddle.dto.ProjectDTO;
+import com.cloudzon.huddle.dto.ProjectDocumentDTO;
 import com.cloudzon.huddle.dto.ProjectEditDTO;
+import com.cloudzon.huddle.dto.ProjectImagesDTO;
 import com.cloudzon.huddle.dto.ProjectListDTO;
 import com.cloudzon.huddle.dto.ProjectStatusDTO;
 import com.cloudzon.huddle.dto.ProjectTasksDTO;
@@ -53,6 +58,8 @@ import com.cloudzon.huddle.model.Events;
 import com.cloudzon.huddle.model.Meetings;
 import com.cloudzon.huddle.model.Projects;
 import com.cloudzon.huddle.model.Role;
+import com.dropbox.client2.exception.DropboxException;
+import com.dropbox.core.DbxException;
 
 import freemarker.template.TemplateException;
 
@@ -211,7 +218,23 @@ public interface UserService {
 	public void editProject(ProjectEditDTO projectEditDTO, HttpServletRequest servletRequest) throws IOException,
 	TemplateException, MessagingException, ParseException;
 	
+	public List<ProjectDocumentDTO> getDocuments(Projects projects);
+	
 	public List<ProjectTasksDTO> getTasks(Projects projects);
+	
+	public void addProjectDocument(ProjectAddDocumentDTO projectAddDocumentDTO, HttpServletRequest servletRequest) throws IOException,
+	TemplateException, MessagingException, ParseException;
+	
+	public void deleteProjectDocument(ProjectAddDocumentDTO projectAddDocumentDTO)throws IOException,
+	TemplateException, MessagingException, ParseException;
+	
+	public List<ProjectImagesDTO> getProjectImages(Projects projects);
+	
+	public void addProjectImages(ProjectAddImagesDTO projectAddImagesDTO, HttpServletRequest servletRequest) throws IOException,
+	TemplateException, MessagingException, ParseException;
+	
+	public void deleteProjectImage(ProjectAddImagesDTO projectAddImagesDTO)throws IOException,
+	TemplateException, MessagingException, ParseException;
 	
 	public void addTasks(TaskDTO taskDTO)throws IOException,
 	TemplateException, MessagingException, ParseException;
@@ -247,4 +270,8 @@ public interface UserService {
 	
 	public void addComment(CommentDTO commentDTO)throws IOException,
 	TemplateException, MessagingException, ParseException;
+	
+	public String testDropBox(MultipartFile file)throws IOException,
+	TemplateException, MessagingException, ParseException, DbxException, DropboxException, URISyntaxException;
+	
 }

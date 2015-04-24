@@ -2,19 +2,17 @@ package com.cloudzon.huddle.service.impl;
 
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
-import javax.naming.event.EventDirContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.dom4j.io.DocumentResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +50,10 @@ import com.cloudzon.huddle.dto.GetRolePermissionDTO;
 import com.cloudzon.huddle.dto.GroupDTO;
 import com.cloudzon.huddle.dto.MeetingDTO;
 import com.cloudzon.huddle.dto.MeetingListDTO;
+import com.cloudzon.huddle.dto.ProjectAddDocumentDTO;
+import com.cloudzon.huddle.dto.ProjectAddImagesDTO;
 import com.cloudzon.huddle.dto.ProjectDTO;
+import com.cloudzon.huddle.dto.ProjectDocumentDTO;
 import com.cloudzon.huddle.dto.ProjectEditDTO;
 import com.cloudzon.huddle.dto.ProjectImagesDTO;
 import com.cloudzon.huddle.dto.ProjectListDTO;
@@ -89,6 +90,7 @@ import com.cloudzon.huddle.model.Events;
 import com.cloudzon.huddle.model.MeetingRole;
 import com.cloudzon.huddle.model.Meetings;
 import com.cloudzon.huddle.model.Permission;
+import com.cloudzon.huddle.model.ProjectDocuments;
 import com.cloudzon.huddle.model.ProjectImages;
 import com.cloudzon.huddle.model.ProjectRole;
 import com.cloudzon.huddle.model.ProjectTasks;
@@ -111,6 +113,7 @@ import com.cloudzon.huddle.repository.EventsRepository;
 import com.cloudzon.huddle.repository.MeetingRoleRepository;
 import com.cloudzon.huddle.repository.MeetingsRepository;
 import com.cloudzon.huddle.repository.PermissionRepository;
+import com.cloudzon.huddle.repository.ProjectDocumentsRepository;
 import com.cloudzon.huddle.repository.ProjectImagesRepository;
 import com.cloudzon.huddle.repository.ProjectRoleRepository;
 import com.cloudzon.huddle.repository.ProjectTasksRepository;
@@ -124,9 +127,13 @@ import com.cloudzon.huddle.security.CustomUserDetail;
 import com.cloudzon.huddle.security.InMemoryTokenStore;
 import com.cloudzon.huddle.service.SendMailService;
 import com.cloudzon.huddle.service.UserService;
+import com.cloudzon.huddle.util.BoxUtil;
 import com.cloudzon.huddle.util.DateUtil;
+import com.cloudzon.huddle.util.DropBoxUtil;
 import com.cloudzon.huddle.util.FileUtils;
 import com.cloudzon.huddle.util.ImageUtils;
+import com.dropbox.client2.exception.DropboxException;
+import com.dropbox.core.DbxException;
 
 import freemarker.template.TemplateException;
 
@@ -180,6 +187,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Resource 
 	private ProjectRoleRepository projectRoleRepository;
+	
+	@Resource 
+	private ProjectDocumentsRepository projectDocumentsRepository;
 	
 	@Resource 
 	private ProjectTasksRepository projectTasksRepository;
@@ -1206,7 +1216,7 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		
-		StringBuffer documentId = null;
+		/*StringBuffer documentId = null;
 		if(projectDTO.getDocument() != null)
 		{
 			String ext = projectDTO.getDocument().getOriginalFilename().substring(projectDTO.getDocument().getOriginalFilename().lastIndexOf(".")+1);
@@ -1218,14 +1228,14 @@ public class UserServiceImpl implements UserService {
 					.append(fileName);
 				tempProjects.setDocument(documentId.toString());
 			}
-		}
+		}*/
 		
 		StringBuffer videoId = null;
 		if(projectDTO.getVideo() != null)
 		{
 			String ext = projectDTO.getVideo().getOriginalFilename().substring(projectDTO.getVideo().getOriginalFilename().lastIndexOf(".")+1);
 			String fileName = tempProjects.getId()+"_video."+ext;
-			if(FileUtils.uploadProjectVideo(fileName, projectDTO.getDocument(), servletRequest))
+			if(FileUtils.uploadProjectVideo(fileName, projectDTO.getVideo(), servletRequest))
 			{
 				videoId = new StringBuffer();
 				videoId.delete(0, videoId.length())
@@ -1237,7 +1247,7 @@ public class UserServiceImpl implements UserService {
 		this.projectsRepository.saveAndFlush(tempProjects);
 		
 		
-		StringBuffer projectImageId = null;
+		/*StringBuffer projectImageId = null;
 		ProjectImages objProjectImages = null;
 		int  n = 1;
 		String fileName = "";
@@ -1269,7 +1279,7 @@ public class UserServiceImpl implements UserService {
 			}
 		} finally {
 
-		}
+		}*/
 		Role objRole = null;
 		ProjectRole objProjectRole = null;
 		List<Long> getRoles = projectDTO.getRolesId();
@@ -1335,11 +1345,11 @@ public class UserServiceImpl implements UserService {
 			objProjectListDTO.setDescription(objProjects.getDescription());
 			objProjectListDTO.setUrl(objProjects.getUrl());
 			objProjectListDTO.setProjectPath(objProjects.getProjectPath());
-			objProjectListDTO.setDocument(objProjects.getDocument());
+			//objProjectListDTO.setDocument(objProjects.getDocument());
 			objProjectListDTO.setVideo(objProjects.getVideo());
 			roles = this.projectRoleRepository.getRolesByProject(objProjects.getId());
-			projectImagesDTOs = this.projectImagesRepository.getImagesofProject(objProjects.getId());
-			objProjectListDTO.setProjectImagesDTO(projectImagesDTOs);
+			/*projectImagesDTOs = this.projectImagesRepository.getImagesofProject(objProjects.getId());
+			objProjectListDTO.setProjectImagesDTO(projectImagesDTOs);*/
 			objProjectListDTO.setRolesId(roles);
 		}
 		return objProjectListDTO;
@@ -1374,7 +1384,7 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 			
-			StringBuffer documentId = null;
+			/*StringBuffer documentId = null;
 			if(projectEditDTO.getDocument() != null)
 			{
 				String ext = projectEditDTO.getDocument().getOriginalFilename().substring(projectEditDTO.getDocument().getOriginalFilename().lastIndexOf(".")+1);
@@ -1386,14 +1396,14 @@ public class UserServiceImpl implements UserService {
 						.append(fileName);
 					tempProjects.setDocument(documentId.toString());
 				}
-			}
+			}*/
 			
 			StringBuffer videoId = null;
 			if(projectEditDTO.getVideo() != null)
 			{
 				String ext = projectEditDTO.getVideo().getOriginalFilename().substring(projectEditDTO.getVideo().getOriginalFilename().lastIndexOf(".")+1);
 				String fileName = tempProjects.getId()+"_video."+ext;
-				if(FileUtils.uploadProjectVideo(fileName, projectEditDTO.getDocument(), servletRequest))
+				if(FileUtils.uploadProjectVideo(fileName, projectEditDTO.getVideo(), servletRequest))
 				{
 					videoId = new StringBuffer();
 					videoId.delete(0, videoId.length())
@@ -1404,7 +1414,7 @@ public class UserServiceImpl implements UserService {
 		}
 		this.projectsRepository.saveAndFlush(tempProjects);
 		
-		StringBuffer projectImageId = null;
+		/*StringBuffer projectImageId = null;
 		List<ProjectImages> objProjectImagesList = null;
 		List<ProjectImages> projectImages = this.projectImagesRepository.getImagesByProjectID(projectEditDTO.getId());
 		if(projectImages != null && projectImages.size() > 0)
@@ -1464,7 +1474,7 @@ public class UserServiceImpl implements UserService {
 			}
 		} finally {
 
-		}
+		}*/
 		List<ProjectRole> projectRoles = null;
 			projectRoles = this.projectRoleRepository.getProjectRolesByProject(tempProjects);
 			if (projectRoles != null && projectRoles.size() > 0) {
@@ -1498,7 +1508,112 @@ public class UserServiceImpl implements UserService {
 			}
 			
 		}
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public List<ProjectDocumentDTO> getDocuments(Projects projects)
+	{
+		logger.info("get Documents");
+		List<ProjectDocumentDTO> projectDocumentDTOs = this.projectDocumentsRepository.getAllDocumentsByProjectId(projects.getId());
+		return projectDocumentDTOs;
+	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public void addProjectDocument(ProjectAddDocumentDTO projectAddDocumentDTO, HttpServletRequest servletRequest) throws IOException,
+	TemplateException, MessagingException, ParseException
+	{
+		ProjectDocuments objProjectDocuments = new ProjectDocuments();
+		objProjectDocuments.setActive(true);
+		objProjectDocuments.setDocumentName(projectAddDocumentDTO.getDocumentName());
+		Projects tempProjects = this.projectsRepository.getProjectsById(projectAddDocumentDTO.getProjectId());
+		objProjectDocuments.setProjects(tempProjects);
+		StringBuffer documentId = null;
+		if(projectAddDocumentDTO.getDocuments() != null)
+		{
+			String ext = projectAddDocumentDTO.getDocuments().getOriginalFilename().substring(projectAddDocumentDTO.getDocuments().getOriginalFilename().lastIndexOf(".")+1);
+			String fileName = tempProjects.getId()+"_document."+ext;
+			if(FileUtils.uploadProjectDocument(fileName, projectAddDocumentDTO.getDocuments(), servletRequest))
+			{
+				documentId = new StringBuffer();
+				documentId.delete(0, documentId.length())
+					.append(fileName);
+				objProjectDocuments.setDocuments(documentId.toString());
+			}
+		}
+		this.projectDocumentsRepository.saveAndFlush(objProjectDocuments);
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public void deleteProjectDocument(ProjectAddDocumentDTO projectAddDocumentDTO)throws IOException,
+	TemplateException, MessagingException, ParseException
+	{
+		ProjectDocuments objProjectDocuments = this.projectDocumentsRepository.getAllDocumentsById(projectAddDocumentDTO.getId());
+		objProjectDocuments.setActive(false);
+		this.projectDocumentsRepository.saveAndFlush(objProjectDocuments);
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public List<ProjectImagesDTO> getProjectImages(Projects projects)
+	{
+		Projects objProjects = this.projectsRepository.getProjectsById(projects.getId());
+		List<ProjectImagesDTO> projectImagesDTOs = null;
+		projectImagesDTOs = this.projectImagesRepository.getImagesofProject(objProjects.getId());
+		return projectImagesDTOs;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public void addProjectImages(ProjectAddImagesDTO projectAddImagesDTO, HttpServletRequest servletRequest) throws IOException,
+	TemplateException, MessagingException, ParseException
+	{
+		Projects objProjects = this.projectsRepository.getProjectsById(projectAddImagesDTO.getProjectId());
+		StringBuffer projectImageId = null;
+		ProjectImages objProjectImages = null;
+		List<ProjectImages> projectImages = this.projectImagesRepository.getImagesByProjectID(objProjects.getId());
+		int  n = projectImages.size();
+		String fileName = "";
+		try {
+			if (projectAddImagesDTO.getImages() != null && projectAddImagesDTO.getImages().size() > 0) {
+				System.out.println("call");
+				for(MultipartFile tempMultipartFile : projectAddImagesDTO.getImages())
+				{
+					if(tempMultipartFile != null)
+					{
+						fileName =objProjects.getId() +"_image_"+(n++);
+						if (ImageUtils.uploadProjectImage(fileName,
+								tempMultipartFile, servletRequest)) {
+								objProjectImages = new ProjectImages();
+								projectImageId = new StringBuffer();
+								projectImageId.delete(0, projectImageId.length())
+										.append(fileName).append(".png");
+								objProjectImages.setActive(true);
+								objProjectImages.setImages(projectImageId.toString());
+								objProjectImages.setProjects(objProjects);
+								this.projectImagesRepository.save(objProjectImages);
+							}
+					}
+					
+				}
+			} else {
+				// throw new NotFoundException(NotFound.UserNotFound);
+				System.out.println("not found image");
+			}
+		} finally {
+
+		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
+	public void deleteProjectImage(ProjectAddImagesDTO projectAddImagesDTO)throws IOException,
+	TemplateException, MessagingException, ParseException
+	{
+		ProjectImages objProjectImages = this.projectImagesRepository.getAllImagesById(projectAddImagesDTO.getProjectId());
+		objProjectImages.setActive(false);
+		this.projectImagesRepository.saveAndFlush(objProjectImages);
+	}
 	@Override
 	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
 	public List<ProjectTasksDTO> getTasks(Projects projects)
@@ -1517,12 +1632,15 @@ public class UserServiceImpl implements UserService {
 		Projects objProjects = this.projectsRepository.getProjectsById(projects.getId());
 		projectStatusDTO.setId(objProjects.getId());
 		projectStatusDTO.setProjectName(objProjects.getProjectName());
+		projectStatusDTO.setProjectPath(objProjects.getProjectPath());
+		projectStatusDTO.setVideo(objProjects.getVideo());
 		List<ProjectTasksDTO> projectTasksDTOs = this.projectTasksRepository.getAllTasksByProjectId(projects.getId());
 		projectStatusDTO.setAllTask(projectTasksDTOs.size());
 		List<ProjectTasksDTO> objProjectTasksDTOs = this.projectTasksRepository.getAllCompletedTasksByProjectId(projects.getId());
 		projectStatusDTO.setCompletedTask(objProjectTasksDTOs.size());
 		return projectStatusDTO;
 	}
+	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class }, isolation = Isolation.READ_COMMITTED)
@@ -1821,5 +1939,17 @@ public class UserServiceImpl implements UserService {
 			objDiscussionComment.setUser(objUser);
 			this.discussionCommentRepository.saveAndFlush(objDiscussionComment);
 		}
+	}
+	
+	public String testDropBox(MultipartFile file)throws IOException,
+	TemplateException, MessagingException, ParseException, DbxException, DropboxException, URISyntaxException
+	{
+		//DropBoxUtil objBoxUtil = new DropBoxUtil();
+		//String displayName = objBoxUtil.authDropbox("ohzbs7u4z53s522", "15z3ghfr7f0i4jh");
+		//String displayName = objBoxUtil.authentication();
+		//String displayName = objBoxUtil.auth();
+		BoxUtil objBoxUtil = new BoxUtil();
+		objBoxUtil.authentication(file);
+		return "success";
 	}
 }
