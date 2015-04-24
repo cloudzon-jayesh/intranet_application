@@ -2,6 +2,7 @@ package com.cloudzon.huddle.controller;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,8 +61,12 @@ import com.cloudzon.huddle.dto.GetRolePermissionDTO;
 import com.cloudzon.huddle.dto.GroupPermissionDTO;
 import com.cloudzon.huddle.dto.MeetingDTO;
 import com.cloudzon.huddle.dto.MeetingListDTO;
+import com.cloudzon.huddle.dto.ProjectAddDocumentDTO;
+import com.cloudzon.huddle.dto.ProjectAddImagesDTO;
 import com.cloudzon.huddle.dto.ProjectDTO;
+import com.cloudzon.huddle.dto.ProjectDocumentDTO;
 import com.cloudzon.huddle.dto.ProjectEditDTO;
+import com.cloudzon.huddle.dto.ProjectImagesDTO;
 import com.cloudzon.huddle.dto.ProjectListDTO;
 import com.cloudzon.huddle.dto.ProjectStatusDTO;
 import com.cloudzon.huddle.dto.ProjectTasksDTO;
@@ -92,6 +97,8 @@ import com.cloudzon.huddle.model.Role;
 import com.cloudzon.huddle.model.User;
 import com.cloudzon.huddle.security.CustomUserDetail;
 import com.cloudzon.huddle.service.UserService;
+import com.dropbox.client2.exception.DropboxException;
+import com.dropbox.core.DbxException;
 import com.fasterxml.jackson.databind.deser.impl.SetterlessProperty;
 
 import freemarker.template.TemplateException;
@@ -674,10 +681,9 @@ public class UserController {
 			@RequestParam("projectName") String projectName,
 			@RequestParam("description") String description,
 			@RequestParam("url") String url, 
-			@RequestParam("projectPath") MultipartFile projectPath,
-			@RequestParam("document") MultipartFile document,
-			@RequestParam("video") MultipartFile video,
-			@RequestParam("images") MultipartFile[] images,
+			@RequestParam(value="projectPath",  required=false) MultipartFile projectPath,
+			@RequestParam(value = "video",  required=false) MultipartFile video,
+			//@RequestParam(value="images",  required=false) MultipartFile[] images,
 			@RequestParam("group") Long[] roles,
 			@RequestParam("userName") String userName,
 			//@RequestBody ProjectDTO projectDTO,
@@ -689,9 +695,8 @@ public class UserController {
 		projectDTO.setDescription(description);
 		projectDTO.setUrl(url);
 		projectDTO.setProjectPath(projectPath);
-		projectDTO.setDocument(document);
 		projectDTO.setVideo(video);
-		projectDTO.setImages(Arrays.asList(images));
+		//projectDTO.setImages(Arrays.asList(images));
 		projectDTO.setRolesId(Arrays.asList(roles));
 		projectDTO.setUserName(userName);
 		this.userService.addProject(projectDTO, servletRequest);
@@ -754,8 +759,8 @@ public class UserController {
 			@RequestParam(value="projectPath", required=false) MultipartFile projectPath,
 			@RequestParam(value="document", required=false) MultipartFile document,
 			@RequestParam(value="video", required=false) MultipartFile video,
-			@RequestParam(value="images", required=false) MultipartFile[] images,
-			@RequestParam("editImagesChecked") Long[] imageIds,
+			//@RequestParam(value="images", required=false) MultipartFile[] images,
+			//@RequestParam("editImagesChecked") Long[] imageIds,
 			@RequestParam("editGroupName") Long[] roles,
 			HttpServletRequest servletRequest) throws IOException,
 			TemplateException, MessagingException, ParseException {
@@ -789,7 +794,7 @@ public class UserController {
 		{
 			projectDTO.setVideo(null);
 		}
-		List<MultipartFile> imageList = new ArrayList<MultipartFile>();
+		/*List<MultipartFile> imageList = new ArrayList<MultipartFile>();
 		if(images != null)
 		{
 			for(MultipartFile tempFile : images)
@@ -804,13 +809,115 @@ public class UserController {
 		else
 		{
 			projectDTO.setImages(null);
-		}
+		}*/
 		projectDTO.setRolesId(Arrays.asList(roles));
-		projectDTO.setImageIds(Arrays.asList(imageIds));
+		//projectDTO.setImageIds(Arrays.asList(imageIds));
 		this.userService.editProject(projectDTO, servletRequest);
 		System.out.println("Upload successfully");
 		//return new ResponseMessageDto("Upload Successfully");
 		return "redirect:/setProject";
+	}
+	/**
+	 * get List for ADD Documents
+	 * 
+	 */
+	@RequestMapping(value = "/getDocuments", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public List<ProjectDocumentDTO> getDocuments(@RequestBody Projects projects)
+			throws IOException, TemplateException, MessagingException {
+		logger.info("getDocuments start");
+		return this.userService.getDocuments(projects);
+	}
+	/**
+	 * Add Project Documents
+	 * 
+	 */
+	@RequestMapping(value = "/addProjectDocuments", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ResponseMessageDto addProjectDocuments(
+			@RequestParam("documents") MultipartFile documents,
+			@RequestParam("documentName")String documentName,
+			@RequestParam("projectId")String id,
+			HttpServletRequest servletRequest) throws IOException,
+			TemplateException, MessagingException, ParseException {
+		logger.info("New Documents Added");
+		ProjectAddDocumentDTO projectAddDocumentDTO = new ProjectAddDocumentDTO();
+		projectAddDocumentDTO.setProjectId(Long.valueOf(id));
+		projectAddDocumentDTO.setDocumentName(documentName);
+		projectAddDocumentDTO.setDocuments(documents);
+		this.userService.addProjectDocument(projectAddDocumentDTO, servletRequest);
+		return new ResponseMessageDto("Project Document is Added");
+	}
+	
+	/**
+	 * delete Project Documents
+	 * 
+	 */
+	@RequestMapping(value = "/deleteProjectDocument", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ResponseMessageDto deleteProjectDocument(
+			 @RequestBody ProjectAddDocumentDTO projectAddDocumentDTO) throws IOException,
+			TemplateException, MessagingException, ParseException {
+		logger.info("Delete Project Document");
+		this.userService.deleteProjectDocument(projectAddDocumentDTO);
+		return new ResponseMessageDto("Document is Deleted");
+	}
+	
+	/**
+	 * get List of Images of projects
+	 * 
+	 */
+	@RequestMapping(value = "/getProjectImages", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public List<ProjectImagesDTO> getProjectImages(/*@RequestParam(value="images",  required=false) MultipartFile[] images,
+			@RequestParam("projectId")String id,
+			HttpServletRequest servletRequest*/
+			@RequestBody Projects projects)
+			throws IOException, TemplateException, MessagingException {
+		logger.info("getProjectImages start");
+		
+		return this.userService.getProjectImages(projects);
+	}
+	
+	/**
+	 * Add NEw Project Images
+	 * 
+	 */
+		
+	@RequestMapping(value = "/addProjectImages", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ResponseMessageDto addProjectImages(
+			@RequestParam(value="images",  required=false) MultipartFile[] images,
+			@RequestParam("projectId")String id,
+			HttpServletRequest servletRequest) throws IOException,
+			TemplateException, MessagingException, ParseException {
+		logger.info("addProjectImages start");
+		ProjectAddImagesDTO projectAddImagesDTO = new ProjectAddImagesDTO();
+		projectAddImagesDTO.setProjectId(Long.valueOf(id));
+		projectAddImagesDTO.setImages(Arrays.asList(images));
+		this.userService.addProjectImages(projectAddImagesDTO, servletRequest);
+		return new ResponseMessageDto("Add Successfully");
+		
+	}
+	
+	/**
+	 * delete Project Documents
+	 * 
+	 */
+	@RequestMapping(value = "/deleteProjectImage", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ResponseMessageDto deleteProjectImage(
+			 @RequestBody ProjectAddImagesDTO projectAddImagesDTO) throws IOException,
+			TemplateException, MessagingException, ParseException {
+		logger.info("Delete Project Document");
+		this.userService.deleteProjectImage(projectAddImagesDTO);
+		return new ResponseMessageDto("Image is Deleted");
 	}
 	
 	/**
@@ -1051,5 +1158,20 @@ public class UserController {
 		logger.info("New Comment Added");
 		this.userService.addComment(commentDTO);
 		return new ResponseMessageDto("Comment is Added");
+	}
+	
+	/**
+	 * Test
+	 * @throws ParseException 
+	 * @throws URISyntaxException 
+	 * 
+	 */
+	@RequestMapping(value = "/testDropBox", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public ResponseMessageDto testDropBox(@RequestParam("file") MultipartFile file) throws IOException,
+			TemplateException, MessagingException, DropboxException,DbxException, ParseException, URISyntaxException {
+		logger.info("Test Drop Box");
+		return new ResponseMessageDto(this.userService.testDropBox(file));
 	}
 }
