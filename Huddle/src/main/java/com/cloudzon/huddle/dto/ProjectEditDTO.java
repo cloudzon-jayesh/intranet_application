@@ -13,8 +13,8 @@ public class ProjectEditDTO
 	private MultipartFile projectPath;
 	private MultipartFile document;
 	private MultipartFile video;
-	private List<MultipartFile> images;
-	private List<Long> imageIds;
+	//private List<MultipartFile> images;
+	//private List<Long> imageIds;
 	private List<Long> rolesId;
 	
 	
@@ -60,7 +60,7 @@ public class ProjectEditDTO
 	public void setVideo(MultipartFile video) {
 		this.video = video;
 	}
-	public List<MultipartFile> getImages() {
+	/*public List<MultipartFile> getImages() {
 		return images;
 	}
 	public void setImages(List<MultipartFile> images) {
@@ -71,7 +71,7 @@ public class ProjectEditDTO
 	}
 	public void setImageIds(List<Long> imageIds) {
 		this.imageIds = imageIds;
-	}
+	}*/
 	public List<Long> getRolesId() {
 		return rolesId;
 	}

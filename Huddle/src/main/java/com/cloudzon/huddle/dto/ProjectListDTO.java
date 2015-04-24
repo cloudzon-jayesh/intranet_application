@@ -10,10 +10,9 @@ public class ProjectListDTO
 	private String description;
 	private String projectPath;
 	private String url;
-	private String document;
 	private String video;
 	private List<Long> rolesId;
-	private List<ProjectImagesDTO> projectImagesDTO;
+	//private List<ProjectImagesDTO> projectImagesDTO;
 	private String userName;
 	
 	public ProjectListDTO() {
@@ -21,7 +20,7 @@ public class ProjectListDTO
 	}
 	
 	public ProjectListDTO(Long id, String projectName, String description,
-			String projectPath, String url, String document, String video,
+			String projectPath, String url, String video,
 			String userName) {
 		super();
 		this.id = id;
@@ -29,7 +28,6 @@ public class ProjectListDTO
 		this.description = description;
 		this.projectPath = projectPath;
 		this.url = url;
-		this.document = document;
 		this.video = video;
 		this.userName = userName;
 	}
@@ -73,14 +71,6 @@ public class ProjectListDTO
 		this.url = url;
 	}
 
-	public String getDocument() {
-		return document;
-	}
-
-	public void setDocument(String document) {
-		this.document = document;
-	}
-
 	public String getVideo() {
 		return video;
 	}
@@ -97,14 +87,14 @@ public class ProjectListDTO
 		this.rolesId = rolesId;
 	}
 
-	public List<ProjectImagesDTO> getProjectImagesDTO() {
+	/*public List<ProjectImagesDTO> getProjectImagesDTO() {
 		return projectImagesDTO;
 	}
 
 	public void setProjectImagesDTO(List<ProjectImagesDTO> projectImagesDTO) {
 		this.projectImagesDTO = projectImagesDTO;
 	}
-
+*/
 	public String getUserName() {
 		return userName;
 	}

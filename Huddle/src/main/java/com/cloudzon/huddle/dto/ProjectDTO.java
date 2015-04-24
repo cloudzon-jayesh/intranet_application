@@ -11,7 +11,6 @@ public class ProjectDTO
 	private String description;
 	private String url;
 	private MultipartFile projectPath;
-	private MultipartFile document;
 	private MultipartFile video;
 	private List<MultipartFile> images;
 	private List<Long> rolesId;
@@ -40,12 +39,6 @@ public class ProjectDTO
 	}
 	public void setUrl(String url) {
 		this.url = url;
-	}
-	public MultipartFile getDocument() {
-		return document;
-	}
-	public void setDocument(MultipartFile document) {
-		this.document = document;
 	}
 	public MultipartFile getVideo() {
 		return video;
