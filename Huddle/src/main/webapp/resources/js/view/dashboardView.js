@@ -81,6 +81,7 @@ var dashboardView = Backbone.View.extend({
 						if(count == 0)
 						{
 							$("#meetingDIV").remove();
+							$("#noti").hide();
 						}
 						else
 						{
