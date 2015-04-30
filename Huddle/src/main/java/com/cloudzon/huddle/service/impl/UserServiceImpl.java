@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.hibernate.jpa.criteria.predicate.TruthValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,7 @@ import com.cloudzon.huddle.dto.GetRolePermissionDTO;
 import com.cloudzon.huddle.dto.GroupDTO;
 import com.cloudzon.huddle.dto.MeetingDTO;
 import com.cloudzon.huddle.dto.MeetingListDTO;
+import com.cloudzon.huddle.dto.MeetingSeenDTO;
 import com.cloudzon.huddle.dto.ProjectAddDocumentDTO;
 import com.cloudzon.huddle.dto.ProjectAddImagesDTO;
 import com.cloudzon.huddle.dto.ProjectDTO;

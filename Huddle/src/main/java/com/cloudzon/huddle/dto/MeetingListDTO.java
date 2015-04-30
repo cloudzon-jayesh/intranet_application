@@ -8,6 +8,7 @@ public class MeetingListDTO
 	private String meetingName;
 	private String description;
 	private Date dateAndTime;
+
 	
 	public MeetingListDTO(Long id, String meetingName, String description,
 			Date dateAndTime) {
@@ -49,5 +50,5 @@ public class MeetingListDTO
 	public void setDateAndTime(Date dateAndTime) {
 		this.dateAndTime = dateAndTime;
 	}
-		
+	
 }

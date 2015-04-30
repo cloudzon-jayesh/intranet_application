@@ -28,7 +28,7 @@ public class MeetingRole extends BaseEntity {
 
 	@Column(name = "active", nullable = false)
 	private Boolean active;
-
+	
 	public Meetings getMeetings() {
 		return meetings;
 	}
@@ -52,7 +52,4 @@ public class MeetingRole extends BaseEntity {
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
-	
-	
-
 }

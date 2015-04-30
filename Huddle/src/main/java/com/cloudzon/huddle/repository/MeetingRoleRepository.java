@@ -1,6 +1,5 @@
 package com.cloudzon.huddle.repository;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -8,9 +7,6 @@ import org.springframework.data.repository.query.Param;
 
 import com.cloudzon.huddle.dto.MeetingListDTO;
 import com.cloudzon.huddle.model.MeetingRole;
-import com.cloudzon.huddle.model.Meetings;
-import com.cloudzon.huddle.model.User;
-import com.cloudzon.huddle.model.UserRole;
 
 public interface MeetingRoleRepository extends BaseRepository<MeetingRole> 
 {

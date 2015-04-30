@@ -61,6 +61,7 @@ import com.cloudzon.huddle.dto.GetRolePermissionDTO;
 import com.cloudzon.huddle.dto.GroupPermissionDTO;
 import com.cloudzon.huddle.dto.MeetingDTO;
 import com.cloudzon.huddle.dto.MeetingListDTO;
+import com.cloudzon.huddle.dto.MeetingSeenDTO;
 import com.cloudzon.huddle.dto.ProjectAddDocumentDTO;
 import com.cloudzon.huddle.dto.ProjectAddImagesDTO;
 import com.cloudzon.huddle.dto.ProjectDTO;
@@ -626,6 +627,7 @@ public class UserController {
 		logger.info("getAllMeetings start");
 		return this.userService.getAllMeetings(signupUser);
 	}
+	
 	/**
 	 * Delete  Meeting from id
 	 * 

@@ -33,6 +33,7 @@ import com.cloudzon.huddle.dto.GetRolePermissionDTO;
 import com.cloudzon.huddle.dto.GroupDTO;
 import com.cloudzon.huddle.dto.MeetingDTO;
 import com.cloudzon.huddle.dto.MeetingListDTO;
+import com.cloudzon.huddle.dto.MeetingSeenDTO;
 import com.cloudzon.huddle.dto.ProjectAddDocumentDTO;
 import com.cloudzon.huddle.dto.ProjectAddImagesDTO;
 import com.cloudzon.huddle.dto.ProjectDTO;
