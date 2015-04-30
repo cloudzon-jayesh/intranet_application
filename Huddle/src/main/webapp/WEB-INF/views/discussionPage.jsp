@@ -70,15 +70,70 @@
     <section class="top-bar-section">
       <!-- Right Nav Section -->
       <ul class="right">
-        <li><a href="dashboard">Home</a></li>
-        <li><a href="company">Company</a></li>
-        <li><a href="careers">Careers</a></li>
-        <li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
-        <ul class="dropdown">
-        	<li><a id="logOutBtn" href="user/logout.json">Logout</a></li>            
-        </ul>
-        </li>
-      </ul>
+            <li><a href="dashboard">Home</a></li>
+        	<li><a href="company">Company</a></li>
+        	<li><a href="careers">Careers</a></li>
+            <c:if test="${ sessionUser !=null}">
+            <li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
+            	<ul class="dropdown">
+				<c:set value="${requestScope['javax.servlet.forward.servlet_path']}" var="req"></c:set>
+				<c:if test="${userPermission != null  && sessionUser != null}">
+				<c:if test="${userPermission.getUserName() eq sessionUser.getUsername()}">
+					<c:forEach items="${userPermission.roleActivityPermissionDTOs}" var="permission">
+						<%-- <c:if test="${fn:containsIgnoreCase(req,permission.activityLink)}">--%>
+							<c:forEach items="${permission.permissions}" var="per" varStatus="status">
+								<%-- <c:if test="${per eq ('R')}" >
+								</c:if>
+								<c:if test="${per eq ('W')}" >
+									<li><a href="setGroup">Add Group</a></li>
+									<li><a href="setActivity">Add Activity</a></li>
+									<li><a href="setPermission">Add Permission</a></li>
+									<li><a href="employee">Employess</a></li>
+									<li><a href="setEvent">Add Event</a></li>
+									<li><a href="setMeeting">Add Meeting</a></li>
+									<li><a href="setProject">Add Project</a></li>
+									<li><a href="setDocument">Add Document</a></li>
+									<li><a href="setDiscussion">Add Discussion</a></li>
+								</c:if>	 --%>
+							
+					<%-- 	</c:if>  --%>
+						<%-- <c:set value="${permission.permissions}" var="per"></c:set> --%>
+						<c:if test="${permission.activityLink eq ('setGroup') && per eq ('W')}">
+							<li><a href="setGroup">Add Group</a></li>
+						</c:if>
+						<c:if test="${permission.activityLink eq ('setActivity') && per eq ('W')}">
+							<li><a href="setActivity">Add Activity</a></li>
+						</c:if>
+						<c:if test="${permission.activityLink eq ('setPermission') && per eq ('W')}">
+							<li><a href="setPermission">Add Permission</a></li>
+						</c:if>
+						<c:if test="${permission.activityLink eq ('employee') && per eq ('W')}">
+							<li><a href="employee">Employess</a></li>
+						</c:if>
+						<c:if test="${permission.activityLink eq ('setEvent') && per eq ('W')}">
+							<li><a href="setEvent">Add Event</a></li>
+						</c:if>
+						<c:if test="${permission.activityLink eq ('setMeeting') && per eq ('W')}">
+							<li><a href="setMeeting">Add Meeting</a></li>
+						</c:if>
+						<c:if test="${permission.activityLink eq ('setProject') && per eq ('W')}">
+							<li><a href="setProject">Add Project</a></li>
+						</c:if>
+						<c:if test="${permission.activityLink eq ('setDocument') && per eq ('W')}">
+							<li><a href="setDocument">Add Document</a></li>
+						</c:if>
+						<c:if test="${permission.activityLink eq ('setDiscussion') && per eq ('W')}">
+							<li><a href="setDiscussion">Add Discussion</a></li>
+						</c:if>
+					</c:forEach>
+					</c:forEach>
+				</c:if>
+				</c:if>
+				<li><a id="logOutBtn" href="user/logout.json">Logout</a></li>            
+            	</ul>
+            </li>
+            </c:if> 	
+           </ul>
       <!-- Left Nav Section -->
     </section>
   </nav>

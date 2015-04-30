@@ -16,11 +16,11 @@
 	
 	<style>
 	.cf:before, .cf:after { content: ""; display: table; }
-.cf:after { clear: both; }
-.cf { zoom: 1; }
-.clear { clear: both; }
-.clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
-.clearfix { display: inline-block; }
+	.cf:after { clear: both; }
+	.cf { zoom: 1; }
+	.clear { clear: both; }
+	.clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+	.clearfix { display: inline-block; }
 	.dashboard-block{width:100%; display:block; background-color:#fff; box-shadow: 0 0 16px #ccc; padding:1% 0%;}
 	.dashboard-block-main{width:100%; display:block; margin-bottom:25px; }
 	.block{width:260px;  background-color:#fff; border:2px solid #018bb9;  margin-left:25px; float:left; margin-bottom: 25px; position: relative; min-height: 302px;}
@@ -30,6 +30,17 @@
 	.block p{font-size:12px; text-align:right;  font-family: "Open Sans",sans-serif; color:#b8b8b8; display:block; text-align:center; margin-bottom:15px; margin-bottom:15px; }
 	.block .more-btn{width:100%; font-size:20px; color:#fff; background-color:#018bb9; text-align:center; padding:15px 0px; display:block;}
 	.block .more-btn:hover{background-color:#000; color:#fff;}
+	.errorText{color:red;}
+	#noti {background-position: -10px -66px;}
+	/* .close-noti {cursor: pointer;top:0px; right : 0px; display: block; float: right;z-index: 3;position: absolute;color: red;font-size: 18px;} */
+	.close-noti{ background: #e43c03 none repeat scroll 0 0;border-radius: 6px;float:right;top:0px;color: #fff;display: block;font-size: 12px;font-weight: bold;margin-left: 15px;position: absolute;text-align: center;width: 14px;z-index: 1;}
+	.blink_me {-webkit-animation-name: blinker;-webkit-animation-duration: 1s;-webkit-animation-timing-function: linear;-webkit-animation-iteration-count: infinite;
+				-moz-animation-name: blinker;-moz-animation-duration: 1s;-moz-animation-timing-function: linear;-moz-animation-iteration-count: infinite;
+				animation-name: blinker;animation-duration: 1s;animation-timing-function: linear;animation-iteration-count: infinite;}
+
+	@-moz-keyframes blinker {0% { opacity: 1.0; } 50% { opacity: 0.0; } 100% { opacity: 1.0; } }
+	@-webkit-keyframes blinker {0% { opacity: 1.0; } 50% { opacity: 0.0; } 100% { opacity: 1.0; } }
+	@keyframes blinker {0% { opacity: 1.0; } 50% { opacity: 0.0; } 100% { opacity: 1.0; } }
 	</style>
 	
 	
@@ -48,12 +59,16 @@
         <section class="top-bar-section">
           <!-- Right Nav Section -->
           <ul class="right">
+          	<li class="has-dropdown"><h4 id="noti"><font color="#018bb9"><b>&#128276;</b></font><span class="close-noti blink_me"></span></h4>
+          		<ul class="dropdown" id="notification" style="right:auto;left: 0px;">
+          		</ul>
+          	</li>
             <li><a href="dashboard">Home</a></li>
-        <li><a href="company">Company</a></li>
-        <li><a href="careers">Careers</a></li>
+        	<li><a href="company">Company</a></li>
+        	<li><a href="careers">Careers</a></li>
             <c:if test="${ sessionUser !=null}">
-            <li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
-            	<ul class="dropdown">
+            <li class="has-dropdown" ><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
+            	<ul class="dropdown" >
 				<c:set value="${requestScope['javax.servlet.forward.servlet_path']}" var="req"></c:set>
 				<c:if test="${userPermission != null  && sessionUser != null}">
 				<c:if test="${userPermission.getUserName() eq sessionUser.getUsername()}">
@@ -118,6 +133,11 @@
         </section>
       </nav>
     </header>
+    <div id="meetingModel" class="reveal-modal" data-reveal 
+		aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog" style="width: 500px;">
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+		<div style="text-align: center" id="meetingText"></div>
+		</div>
     <input type="hidden" Id="hidUser" value='<c:out value="${sessionUser.getUsername() }"></c:out>'>
     <div class="main-container">
       <div class="content-container">
@@ -214,17 +234,18 @@
      </div>
     </footer>
     <script type="text/javascript" src="js/jquery.js"></script>
+    <script src="js/jquery-ui.js"></script>
     <script type="text/javascript" src="js/web-fonts.js"></script>
     <script type="text/javascript" src="js/sticky-footer.js"></script>
     <script type="text/javascript" src="js/foundation.js"></script>
     <script type="text/javascript" src="js/foundation.topbar.js"></script>
+    <script src="js/foundation.reveal.js"></script>
     <script type="text/javascript" src="js/slick.min.js"></script>
     <script src="js/underscore-min.js"></script>
 	<script src="js/backbone-min.js"></script>
     <script src="js/view/dashboardView.js"></script>
     <script>
     $(document).foundation();
-    
     /* Slick slider */
     $(document).ready(function(){
                 $('.huddle-slider').slick({
@@ -242,6 +263,7 @@
 
     </script>
 <script>
+
 		var dashboardView = new dashboardView({
 			el : $("#main-container"),
 		});
