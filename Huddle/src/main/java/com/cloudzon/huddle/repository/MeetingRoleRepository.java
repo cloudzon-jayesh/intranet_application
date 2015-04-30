@@ -23,7 +23,7 @@ public interface MeetingRoleRepository extends BaseRepository<MeetingRole>
 	public MeetingRole getRolesByIds(@Param("meetingId") Long meetingId,
 			@Param("roleId") Long roleId);
 	
-	@Query("SELECT NEW com.cloudzon.huddle.dto.MeetingListDTO(meeting.id,meeting.meetingName,meeting.description,meeting.dateAndTime) FROM MeetingRole AS meetingRole JOIN meetingRole.meetings AS meeting JOIN meetingRole.role AS role where meetingRole.active=true AND meeting.active=true AND role.id IN :roleIds")
+	@Query("SELECT DISTINCT NEW com.cloudzon.huddle.dto.MeetingListDTO(meeting.id,meeting.meetingName,meeting.description,meeting.dateAndTime) FROM MeetingRole AS meetingRole JOIN meetingRole.meetings AS meeting JOIN meetingRole.role AS role where meetingRole.active=true AND meeting.active=true AND role.id IN :roleIds")
 	public List<MeetingListDTO> getMeetingsByRoles(@Param("roleIds")List<Long> roleIds);
 	
 	@Query("SELECT DISTINCT NEW com.cloudzon.huddle.dto.MeetingListDTO(meeting.id,meeting.meetingName,meeting.description,meeting.dateAndTime) FROM MeetingRole AS meetingRole JOIN meetingRole.meetings AS meeting where meeting.active=true")
