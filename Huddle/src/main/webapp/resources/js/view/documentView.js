@@ -182,6 +182,11 @@ var addDocument =  Backbone.View.extend({
 				$(".documentPath").find('.help-inline').text("").addClass('errorText');
 			}
 		}
+		else
+		{
+			flag = true;
+			$(".documentPath").find('.help-inline').text("Please Select Document.").addClass('errorText');
+		}
         var data = new FormData();
 		 data.append('documentName', $("#documentName").val());
 		 data.append('description', $("#description").val());

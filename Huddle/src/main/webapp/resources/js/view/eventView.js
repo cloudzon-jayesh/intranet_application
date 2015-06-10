@@ -154,10 +154,6 @@ var eventView = Backbone.View.extend({
 							{
 								$('#addEventModal').foundation('reveal', 'open');
 							}
-							if($("#flag").val().indexOf("D") >= 0)
-							{
-								$('#addEventModal').foundation('reveal', 'open');
-							}
 						}
 				        var cdate = new Date(date);
 				        var curr_date = cdate.getDate();

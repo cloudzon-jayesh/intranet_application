@@ -12,7 +12,7 @@ var groupModel = Backbone.Model.extend(
 		if (!attrs.roleName) {
 			errors.push({
 				name : 'roleName',
-				message : '* Please enter Role Name.'
+				message : '* Please enter Group Name.'
 			});
 		}
 		return errors.length > 0 ? errors : false;

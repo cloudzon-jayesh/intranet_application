@@ -170,9 +170,9 @@ var dashboardView = Backbone.View.extend({
 						}
 						if (i === (len-3)) { break; }
 					}
-					if(count == 0)
+					if(count === 0)
 					{
-						$("#meetingDIV").remove();
+						$("#eventDIV").remove();
 					}
 						
 					var aLink = $('<a href="setEvent" class="more-btn">More</a>');
