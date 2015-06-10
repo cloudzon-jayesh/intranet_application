@@ -41,13 +41,13 @@ var eventModel = Backbone.Model.extend(
 				message : '* Please enter valid time.'
 			});
 		}*/
-		if($(".imgGroup").val() == '')
+		/*if($(".imgGroup").val() == '')
 		 {
 			 errors.push({
 					name : 'imageGroup',
 					message : '* Please Select File.'
 				});
-		 } 
+		 } */
 		 return errors.length > 0 ? errors : false;
 	
 	}

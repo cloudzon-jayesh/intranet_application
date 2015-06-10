@@ -515,7 +515,7 @@ public class UserController {
 			@RequestParam("description") String descreption,
 			@RequestParam("date") String date,
 			@RequestParam("time") String time,
-			@RequestParam("fileinput") MultipartFile[] multipartFile,
+			@RequestParam(value="fileinput", required=false) MultipartFile[] multipartFile,
 			HttpServletRequest servletRequest) throws IOException,
 			TemplateException, MessagingException, ParseException {
 		logger.info("Add Event Start");

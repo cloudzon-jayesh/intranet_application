@@ -16,9 +16,9 @@ var eventView = Backbone.View.extend({
 			type : 'GET',
 			success : function(data)
 			{
-				console.log("per : "+$("#flag").val())
+				var myEvents = [];
 				var len = data.length;
-				var thead = $("<thead></thead>");
+				/*var thead = $("<thead></thead>");
 				var trh = $("<tr></tr>");
 				var th0 = $("<th class='col1'>Action</th>");
 				var th1 = $("<th>No</th>");
@@ -30,8 +30,8 @@ var eventView = Backbone.View.extend({
 				trh.append(th2);
 				trh.append(th3);
 				trh.append(th4);
-				thead.append(trh);
-				$("#event_data").append(thead);
+				thead.append(trh);*/
+				/*$("#event_data").append(thead);*/
 				var tBody = $("<tbody></tbody>");
 				for (var i = (len-1); i >= 0; i--) 
 				{
@@ -49,7 +49,7 @@ var eventView = Backbone.View.extend({
 					var hours = eTime.getHours();
 					var eventTime = hours+":"+minutes;					
 					
-					var tr = $("<tr></tr>");
+					/*var tr = $("<tr></tr>");
 					var td0 = $("<td class='col1'></td>")
 					var td1 = $("<td>" + (i+1)	+ "</td>");
 					var td2 = $("<td>"+ data[i].eventName +"</td>");
@@ -64,9 +64,9 @@ var eventView = Backbone.View.extend({
 					tr.append(td2);
 					tr.append(td3);
 					tr.append(td4);
-					tBody.append(tr);
+					tBody.append(tr);*/
 					
-					if($("#flag").val().indexOf("R") >= 0)
+					/*if($("#flag").val().indexOf("R") >= 0)
 					{
 						th0.hide();
 						td0.hide();
@@ -84,11 +84,18 @@ var eventView = Backbone.View.extend({
 						th0.show();
 						td0.show();
 						button2.show();
-					}
-					$("#event_data").append(tBody);
+					}*/
+					/*$("#event_data").append(tBody);*/
+					
+					myEvents.push({
+						id: data[i].id,
+		                title: data[i].eventName+'',
+		                start: eDate,
+		                allDay: true
+		            });
 				}
 				
-				$('.edit_button').click(function() {
+				/*$('.edit_button').click(function() {
 					var name = $(this).attr("attr-name");
 					console.log(name);
 					$("#hidId").val(name);
@@ -118,8 +125,8 @@ var eventView = Backbone.View.extend({
 							console.log("Error");
 						}
 					});
-				});
-				var table = $('#event_data').dataTable({
+				});*/
+				/*var table = $('#event_data').dataTable({
 					responsive: true,
 					 "searching": false,
 					  	"order": [[ 1, "desc" ]],
@@ -127,9 +134,63 @@ var eventView = Backbone.View.extend({
 					    "columnDefs": [ { orderable: false, targets: [0] }],
 					    "bAutoWidth": false,
 					    "bLengthChange": false
+				});*/
+				var d = new Date();
+				$('#calendar').fullCalendar({
+					header: {
+						//left: 'prev,next today',
+						left: 'prev,next',
+						center: 'title',
+						right: 'month,agendaWeek,agendaDay'
+					},
+					defaultDate: d,
+					businessHours: true, // display business hours
+					editable: true,
+					events: myEvents,
+					dayClick: function(date, jsEvent, view) {
+						if(date >= d)
+						{
+							if($("#flag").val().indexOf("W") >= 0)
+							{
+								$('#addEventModal').foundation('reveal', 'open');
+							}
+							if($("#flag").val().indexOf("D") >= 0)
+							{
+								$('#addEventModal').foundation('reveal', 'open');
+							}
+						}
+				        var cdate = new Date(date);
+				        var curr_date = cdate.getDate();
+						var curr_month = cdate.getMonth()+1;
+						var curr_year = cdate.getFullYear();
+						var currentDate = curr_date + "/" + curr_month + "/" + curr_year;
+				        $("#date").val(currentDate);
+				    },
+				    eventClick: function(calEvent, jsEvent, view) {
+				    	$("#hidId").val(calEvent.id);
+				    	var editEventView1 = new editEventView({
+							el : $("#editEventModal"),
+						});
+						editEventView1.render();
+						$('#editEventModal').foundation('reveal', 'open');
+						if($("#flag").val().indexOf("R") >= 0)
+						{
+							$("#editEventButton").hide();
+							$("#deleteEventButton").hide();
+							$("#editAddImageButton").css("display","none");
+						}
+						if($("#flag").val().indexOf("W") >= 0)
+						{
+							$("#editEventButton").show();
+							$("#editAddImageButton").css("display","block");
+						}
+						if($("#flag").val().indexOf("D") >= 0)
+						{
+							$("#deleteEventButton").show();
+							$("#editAddImageButton").css("display","block");
+						}
+				    },
 				});
-		        /*var bVis = table.fnSettings().aoColumns[0].bVisible;
-		        table.fnSetColumnVis(0, bVis ? false : true);*/
 			}
 		});
 			
@@ -145,7 +206,7 @@ var addEvent =  Backbone.View.extend({
 		"click #addImageButton" : "addImage",
 	},
 	render : function() {
-		$("#date").datepicker(
+		/*$("#date").datepicker(
 				{
 					dateFormat: 'dd/mm/yy',
 					minDate : 0,
@@ -157,7 +218,7 @@ var addEvent =  Backbone.View.extend({
 						console.log('onSelect', dateText);
 						$(this).selectedDate = dateText;
 					}
-				});
+				});*/
 		//$('#time').timeEntry({show24Hours: true});
 		
 		$('#time').blur(function() {
@@ -281,6 +342,7 @@ var editEventView = Backbone.View.extend({
 	events : {
 		"click #editEventButton" : "editEvent",
 		"click #editAddImageButton" : "addImage",
+		"click #deleteEventButton" : "deleteEvent",
 	},
 	addImage : function(){
 			
@@ -318,8 +380,6 @@ var editEventView = Backbone.View.extend({
 				var curr_date = eDate.getDate();
 				var curr_month = eDate.getMonth()+1;
 				var curr_year = eDate.getFullYear();
-				console.log(eDate);
-				console.log(curr_month);
 				var eventDate = curr_date + "/" + curr_month + "/" + curr_year;
 				
 				var eTime = new Date(data.time);
@@ -355,6 +415,31 @@ var editEventView = Backbone.View.extend({
 			console.log("error come");
 		}
 		});
+	},
+	deleteEvent : function() {
+		var result = confirm("Are you sure you want to Delete?");
+		if (result) {
+			$.ajax({
+				url : 'user/deleteEvents.json',
+				type : 'POST',
+				data : JSON.stringify({	"id" : $("#hidId").val()}),
+				headers : 
+					{
+						'Accept' : 'application/json',
+						'Content-Type' : 'application/json; charset=UTF-8'
+					},
+				success :function(data)
+				{
+					console.log("Success");
+					$('#editEventModal').foundation('reveal', 'close');
+					window.location = "setEvent";
+				},
+				error : function(data) {
+					console.log("Error");
+				}
+			});
+		}
+		
 	},
 	editEvent : function() {
 		this.hideErrors();

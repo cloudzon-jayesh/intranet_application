@@ -18,6 +18,8 @@
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
 	<link type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" />
+    <link href='css/fullcalendar.css' rel='stylesheet' />
+	<link href='css/fullcalendar.print.css' rel='stylesheet' media='print' />
     <style type="text/css">
     	 .cf:before, .cf:after { content: ""; display: table; }
 		.cf:after { clear: both; }
@@ -56,7 +58,10 @@
 		.reveal-modal { top: 100px !important; position: fixed;}
 		.reveal-modal-bg {position: fixed;}		
 		}
-		
+		#calendar {
+		max-width: 950px;
+		margin: 0 auto;
+	}
     </style>
 </head>
 <body>
@@ -78,13 +83,13 @@
             <c:if test="${ sessionUser !=null}">
             <li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
             	<ul class="dropdown">
-				<c:set value="${requestScope['javax.servlet.forward.servlet_path']}" var="req"></c:set>
+				<%-- <c:set value="${requestScope['javax.servlet.forward.servlet_path']}" var="req"></c:set>
 				<c:if test="${userPermission != null  && sessionUser != null}">
 				<c:if test="${userPermission.getUserName() eq sessionUser.getUsername()}">
 					<c:forEach items="${userPermission.roleActivityPermissionDTOs}" var="permission">
-						<%-- <c:if test="${fn:containsIgnoreCase(req,permission.activityLink)}">--%>
+						<c:if test="${fn:containsIgnoreCase(req,permission.activityLink)}">
 							<c:forEach items="${permission.permissions}" var="per" varStatus="status">
-								<%-- <c:if test="${per eq ('R')}" >
+								<c:if test="${per eq ('R')}" >
 								</c:if>
 								<c:if test="${per eq ('W')}" >
 									<li><a href="setGroup">Add Group</a></li>
@@ -96,10 +101,10 @@
 									<li><a href="setProject">Add Project</a></li>
 									<li><a href="setDocument">Add Document</a></li>
 									<li><a href="setDiscussion">Add Discussion</a></li>
-								</c:if>	 --%>
+								</c:if>	
 							
-					<%-- 	</c:if>  --%>
-						<%-- <c:set value="${permission.permissions}" var="per"></c:set> --%>
+						</c:if> 
+						<c:set value="${permission.permissions}" var="per"></c:set>
 						<c:if test="${permission.activityLink eq ('setGroup') && per eq ('W')}">
 							<li><a href="setGroup">Add Group</a></li>
 						</c:if>
@@ -130,7 +135,16 @@
 					</c:forEach>
 					</c:forEach>
 				</c:if>
-				</c:if>
+				</c:if> --%>
+				<li><a href="setGroup">Add Group</a></li>
+				<li><a href="setActivity">Add Activity</a></li>
+				<li><a href="setPermission">Add Permission</a></li>
+				<li><a href="employee">Employess</a></li>
+				<li><a href="setEvent">Add Event</a></li>
+				<li><a href="setMeeting">Add Meeting</a></li>
+				<li><a href="setProject">Add Project</a></li>
+				<li><a href="setDocument">Add Document</a></li>
+				<li><a href="setDiscussion">Add Discussion</a></li>
 				<li><a id="logOutBtn" href="user/logout.json">Logout</a></li>            
             	</ul>
             </li>
@@ -258,9 +272,11 @@
 							</div>	
 							<span class="help-inline"></span>
 						</div>
-						<a class="radius right" id="editAddImageButton">Add More Images</a>
+						<a class="radius right" id="editAddImageButton">Add Images</a>
 					</div>	
-					<button class='right radius btn-main' id="editEventButton">Update Event</button></div>
+					<button class='right radius btn-main' id="deleteEventButton">Delete Event</button>
+					<button class='right radius btn-main' id="editEventButton">Update Event</button>
+					</div>
 				</div>
 		</script>
 	<footer>
@@ -277,16 +293,17 @@
     </div>
   </div>
 </footer>
-
+<!-- <button data-reveal-id="addEventModal" id="addNewEvent" class="radius btn-main">Add Events</button> -->
 <script type="text/template" id="event_template">
 <a href="" class="pageTitle">Events</a>
 	<div class="block cf">
-      <button data-reveal-id="addEventModal" id="addNewEvent" class="radius btn-main">Add Events</button>
 		<table style="width:100%" border="0" cellpadding="0" cellspacing="0" id="event_data">
 		</table>
+		<div id='calendar'></div>
 	</div>
-</script>
 
+</script>
+	<script src='js/moment.min.js'></script>
 	<script src="js/jquery.js"></script>
 	<script src="js/jquery-ui.js"></script>
 	<script src="js/web-fonts.js"></script>
@@ -294,8 +311,7 @@
 	<script src="js/foundation.js"></script>
 	<script src="js/foundation.topbar.js"></script>
 	<script src="js/foundation.reveal.js"></script>
-	<script src="js/jquery.dataTables.min.js"></script>
-	<script src="js/dataTables.responsive.js"></script>
+	<script src='js/fullcalendar.min.js'></script>
 	<!-- backbone js -->
 	<script src="js/underscore-min.js"></script>
 	<script src="js/backbone-min.js"></script>

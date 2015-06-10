@@ -910,7 +910,7 @@ public class UserServiceImpl implements UserService {
 				System.out.println("call");
 				for(MultipartFile tempMultipartFile : multipartFiles)
 				{
-					if(tempMultipartFile != null)
+					if(tempMultipartFile != null && !tempMultipartFile.isEmpty())
 					{
 						fileName =tempEvents.getId() +"_event_image_"+ (n++);
 						if (ImageUtils.uploadEventImage(fileName,
@@ -1027,7 +1027,7 @@ public class UserServiceImpl implements UserService {
 				System.out.println("call");
 				for(MultipartFile tempMultipartFile : eventsDTO.getImages())
 				{
-					if(tempMultipartFile != null)
+					if(tempMultipartFile != null && !tempMultipartFile.isEmpty())
 					{
 						fileName =tempEvents.getId() +"_event_image_"+ (n++);
 						if (ImageUtils.uploadEventImage(fileName,
