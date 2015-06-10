@@ -170,7 +170,7 @@ var dashboardView = Backbone.View.extend({
 						}
 						if (i === (len-3)) { break; }
 					}
-					if(count === 0)
+					if(count == 0)
 					{
 						$("#eventDIV").remove();
 					}

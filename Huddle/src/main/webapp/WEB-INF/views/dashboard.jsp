@@ -59,7 +59,7 @@
         <section class="top-bar-section">
           <!-- Right Nav Section -->
           <ul class="right">
-          	<li class="has-dropdown"><h4 id="noti"><font color="#018bb9"><b>&#128276;</b></font><span class="close-noti blink_me"></span></h4>
+          	<li class="has-dropdown"><h4 id="noti"><img src="img/bell.png" alt="1"><span class="close-noti blink_me"></span></h4>
           		<ul class="dropdown" id="notification" style="right:auto;left: 0px;">
           		</ul>
           	</li>
@@ -238,7 +238,7 @@
      </div>
      <div class="row" id="bottom-footer">
       <div class="large-12 medium-12 small-12 columns">
-        <div>Â©2015 CloudZon. All rights reserved.</div>
+        <div>©2015 CloudZon. All rights reserved.</div>
       </div>
      </div>
     </footer>
