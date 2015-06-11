@@ -623,7 +623,7 @@ public class UserServiceImpl implements UserService {
 				objUser.setDob(dateFormat.parse(signupUser.getDob()));
 				objUser.setJoiningDate(dateFormat.parse(signupUser
 						.getJoiningDate()));
-				objUser.setProfilePic(signupUser.getProfilePic());
+				//objUser.setProfilePic(signupUser.getProfilePic());
 				this.userRepository.saveAndFlush(objUser);
 				
 				userRoles = this.roleRepository.getUserRolesByUserId(objUser);
@@ -802,7 +802,7 @@ public class UserServiceImpl implements UserService {
 				objSetUserPermissionDTO.setFirstName(objUser.getFirstName());
 				objSetUserPermissionDTO.setLastName(objUser.getLastName());
 				objSetUserPermissionDTO.setUserName(objUser.getUserName());
-				
+				objSetUserPermissionDTO.setProfilePic(objUser.getProfilePic());
 				objRoleDTOs = this.roleRepository.getRoleIdByUserId(objUser.getId());
 				objSetUserPermissionDTO.setRoleIds(objRoleDTOs);
 				objActivityDTOs = this.activityRolePermissionRepository.getActivityPermissionList(objSetUserPermissionDTO.getRoleIds());

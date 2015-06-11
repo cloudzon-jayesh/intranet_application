@@ -15,6 +15,7 @@
 <link rel="stylesheet" type="text/css" href="css/style.css"/>
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
 <style type="text/css">
+		.profImgBlock{height: 42px; margin: 0 1px; width: 45px; border-radius: 50%;}
     	.cf:before, .cf:after { content: ""; display: table; }
 		.cf:after { clear: both; }
 		.cf { zoom: 1; }
@@ -64,18 +65,20 @@
         	<li><a href="company">Company</a></li>
         	<li><a href="careers">Careers</a></li>
             <c:if test="${ sessionUser !=null}">
-            <li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
+            <li class="has-dropdown"><a target="_blank" href="images/profilePicture/${userPermission.getProfilePic()}">Hi, <c:out value="${sessionUser.getUsername() }"></c:out>
+            <img class="profImgBlock" alt="#" src='images/profilePicture/${userPermission.getProfilePic()}'>
+            </a>
             	<ul class="dropdown">
-				<%-- <c:set value="${requestScope['javax.servlet.forward.servlet_path']}" var="req"></c:set>
+				<c:set value="${requestScope['javax.servlet.forward.servlet_path']}" var="req"></c:set>
 				<c:if test="${userPermission != null  && sessionUser != null}">
 				<c:if test="${userPermission.getUserName() eq sessionUser.getUsername()}">
 					<c:forEach items="${userPermission.roleActivityPermissionDTOs}" var="permission">
-						<c:if test="${fn:containsIgnoreCase(req,permission.activityLink)}">
+						<%-- <c:if test="${fn:containsIgnoreCase(req,permission.activityLink)}"> --%>
 							<c:forEach items="${permission.permissions}" var="per" varStatus="status">
-								<c:if test="${per eq ('R')}" >
+								<%-- <c:if test="${per eq ('R')}" >
 								</c:if>
-								<c:if test="${per eq ('W')}" >
-									<li><a href="setGroup">Add Group</a></li>
+								<c:if test="${per eq ('W')}" > --%>
+									<!-- <li><a href="setGroup">Add Group</a></li>
 									<li><a href="setActivity">Add Activity</a></li>
 									<li><a href="setPermission">Add Permission</a></li>
 									<li><a href="employee">Employess</a></li>
@@ -83,11 +86,11 @@
 									<li><a href="setMeeting">Add Meeting</a></li>
 									<li><a href="setProject">Add Project</a></li>
 									<li><a href="setDocument">Add Document</a></li>
-									<li><a href="setDiscussion">Add Discussion</a></li>
-								</c:if>	
-							
-						</c:if> 
-						<c:set value="${permission.permissions}" var="per"></c:set>
+									<li><a href="setDiscussion">Add Discussion</a></li> -->
+								<%-- </c:if>	
+							</c:forEach>
+						</c:if>  --%>
+						<%-- <c:set value="${permission.permissions}" var="per"></c:set> --%>
 						<c:if test="${permission.activityLink eq ('setGroup') && per eq ('W')}">
 							<li><a href="setGroup">Add Group</a></li>
 						</c:if>
@@ -97,7 +100,7 @@
 						<c:if test="${permission.activityLink eq ('setPermission') && per eq ('W')}">
 							<li><a href="setPermission">Add Permission</a></li>
 						</c:if>
-						<c:if test="${permission.activityLink eq ('employee') && per eq ('W')}">
+						<%-- <c:if test="${permission.activityLink eq ('employee') && per eq ('W')}">
 							<li><a href="employee">Employess</a></li>
 						</c:if>
 						<c:if test="${permission.activityLink eq ('setEvent') && per eq ('W')}">
@@ -114,20 +117,20 @@
 						</c:if>
 						<c:if test="${permission.activityLink eq ('setDiscussion') && per eq ('W')}">
 							<li><a href="setDiscussion">Add Discussion</a></li>
-						</c:if>
+						</c:if> --%>
 					</c:forEach>
 					</c:forEach>
 				</c:if>
-				</c:if> --%>
-				<li><a href="setGroup">Add Group</a></li>
-				<li><a href="setActivity">Add Activity</a></li>
-				<li><a href="setPermission">Add Permission</a></li>
+				</c:if>
+				<!-- <li><a href="setGroup">Group</a></li>
+				<li><a href="setActivity">Activity</a></li>
+				<li><a href="setPermission">Permissions</a></li> -->
 				<li><a href="employee">Employess</a></li>
-				<li><a href="setEvent">Add Event</a></li>
-				<li><a href="setMeeting">Add Meeting</a></li>
-				<li><a href="setProject">Add Project</a></li>
-				<li><a href="setDocument">Add Document</a></li>
-				<li><a href="setDiscussion">Add Discussion</a></li>
+				<li><a href="setEvent">Events</a></li>
+				<li><a href="setMeeting">Meetings</a></li>
+				<li><a href="setProject">Projects</a></li>
+				<li><a href="setDocument">Documents</a></li>
+				<li><a href="setDiscussion">Discussions</a></li>
 				<li><a id="logOutBtn" href="user/logout.json">Logout</a></li>            
             	</ul>
             </li>

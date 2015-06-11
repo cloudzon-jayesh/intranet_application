@@ -18,36 +18,37 @@
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
 <link type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" />
 <style type="text/css">
-		.cf:before, .cf:after { content: ""; display: table; }
-		.cf:after { clear: both; }
-		.cf { zoom: 1; }
-		.block{display:block; background-color:#fff; box-shadow: 0 0 16px #ccc; padding:1% 13px; max-width:89%; margin: 0 auto;}
-		.btn-main{padding: 5px 12px;margin-top: 15px;float: right;margin-right: 32px; }
-		.pageTitle{margin:20px 70px; display:block; font-size:20px; color:#000;}
-		.errorText{color:red;}
-    	.error{border:1px solid red;}
-		.input-left-main{width:100%; float:left;}
-		.input-main{width:100%; float:left; margin-bottom:20px;}
-		
-		.input-main-input{ border-radius:3px !important; padding:4px 10px !important; height:auto; width:80% !important; float:left;}
-		.input-main label{margin-bottom:10px;}
-		.input-block{width:100%; float:left;}
+	.profImgBlock{height: 42px; margin: 0 1px; width: 45px; border-radius: 50%;}
+	.cf:before, .cf:after { content: ""; display: table; }
+	.cf:after { clear: both; }
+	.cf { zoom: 1; }
+	.block{display:block; background-color:#fff; box-shadow: 0 0 16px #ccc; padding:1% 13px; max-width:89%; margin: 0 auto;}
+	.btn-main{padding: 5px 12px;margin-top: 15px;float: right;margin-right: 32px; }
+	.pageTitle{margin:20px 70px; display:block; font-size:20px; color:#000;}
+	.errorText{color:red;}
+    .error{border:1px solid red;}
+	.input-left-main{width:100%; float:left;}
+	.input-main{width:100%; float:left; margin-bottom:20px;}
+	
+	.input-main-input{ border-radius:3px !important; padding:4px 10px !important; height:auto; width:80% !important; float:left;}
+	.input-main label{margin-bottom:10px;}
+	.input-block{width:100%; float:left;}
 			
-		.add-btn{width:auto; padding:5px 25px; background-color:#000; color:#fff; border-radius:5px; border:none}
-		@media (max-width:640px) {
-		.btn-main{padding:10px 0; width:100%; float:left; margin-top:5px;}
-		.content-container{margin:0;}
+	.add-btn{width:auto; padding:5px 25px; background-color:#000; color:#fff; border-radius:5px; border:none}
+	@media (max-width:640px) {
+	.btn-main{padding:10px 0; width:100%; float:left; margin-top:5px;}
+	.content-container{margin:0;}
 		
-		footer{padding:30px 0 0}
-		.career-container li a div{width:100% !important;}
-		.input-left-main{width:100%; float:right; border :none;}
-		.input-right-main{width:100%; float:left; border:1px solid #ccc; padding:20px 0 0 2%; margin-top:10px; margin-bottom:10px;}
-		.input-main-input{ border-radius:3px !important; padding:4px 1% !important; height:auto; width:98% !important; float:left;}
-		.reveal-modal { top: 100px !important; position: fixed;}
-		.reveal-modal-bg {position: fixed;}
-		}
+	footer{padding:30px 0 0}
+	.career-container li a div{width:100% !important;}
+	.input-left-main{width:100%; float:right; border :none;}
+	.input-right-main{width:100%; float:left; border:1px solid #ccc; padding:20px 0 0 2%; margin-top:10px; margin-bottom:10px;}
+	.input-main-input{ border-radius:3px !important; padding:4px 1% !important; height:auto; width:98% !important; float:left;}
+	.reveal-modal { top: 100px !important; position: fixed;}
+	.reveal-modal-bg {position: fixed;}
+	}
 		
-    </style>
+</style>
 </head>
 <body>
 <header>
@@ -66,18 +67,20 @@
         	<li><a href="company">Company</a></li>
         	<li><a href="careers">Careers</a></li>
             <c:if test="${ sessionUser !=null}">
-            <li class="has-dropdown"><a href="#">Hi, <c:out value="${sessionUser.getUsername() }"></c:out></a>
+            <li class="has-dropdown"><a target="_blank" href="images/profilePicture/${userPermission.getProfilePic()}">Hi, <c:out value="${sessionUser.getUsername() }"></c:out>
+            <img class="profImgBlock" alt="#" src='images/profilePicture/${userPermission.getProfilePic()}'>
+            </a>
             	<ul class="dropdown">
-				<%-- <c:set value="${requestScope['javax.servlet.forward.servlet_path']}" var="req"></c:set>
+				<c:set value="${requestScope['javax.servlet.forward.servlet_path']}" var="req"></c:set>
 				<c:if test="${userPermission != null  && sessionUser != null}">
 				<c:if test="${userPermission.getUserName() eq sessionUser.getUsername()}">
 					<c:forEach items="${userPermission.roleActivityPermissionDTOs}" var="permission">
-						<c:if test="${fn:containsIgnoreCase(req,permission.activityLink)}">
+						<%-- <c:if test="${fn:containsIgnoreCase(req,permission.activityLink)}"> --%>
 							<c:forEach items="${permission.permissions}" var="per" varStatus="status">
-								<c:if test="${per eq ('R')}" >
+								<%-- <c:if test="${per eq ('R')}" >
 								</c:if>
-								<c:if test="${per eq ('W')}" >
-									<li><a href="setGroup">Add Group</a></li>
+								<c:if test="${per eq ('W')}" > --%>
+									<!-- <li><a href="setGroup">Add Group</a></li>
 									<li><a href="setActivity">Add Activity</a></li>
 									<li><a href="setPermission">Add Permission</a></li>
 									<li><a href="employee">Employess</a></li>
@@ -85,11 +88,11 @@
 									<li><a href="setMeeting">Add Meeting</a></li>
 									<li><a href="setProject">Add Project</a></li>
 									<li><a href="setDocument">Add Document</a></li>
-									<li><a href="setDiscussion">Add Discussion</a></li>
-								</c:if>	
-							
-						</c:if> 
-						<c:set value="${permission.permissions}" var="per"></c:set>
+									<li><a href="setDiscussion">Add Discussion</a></li> -->
+								<%-- </c:if>	
+							</c:forEach>
+						</c:if>  --%>
+						<%-- <c:set value="${permission.permissions}" var="per"></c:set> --%>
 						<c:if test="${permission.activityLink eq ('setGroup') && per eq ('W')}">
 							<li><a href="setGroup">Add Group</a></li>
 						</c:if>
@@ -99,7 +102,7 @@
 						<c:if test="${permission.activityLink eq ('setPermission') && per eq ('W')}">
 							<li><a href="setPermission">Add Permission</a></li>
 						</c:if>
-						<c:if test="${permission.activityLink eq ('employee') && per eq ('W')}">
+						<%-- <c:if test="${permission.activityLink eq ('employee') && per eq ('W')}">
 							<li><a href="employee">Employess</a></li>
 						</c:if>
 						<c:if test="${permission.activityLink eq ('setEvent') && per eq ('W')}">
@@ -116,20 +119,20 @@
 						</c:if>
 						<c:if test="${permission.activityLink eq ('setDiscussion') && per eq ('W')}">
 							<li><a href="setDiscussion">Add Discussion</a></li>
-						</c:if>
+						</c:if> --%>
 					</c:forEach>
 					</c:forEach>
 				</c:if>
-				</c:if> --%>
-				<li><a href="setGroup">Add Group</a></li>
-				<li><a href="setActivity">Add Activity</a></li>
-				<li><a href="setPermission">Add Permission</a></li>
+				</c:if>
+				<!-- <li><a href="setGroup">Group</a></li>
+				<li><a href="setActivity">Activity</a></li>
+				<li><a href="setPermission">Permissions</a></li> -->
 				<li><a href="employee">Employess</a></li>
-				<li><a href="setEvent">Add Event</a></li>
-				<li><a href="setMeeting">Add Meeting</a></li>
-				<li><a href="setProject">Add Project</a></li>
-				<li><a href="setDocument">Add Document</a></li>
-				<li><a href="setDiscussion">Add Discussion</a></li>
+				<li><a href="setEvent">Events</a></li>
+				<li><a href="setMeeting">Meetings</a></li>
+				<li><a href="setProject">Projects</a></li>
+				<li><a href="setDocument">Documents</a></li>
+				<li><a href="setDiscussion">Discussions</a></li>
 				<li><a id="logOutBtn" href="user/logout.json">Logout</a></li>            
             	</ul>
             </li>

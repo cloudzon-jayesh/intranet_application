@@ -7,6 +7,7 @@ public class SetUserPermissionDTO
 	private String firstName;
 	private String lastName;
 	private String userName;
+	private String profilePic;
 	private List<Long> roleIds;
 	private List<RoleActivityPermissionDTO> roleActivityPermissionDTOs;	
 	public String getFirstName() {
@@ -26,6 +27,12 @@ public class SetUserPermissionDTO
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+	public String getProfilePic() {
+		return profilePic;
+	}
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
 	}
 	public List<Long> getRoleIds() {
 		return roleIds;

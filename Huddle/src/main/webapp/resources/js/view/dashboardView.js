@@ -118,7 +118,7 @@ var dashboardView = Backbone.View.extend({
 									meetingDate = curr_date + "-" + m_names[curr_month]+ "-" + curr_year +"  "+ hours + ":"+ minutes;
 								}
 							}
-							var meetText = $("<h3>"+ meetingName +" is at </h3><h4> "+meetingDate+"</h4>")
+							var meetText = $("<h3><font color='#018bb9'>"+ meetingName +"</font> is at </h3><h4> "+meetingDate+"</h4>")
 							$("#meetingText").html(meetText);
 							$('#meetingModel').foundation('reveal', 'open');
 						});
