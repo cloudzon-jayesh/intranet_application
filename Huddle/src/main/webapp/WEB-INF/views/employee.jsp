@@ -19,10 +19,13 @@
 <link rel="stylesheet" href="css/foundation.min.css" />
 <link rel="stylesheet" type="text/css" href="css/style.css" />
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="css/jquery.fancybox.css"/>
 <link type="text/css" rel="stylesheet" href="css/jquery.dataTables.css" />
 <link type="text/css" rel="stylesheet" href="css/dataTables.responsive.css" />
 <link type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" />
     <style type="text/css">
+    	.clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+		.clearfix { display: inline-block; }
     	.profImgBlock{height: 42px; margin: 0 1px; width: 45px; border-radius: 50%;}
     	 cf:before, .cf:after { content: ""; display: table; }
 		.cf:after { clear: both; }
@@ -73,6 +76,11 @@ th {border: 2px;}
 }
 .paging-nav .selected-page {background: #187ed5;font-weight: bold;}
 .hidden {display: none;}
+.imgBlock{width:250px; height:400px; display:table-cell; vertical-align:middle; background-color:#fff;  margin-left:15px; margin-top:auto; float:left;}
+.imgBlock img{    width: 180px;    height: 180px;}
+.fancybox-custom .fancybox-skin {
+			box-shadow: 0 0 50px #222;
+		}
 </style>
 </head>
 
@@ -199,11 +207,14 @@ th {border: 2px;}
 	<script type="text/template" id="employee_template">
 		<a href="" class="pageTitle">Employee Details</a>
 		<div class="block cf">
+			
 			<button href="#" id="new_emp_btn" data-reveal-id="firstModal" class="radius btn-main">Add New Employee</button>
+			<%--
+			<a href="#" class="right" id="new_emp_btn" style="margin-bottom : 10px;" data-reveal-id="firstModal" ><img src="img/plus.png" title="Add New Employee" alt="Add New Employee" style="height: 20px; width: 20px; margin-right: 4px; margin-bottom: 4px;">Add New Employee</a>
 			<form method="post">
 			<table id="employee_data" cellspacing="0" style="width: 100%;">
-			</table>
-			</form>
+			</table></form>--%>
+			<div id="employee_data" class="clearfix" style="width: 100%;"></div>
 		</div>				
 	</script>
 	
@@ -387,6 +398,8 @@ th {border: 2px;}
 	</script>
 	<script src="js/jquery.js"></script>
 	<script src="js/jquery-ui.js"></script>
+	<script src="js/jquery.fancybox.js"></script>
+	<script src="js/jquery.fancybox.pack.js"></script>
 	<script src="js/web-fonts.js"></script>
 	<script src="js/sticky-footer.js"></script>
 	<script src="js/foundation.js"></script>

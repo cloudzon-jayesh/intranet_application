@@ -40,7 +40,7 @@ public interface UserRepository extends BaseRepository<User> {
 	@Query(value = "SELECT user.userName FROM User AS user WHERE user.email=:email")
 	public String getUserNameByEmail(@Param("email") String email);
 	
-	@Query(value = "SELECT NEW com.cloudzon.huddle.dto.EmployeeDetailDTO(user.id,user.firstName,user.lastName,user.email,user.dob,user.joiningDate) FROM User AS user")
+	@Query(value = "SELECT NEW com.cloudzon.huddle.dto.EmployeeDetailDTO(user.id,user.firstName,user.lastName,user.email,user.dob,user.joiningDate,user.profilePic) FROM User AS user")
 	public List<EmployeeDetailDTO> getEmployee();
 
 	@Query(value = "SELECT user FROM User AS user WHERE user.email=:email")

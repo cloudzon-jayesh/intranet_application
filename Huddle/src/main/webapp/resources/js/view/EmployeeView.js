@@ -7,7 +7,6 @@ var EmployeeView = Backbone.View
 				var template = _.template($("#employee_template").html(), {});
 				this.$el.html(template);
 				this.getUserData();
-				
 			},
 			getUserData : function() {
 				$.ajax({
@@ -20,7 +19,7 @@ var EmployeeView = Backbone.View
 								console.log($("#flag").val());
 								var len = data.length;
 								var txt;
-								var thead = $("<thead></thead>");
+								/*var thead = $("<thead></thead>");
 								var trh = $("<tr></tr>");
 								var th0 = $("<th class='editButton'>Edit</th>");
 								var th1 = $("<th>ID</th>");
@@ -36,11 +35,11 @@ var EmployeeView = Backbone.View
 								trh.append(th3);
 								trh.append(th4);
 								trh.append(th5);
-								trh.append(th6);
-								thead.append(trh);
-								$("#employee_data").append(thead);
-								var tBody = $("<tbody></tbody>");
-								for (var i = (len-1); i >0 ; i--) {
+								trh.append(th6);*/
+								//thead.append(trh);
+								//$("#employee_data").append(thead);
+								var tBody = $("<div></div>");
+								for (var i = 0; i <len ; i++) {
 									var m_names = new Array("Jan", "Feb", "Mar", 
 											"Apr", "May", "Jun", "Jul", "Aug", "Sep", 
 											"Octr", "Nov", "Dec");
@@ -56,7 +55,12 @@ var EmployeeView = Backbone.View
 									var curr_year1 = joiningDate.getFullYear();
 									var myJoiningDate = curr_date1 + "-" + m_names[curr_month1]+ "-" + curr_year1;
 									
-									var tr = $("<tr></tr>");
+									var imageDiv = $('<div class="imgBlock"></div>');
+									var images = $('<img src="images/profilePicture/'+ data[i].profilePic+'" alt="Profile"  >');
+									var name = $("<h6><b>Name : </b>" + data[i].firstName + " " + data[i].lastName +"</h6>");
+									var email = $("<h6><b>Email : </b>" + data[i].email + "</h6>");
+									var dob = $("<h6><b>Date of Birth : </b>" + myDob + "</h6>");
+									/*var tr = $("<tr></tr>");
 									var td0 = $("<td class='editButton' align=center></td>");
 									var td1 = $("<td>" + (i+1)//data[i].id
 											+ "</td>");
@@ -68,28 +72,34 @@ var EmployeeView = Backbone.View
 											+ "</td>");
 									var td5 = $("<td>" + myDob + "</td>");
 									var td6 = $("<td>" + myJoiningDate
-											+ "</td>");
-									var button =$("<a href=# class='edit_button' title='edit' attr-name='"+ data[i].email + "'><img src= 'images/edit.png' style='width:25px; height:25px;'></a>");
+											+ "</td>");*/
+									var button =$("<a href=# class='edit_button' title='edit' attr-name='"+ data[i].email + "'><img src= 'images/edit.png' style='width:15px; height:15px;float:left;'></a>");
 									//var button = $("<input type='button' style='background-image: url('images/editar.png');width:25px; height:20px;' class='edit_button'  attr-name='"+ data[i].email + "'>");
-									td0.append(button);
+									/*td0.append(button);
 									tr.append(td0);
 									tr.append(td1);
 									tr.append(td2);
 									tr.append(td3);
 									tr.append(td4);
 									tr.append(td5);
-									tr.append(td6);
-									tBody.append(tr);
+									tr.append(td6);*/
+									//tBody.append(tr);
+									imageDiv.append(button);
+									imageDiv.append(images);
+									imageDiv.append(name);
+									imageDiv.append(email);
+									imageDiv.append(dob);
+									tBody.append(imageDiv);
 									if($("#flag").val().indexOf("R") >= 0)
 									{
-										th0.hide();
-										td0.hide();
+										//th0.hide();
+										//td0.hide();
 										button.hide();
 									}
 									if($("#flag").val().indexOf("W") >= 0)
 									{
-										th0.show();
-										td0.show();
+										//th0.show();
+										//td0.show();
 										button.show();
 									}
 									if($("#flag").val().indexOf("D") >= 0)
@@ -112,7 +122,7 @@ var EmployeeView = Backbone.View
 									
 									editEmployeeView.render();
 								});
-								var table = $('#employee_data').dataTable({
+								/*var table = $('#employee_data').dataTable({
 									responsive: true,
 									 "searching": true,
 									    //"ordering": false,
@@ -123,7 +133,7 @@ var EmployeeView = Backbone.View
 									    "bAutoWidth": false,
 									    "bLengthChange": false
 									  //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]]
-								});
+								});*/
 								/*$('#employee_data').paging({
 									limit: 5,
 									//number_of_items : 6,

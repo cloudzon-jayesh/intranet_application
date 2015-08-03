@@ -9,8 +9,7 @@ public class EmployeeDetailDTO {
 	private String email;
 	private Date dob;
 	private Date joiningDate;
-
-	
+	private String profilePic;	
 
 	public Long getId() {
 		return id;
@@ -59,9 +58,17 @@ public class EmployeeDetailDTO {
 	public void setJoiningDate(Date joiningDate) {
 		this.joiningDate = joiningDate;
 	}
+	
+	public String getProfilePic() {
+		return profilePic;
+	}
+
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
+	}
 
 	public EmployeeDetailDTO(Long id, String firstName, String lastName,
-			String email, Date dob, Date joiningDate) {
+			String email, Date dob, Date joiningDate, String profilePic) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
@@ -69,10 +76,6 @@ public class EmployeeDetailDTO {
 		this.email = email;
 		this.dob = dob;
 		this.joiningDate = joiningDate;
+		this.profilePic = profilePic;
 	}
-
-	
-
-	
-
 }
